@@ -22,7 +22,7 @@ apply plugin: 'com.android.application'
 android {
 
     dependencies {
-        implementation 'org.ftclib.ftclib:core:2.1.1' // core
+        implementation 'org.ftclib.ftclib:core:2.1.1' // core //xas
     }
         compileSdk 34
 
