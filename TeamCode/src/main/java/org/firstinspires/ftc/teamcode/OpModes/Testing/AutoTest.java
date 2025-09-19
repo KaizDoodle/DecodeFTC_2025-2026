@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.OpModes.Testing;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.pedropathing.localization.Pose;
-import com.pedropathing.pathgen.PathChain;
+
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;

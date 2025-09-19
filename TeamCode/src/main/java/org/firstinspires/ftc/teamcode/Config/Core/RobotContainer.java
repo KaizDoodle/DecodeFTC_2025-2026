@@ -8,7 +8,7 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.localization.Pose;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -18,10 +18,8 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.SlideSubsystem;
-import org.firstinspires.ftc.teamcode.Config.pedroPathing.constants.Constants;
-import org.firstinspires.ftc.teamcode.Config.pedroPathing.constants.FConstants;
-import org.firstinspires.ftc.teamcode.Config.pedroPathing.constants.LConstants;
+
+import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
 
 public class RobotContainer {
@@ -49,8 +47,7 @@ public class RobotContainer {
     public RobotContainer(HardwareMap hardwareMap, Pose startPose, Alliance alliance){
         this.opmode = AUTONOMOUS;
         this.alliance = alliance;
-
-        follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
+        follower = Constants.createFollower(hardwareMap);
         drive = new DriveSubsystem(hardwareMap, follower);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
@@ -58,7 +55,7 @@ public class RobotContainer {
 //        slides = new SlideSubsystem(hardwareMap);
         lmec = new LMECSubsystem(hardwareMap);
 
-        follower.setStartingPose(Constants.startpose);
+        follower.setStartingPose(new Pose(0,0,0));
         CommandScheduler.getInstance().registerSubsystem(drive, lmec);
 
     }
@@ -68,7 +65,7 @@ public class RobotContainer {
         this.driverPad = new GamepadEx(driver);
         this.operatorPad = new GamepadEx(operator);
 
-        follower = new Follower(hardwareMap, FConstants.class, LConstants.class);
+        follower = Constants.createFollower(hardwareMap);
         drive = new DriveSubsystem(hardwareMap, follower);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
@@ -76,16 +73,16 @@ public class RobotContainer {
 //        slides = new SlideSubsystem(hardwareMap);
         lmec = new LMECSubsystem(hardwareMap);
 
-        follower.setStartingPose(Constants.startpose);
+        follower.setStartingPose(new Pose(0,0,0));
         CommandScheduler.getInstance().registerSubsystem(drive, lmec);
 
     }
 
     public void periodic() {
         if (lmec.getState() == LMECSubsystem.LockState.UNLOCKED)
-            follower.setTeleOpMovementVectors(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.5 , false);
+            follower.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.5 , false);
         if (lmec.getState() == LMECSubsystem.LockState.LOCKED)
-            follower.setTeleOpMovementVectors(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
+            follower.setTeleOpDrive(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
 
 
 //        t.addData("path", f.getCurrentPath());
