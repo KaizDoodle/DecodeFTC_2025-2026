@@ -19,14 +19,16 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 
+import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
 
 public class RobotContainer {
 
     public DriveSubsystem drive;
-    public Follower follower;
+    public LimeLightSubsystem limeLightSubsystem;
     public LMECSubsystem lmec;
+    public Follower follower;
     protected GamepadEx driverPad;
     protected GamepadEx operatorPad;
 
@@ -47,8 +49,10 @@ public class RobotContainer {
     public RobotContainer(HardwareMap hardwareMap, Pose startPose, Alliance alliance){
         this.opmode = AUTONOMOUS;
         this.alliance = alliance;
+
         follower = Constants.createFollower(hardwareMap);
         drive = new DriveSubsystem(hardwareMap, follower);
+        limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
 //        wrist = new WristSubsystem(hardwareMap, telemetry);

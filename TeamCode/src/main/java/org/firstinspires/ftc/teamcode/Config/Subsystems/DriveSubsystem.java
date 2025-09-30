@@ -18,7 +18,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void driveFieldCentric(double left_stick_x, double left_stick_y , double gamepadRX) {
-        follower.setTeleOpMovementVectors(-left_stick_y, -left_stick_x, -gamepadRX, false);
+        follower.setTeleOpDrive(-left_stick_y, -left_stick_x, -gamepadRX, false);
         follower.update();
     }
 

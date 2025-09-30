@@ -32,7 +32,6 @@ public class LimeLightSubsystem extends SubsystemBase {
         LLResult result = limelight.getLatestResult();
 
         //array list of result time
-
-
     }
+
 }

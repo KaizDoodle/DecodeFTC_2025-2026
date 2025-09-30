@@ -20,7 +20,7 @@ public class FieldCentricTest extends OpMode {
     @Override
     public void init() {
         robot = new RobotContainer(hardwareMap, gamepad1, gamepad2, Alliance.BLUE, telemetry);
-
+        robot.limeLightSubsystem.getAprilTag();
         robot.teleOpControl();
     }
 
