@@ -14,21 +14,24 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
+import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
 
 public class RobotContainer {
 
-    public DriveSubsystem drive;
+//    public DriveSubsystem drive;
     public LimeLightSubsystem limeLightSubsystem;
-    public LMECSubsystem lmec;
-    public Follower follower;
+//    public LMECSubsystem lmec;
+    public ShooterSubsystem shooter;
+//    public Follower follower;
     protected GamepadEx driverPad;
     protected GamepadEx operatorPad;
 
@@ -50,17 +53,17 @@ public class RobotContainer {
         this.opmode = AUTONOMOUS;
         this.alliance = alliance;
 
-        follower = Constants.createFollower(hardwareMap);
-        drive = new DriveSubsystem(hardwareMap, follower);
+//        follower = Constants.createFollower(hardwareMap);
+//        drive = new DriveSubsystem(hardwareMap, follower);
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
-//        wrist = new WristSubsystem(hardwareMap, telemetry);
-//        slides = new SlideSubsystem(hardwareMap);
-        lmec = new LMECSubsystem(hardwareMap);
 
-        follower.setStartingPose(new Pose(0,0,0));
-        CommandScheduler.getInstance().registerSubsystem(drive, lmec);
+//        lmec = new LMECSubsystem(hardwareMap);
+        shooter = new ShooterSubsystem((hardwareMap));
+
+//        follower.setStartingPose(new Pose(0,0,0));
+        CommandScheduler.getInstance().registerSubsystem();
 
     }
     public RobotContainer(HardwareMap hardwareMap, Gamepad driver, Gamepad operator, Alliance alliance, Telemetry telemetry){
@@ -69,24 +72,25 @@ public class RobotContainer {
         this.driverPad = new GamepadEx(driver);
         this.operatorPad = new GamepadEx(operator);
 
-        follower = Constants.createFollower(hardwareMap);
-        drive = new DriveSubsystem(hardwareMap, follower);
+//        follower = Constants.createFollower(hardwareMap);
+//        drive = new DriveSubsystem(hardwareMap, follower);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
 //        wrist = new WristSubsystem(hardwareMap, telemetry);
 //        slides = new SlideSubsystem(hardwareMap);
-        lmec = new LMECSubsystem(hardwareMap);
+//        lmec = new LMECSubsystem(hardwareMap);
+        shooter = new ShooterSubsystem((hardwareMap));
 
-        follower.setStartingPose(new Pose(0,0,0));
-        CommandScheduler.getInstance().registerSubsystem(drive, lmec);
+//        follower.setStartingPose(new Pose(0,0,0));
+        CommandScheduler.getInstance().registerSubsystem();
 
     }
 
     public void periodic() {
-        if (lmec.getState() == LMECSubsystem.LockState.UNLOCKED)
-            follower.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.5 , false);
-        if (lmec.getState() == LMECSubsystem.LockState.LOCKED)
-            follower.setTeleOpDrive(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
+//        if (lmec.getState() == LMECSubsystem.LockState.UNLOCKED)
+//            follower.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.5 , false);
+//        if (lmec.getState() == LMECSubsystem.LockState.LOCKED)
+//            follower.setTeleOpDrive(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
 
 
 //        t.addData("path", f.getCurrentPath());
@@ -95,19 +99,44 @@ public class RobotContainer {
 //        l.periodic();
 //        i.periodic();
 //        o.periodic();
-        follower.update();
+//        follower.update();
 //        t.update();
         CommandScheduler.getInstance().run();
     }
     public void tStart(){
-        follower.startTeleopDrive();
+//        follower.startTeleopDrive();
+
     }
 
     public void teleOpControl(){
 
+//        driverPad.getGamepadButton(GamepadKeys.Button.A)
+//                .whenPressed(new LMECControl(lmec, true))
+//                .whenReleased(new LMECControl(lmec, false));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(new ShooterCommand(shooter, 1.0));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.Y)
+                .whenPressed(new ShooterCommand(shooter, 0.9));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.B)
+                .whenPressed(new ShooterCommand(shooter, 0.8));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+                .whenPressed(new ShooterCommand(shooter, 0.75));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenPressed(new ShooterCommand(shooter, 0.7));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenPressed(new ShooterCommand(shooter, 0.67));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(new ShooterCommand(shooter, 0.65));
+
         driverPad.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new LMECControl(lmec, true))
-                .whenReleased(new LMECControl(lmec, false));
+                .whenPressed(new ShooterCommand(shooter, 0));
 
     }
     public FSMStates robotState = FSMStates.NONE;
@@ -127,8 +156,8 @@ public class RobotContainer {
         return robotState;
     }
 
-    public Follower getFollower() {
-        return follower;
-    }
+//    public Follower getFollower() {
+//        return follower;
+//    }
 
 }
