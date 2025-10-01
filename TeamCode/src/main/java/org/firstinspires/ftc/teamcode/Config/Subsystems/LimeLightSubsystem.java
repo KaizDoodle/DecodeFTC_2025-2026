@@ -12,24 +12,27 @@ import java.util.List;
 
 public class LimeLightSubsystem extends SubsystemBase {
     public Limelight3A limelight;
+    public LLResultTypes.FiducialResult apriltag;
+    int id;
 
     public LimeLightSubsystem(HardwareMap hardwareMap){
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
     //returns list of april tags seen at a given time
-    public List<LLResultTypes.FiducialResult> getAprilTag(){
-        //Get detection info
-        return limelight.getLatestResult().getFiducialResults();
+    public LLResultTypes.FiducialResult getAprilTag(){
+        for (LLResultTypes.FiducialResult dr : getDetections().getFiducialResults()) {
+            if (dr.getFiducialId() == 20)
+                apriltag = dr;
+        }
+
+        return apriltag;
     }
 
-    public List<LLResultTypes.DetectorResult>  getDetections(){
-        return limelight.getLatestResult().getDetectorResults();
-    }
 
-    public void getDetections(double numDetections){
+    private LLResult getDetections(){
         //Get detection info
-        LLResult result = limelight.getLatestResult();
+        return limelight.getLatestResult();
 
         //array list of result time
     }
