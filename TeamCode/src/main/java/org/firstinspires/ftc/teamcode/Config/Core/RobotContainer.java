@@ -7,22 +7,16 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterController;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
-import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
 
 public class RobotContainer {
@@ -49,7 +43,7 @@ public class RobotContainer {
         NONE
     }
     //CONSTRUCTOR FOR AUTO TEST
-    public RobotContainer(HardwareMap hardwareMap, Pose startPose, Alliance alliance){
+    public RobotContainer(HardwareMap hardwareMap, Alliance alliance){
         this.opmode = AUTONOMOUS;
         this.alliance = alliance;
 
@@ -72,6 +66,7 @@ public class RobotContainer {
         this.driverPad = new GamepadEx(driver);
         this.operatorPad = new GamepadEx(operator);
 
+        limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 //        follower = Constants.createFollower(hardwareMap);
 //        drive = new DriveSubsystem(hardwareMap, follower);
 
@@ -79,7 +74,7 @@ public class RobotContainer {
 //        wrist = new WristSubsystem(hardwareMap, telemetry);
 //        slides = new SlideSubsystem(hardwareMap);
 //        lmec = new LMECSubsystem(hardwareMap);
-        shooter = new ShooterSubsystem((hardwareMap));
+        shooter = new ShooterSubsystem(hardwareMap);
 
 //        follower.setStartingPose(new Pose(0,0,0));
         CommandScheduler.getInstance().registerSubsystem();
@@ -105,7 +100,7 @@ public class RobotContainer {
     }
     public void tStart(){
 //        follower.startTeleopDrive();
-
+        limeLightSubsystem.limeLightStart();
     }
 
     public void teleOpControl(){
@@ -115,28 +110,28 @@ public class RobotContainer {
 //                .whenReleased(new LMECControl(lmec, false));
 
         driverPad.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new ShooterCommand(shooter, 1.0));
+                .whenPressed(new ShooterController(shooter, 1.0));
 
         driverPad.getGamepadButton(GamepadKeys.Button.Y)
-                .whenPressed(new ShooterCommand(shooter, 0.9));
+                .whenPressed(new ShooterController(shooter, 0.9));
 
         driverPad.getGamepadButton(GamepadKeys.Button.B)
-                .whenPressed(new ShooterCommand(shooter, 0.8));
+                .whenPressed(new ShooterController(shooter, 0.8));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-                .whenPressed(new ShooterCommand(shooter, 0.75));
+                .whenPressed(new ShooterController(shooter, 0.75));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(new ShooterCommand(shooter, 0.7));
+                .whenPressed(new ShooterController(shooter, 0.7));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(new ShooterCommand(shooter, 0.67));
+                .whenPressed(new ShooterController(shooter, 0.67));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(new ShooterCommand(shooter, 0.65));
+                .whenPressed(new ShooterController(shooter, 0.65));
 
         driverPad.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new ShooterCommand(shooter, 0));
+                .whenPressed(new ShooterController(shooter, 0));
 
     }
     public FSMStates robotState = FSMStates.NONE;
