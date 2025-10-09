@@ -16,6 +16,10 @@ public class LimeLightSubsystem extends SubsystemBase {
     public Limelight3A limelight;
     public LLResultTypes.FiducialResult apriltag;
     int id;
+    final double MAX_DISTANCE = 0.03;
+    final double MIN_DISTANCE = 0.0023;
+
+
 
     public LimeLightSubsystem(HardwareMap hardwareMap){
         limelight = hardwareMap.get(Limelight3A.class, "limeLight");
@@ -24,7 +28,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     //returns list of april tags seen at a given time
     public LLResultTypes.FiducialResult getAprilTag(){
         for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
-//            if (dr.getFiducialId() == 20)
+            if (dr.getFiducialId() == 20)
                 apriltag = dr;
         }
         return apriltag;
@@ -34,18 +38,23 @@ public class LimeLightSubsystem extends SubsystemBase {
         return 1 - ((getDistance() /100) * 0.3);
     }
     public double getDistance(){
-        return getAprilTag().getTargetArea();
+        LLResultTypes.FiducialResult tag = getAprilTag();
+        if (tag != null) {
+            return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE) );
+        }
+        return -1; // Return -1 if no tag was detected
+    }
+    public double getYawOffset(){
+        LLResultTypes.FiducialResult tag = getAprilTag();
+        if (tag != null) {
+            return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE) );
+        }
+        return -1; // Return -1 if no tag was detected
     }
     public void limeLightStart(){
         limelight.start();
-        limelight.pipelineSwitch(1);
+        limelight.pipelineSwitch(0);
     }
 
-    private LLResult getDetections(){
-        //Get detection info
-        return limelight.getLatestResult();
-
-        //array list of result time
-    }
 
 }

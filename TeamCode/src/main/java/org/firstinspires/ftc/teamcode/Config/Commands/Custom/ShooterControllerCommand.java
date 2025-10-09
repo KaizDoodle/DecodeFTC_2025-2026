@@ -4,14 +4,14 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
-public class ShooterController extends InstantCommand {
+public class ShooterControllerCommand extends InstantCommand {
 
     ShooterSubsystem shooterSubsystem;
-    double speed;
+    double distance;
 
-    public ShooterController(ShooterSubsystem shooterSubsystem, double speed) {
+    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, double distance) {
         this.shooterSubsystem = shooterSubsystem;
-        this.speed = speed;
+        this.distance = distance;
         addRequirements(shooterSubsystem);
 
     }
@@ -19,7 +19,8 @@ public class ShooterController extends InstantCommand {
     @Override
     public void initialize() {
 
-        shooterSubsystem.setShooterSpeed(speed);
+        shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(distance));
+
 
 
     }
