@@ -5,10 +5,10 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.UpdateRobotOrientationLimelightCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 @Autonomous(name = "LimeLightTest", group = "Examples")
 
@@ -31,6 +31,7 @@ public class LimelightTest extends OpModeCommand {
         schedule(
                 new RunCommand(robot::periodic),
                 new SequentialCommandGroup(
+                        new UpdateRobotOrientationLimelightCommand(robot.limeLightSubsystem, robot.drive.getHeadingDeg()),
                         new ShooterControllerCommand( robot.shooterSubsystem, robot.limeLightSubsystem.getDistance())
 
                 )

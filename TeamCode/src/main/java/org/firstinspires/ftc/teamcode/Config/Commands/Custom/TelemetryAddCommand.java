@@ -8,7 +8,6 @@ public class TelemetryAddCommand extends InstantCommand {
     Telemetry telemetry;
     public TelemetryAddCommand(Telemetry telemetry){
         this.telemetry = telemetry;
-
     }
 
 }

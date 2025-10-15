@@ -8,6 +8,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.OpModes.Testing.LimelightTest;
 
 import java.util.List;
@@ -54,6 +55,9 @@ public class LimeLightSubsystem extends SubsystemBase {
     public void limeLightStart(){
         limelight.start();
         limelight.pipelineSwitch(0);
+    }
+    public void inputPutDistance(double heading){
+        limelight.updateRobotOrientation(heading);
     }
 
 

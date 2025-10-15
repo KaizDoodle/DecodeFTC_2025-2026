@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,19 +16,21 @@ import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCo
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
+import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 
 public class RobotContainer {
 
-//    public DriveSubsystem drive;
+    public DriveSubsystem drive;
     public LimeLightSubsystem limeLightSubsystem;
 //    public LMECSubsystem lmec;
     public ShooterSubsystem shooterSubsystem;
-//    public Follower follower;
+    public Follower follower;
     protected GamepadEx driverPad;
     protected GamepadEx operatorPad;
+
 
     Telemetry telemetry;
 
@@ -72,7 +75,7 @@ public class RobotContainer {
 
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 //        follower = Constants.createFollower(hardwareMap);
-//        drive = new DriveSubsystem(hardwareMap, follower);
+        drive = new DriveSubsystem(hardwareMap, follower);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
 //        wrist = new WristSubsystem(hardwareMap, telemetry);
