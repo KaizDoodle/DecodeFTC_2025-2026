@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
 import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.Config.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
@@ -26,17 +27,16 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 public class RobotContainer {
 
-    public DriveSubsystem drive;
+    public DriveSubsystem driveSubsystem;
     public LimeLightSubsystem limeLightSubsystem;
-    public LMECSubsystem lmec;
+    public LMECSubsystem lmecSubsystem;
     public ShooterSubsystem shooterSubsystem;
-    public Follower follower;
+    public IntakeSubsystem intakeSubsystem;
+    public Follower followerSubsystem;
     protected GamepadEx driverPad;
     protected GamepadEx operatorPad;
 
-
     Telemetry telemetry;
-
 
     private Alliance alliance;
     private Opmode opmode;
@@ -69,6 +69,7 @@ public class RobotContainer {
         CommandScheduler.getInstance().registerSubsystem();
 
     }
+
     public RobotContainer(HardwareMap hardwareMap, Gamepad driver, Gamepad operator, Alliance alliance, Telemetry telemetry){
         this.opmode = TELEOP;
         this.alliance = alliance;
@@ -78,9 +79,9 @@ public class RobotContainer {
 
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 //        follower = Constants.createFollower(hardwareMap);
-        drive = new DriveSubsystem(hardwareMap, follower);
+        driveSubsystem = new DriveSubsystem(hardwareMap, followerSubsystem);
 
-//        intake = new IntakeSubsystem(hardwareMap, telemetry);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
 //        wrist = new WristSubsystem(hardwareMap, telemetry);
 //        slides = new SlideSubsystem(hardwareMap);
 //        lmec = new LMECSubsystem(hardwareMap);
@@ -121,7 +122,7 @@ public class RobotContainer {
         // A = outtake
 
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0).whenActive(
-                new LMECControl(lmec, true )
+                new LMECControl(lmecSubsystem, true )
         );
 
 

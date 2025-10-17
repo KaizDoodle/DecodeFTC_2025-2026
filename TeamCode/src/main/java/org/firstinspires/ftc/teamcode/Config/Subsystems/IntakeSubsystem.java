@@ -5,12 +5,20 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.List;
 
 public class IntakeSubsystem extends SubsystemBase {
+    public DcMotor intakeMotor;
+    public IntakeSubsystem(HardwareMap hardwareMap){
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+    }
 
+    public void intakeSpeed(double power){
+        intakeMotor.setPower(power);
+    }
 
 }

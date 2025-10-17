@@ -13,8 +13,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem(HardwareMap hardwareMap){
         shooter = hardwareMap.get(DcMotor.class, "shooter");
-
     }
+
 
     public void setShooterSpeed(double speed){
         shooter.setPower(speed);

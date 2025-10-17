@@ -31,7 +31,7 @@ public class LimelightTest extends OpModeCommand {
         schedule(
                 new RunCommand(robot::periodic),
                 new SequentialCommandGroup(
-                        new UpdateRobotOrientationLimelightCommand(robot.limeLightSubsystem, robot.drive.getHeadingDeg()),
+                        new UpdateRobotOrientationLimelightCommand(robot.limeLightSubsystem, robot.driveSubsystem.getHeadingDeg()),
                         new ShooterControllerCommand( robot.shooterSubsystem, robot.limeLightSubsystem.getDistance())
 
                 )
