@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Config.Commands.Custom;
+package org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -25,37 +25,37 @@ public class PatternLaunchCommand extends SequentialCommandGroup {
             case GPP: // Green, Purple, Purple
                 addCommands(
                         // Shoot Green
-                        createShotCommand(shooter, shooter::loadLeft),
+                        createShotCommand(shooter, shooter::shootGreen),
                         new WaitCommand(INTER_SHOT_DELAY_MS),
                         // Shoot Purple
-                        createShotCommand(shooter, shooter::loadMiddle),
+                        createShotCommand(shooter, shooter::shootPurple),
                         new WaitCommand(INTER_SHOT_DELAY_MS),
                         // Shoot Purple
-                        createShotCommand(shooter, shooter::loadRight)
+                        createShotCommand(shooter, shooter::shootPurple)
                 );
                 break;
             case PGP: // Purple, Green, Purple
                 addCommands(
                         // Shoot Purple
-                        createShotCommand(shooter, shooter::loadLeft),
+                        createShotCommand(shooter, shooter::shootPurple),
                         new WaitCommand(INTER_SHOT_DELAY_MS),
                         // Shoot Green
-                        createShotCommand(shooter, shooter::loadMiddle),
+                        createShotCommand(shooter, shooter::shootGreen),
                         new WaitCommand(INTER_SHOT_DELAY_MS),
                         // Shoot Purple
-                        createShotCommand(shooter, shooter::loadRight)
+                        createShotCommand(shooter, shooter::shootPurple)
                 );
                 break;
             case PPG: // Purple, Purple, Green
                 addCommands(
                         // Shoot Purple
-                        createShotCommand(shooter, shooter::loadLeft),
+                        createShotCommand(shooter, shooter::shootPurple),
                         new WaitCommand(INTER_SHOT_DELAY_MS),
                         // Shoot Purple
-                        createShotCommand(shooter, shooter::loadMiddle),
+                        createShotCommand(shooter, shooter::shootPurple),
                         new WaitCommand(INTER_SHOT_DELAY_MS),
                         // Shoot Green
-                        createShotCommand(shooter, shooter::loadRight)
+                        createShotCommand(shooter, shooter::shootGreen)
                 );
                 break;
         }

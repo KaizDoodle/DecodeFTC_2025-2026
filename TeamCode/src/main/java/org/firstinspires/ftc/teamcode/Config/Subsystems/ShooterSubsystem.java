@@ -65,6 +65,14 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
 
+    public void shootGreen() {
+        cageRight.setPosition(0.5);
+    }
+
+    public void shootPurple() {
+        cageRight.setPosition(0.5);
+    }
+
     public void resetCages() {
         cageLeft.setPosition(0);
         cageMiddle.setPosition(0);
