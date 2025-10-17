@@ -9,12 +9,6 @@ public class ColorSubsystem extends SubsystemBase {
     ColorSensor sensorMiddle;
     ColorSensor sensorRight;
 
-    String colorLeft;
-    String colorMiddle;
-    String colorRight;
-
-
-
 
     public ColorSubsystem(HardwareMap hardwareMap) {
         sensorLeft = hardwareMap.get(ColorSensor.class, "sensorLeft");
@@ -25,16 +19,20 @@ public class ColorSubsystem extends SubsystemBase {
         int red = sensor.red();
         int green = sensor.green();
         int blue = sensor.blue();
-        return "purple";
+
+        if ((red > 10 && red < 30 ) && (green > 10 && green < 30) && (blue > 30 && blue < 50 ))
+            return "P";
+        else if ( (red > 30 && red < 50 ) && (green > 30 && green < 50 ) && (blue > 30 && blue < 50 ))
+            return "G";
+        else return null;
+        // or return G
     }
 
 //    return order left to right of colors
-    public String[] sortColor(){
-        String[] colors = new String[3];
+    public String sortColor(){
+        String colors;
 
-        colors[0] = getColor(sensorLeft);
-        colors[1] = getColor(sensorMiddle);
-        colors[2] = getColor(sensorRight);
+        colors = getColor(sensorLeft) + getColor(sensorMiddle) + getColor(sensorRight);
 
         return colors;
     }
