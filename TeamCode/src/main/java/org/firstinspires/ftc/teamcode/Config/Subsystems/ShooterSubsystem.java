@@ -9,6 +9,8 @@ public class ShooterSubsystem extends SubsystemBase {
     final double MAX_POWER = 1;
     DcMotor shooter;
 
+
+
     public ShooterSubsystem(HardwareMap hardwareMap){
         shooter = hardwareMap.get(DcMotor.class, "shooter");
 

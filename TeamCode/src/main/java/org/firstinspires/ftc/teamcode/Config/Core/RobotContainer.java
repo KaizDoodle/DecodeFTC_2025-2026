@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.AUTONOMOUS;
 import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
@@ -12,11 +13,13 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
 import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
@@ -25,7 +28,7 @@ public class RobotContainer {
 
     public DriveSubsystem drive;
     public LimeLightSubsystem limeLightSubsystem;
-//    public LMECSubsystem lmec;
+    public LMECSubsystem lmec;
     public ShooterSubsystem shooterSubsystem;
     public Follower follower;
     protected GamepadEx driverPad;
@@ -111,30 +114,16 @@ public class RobotContainer {
 
     public void teleOpControl(){
 
-//        driverPad.getGamepadButton(GamepadKeys.Button.A)
-//                .whenPressed(new LMECControl(lmec, true))
-//                .whenReleased(new LMECControl(lmec, false));
+        // right bumber = shoot
+        // left bumber = aim
+        // Dpad down = shoot all
+        // left trigger = LMEC
+        // A = outtake
 
-        driverPad.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 1.0));
+        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0).whenActive(
+                new LMECControl(lmec, true )
+        );
 
-        driverPad.getGamepadButton(GamepadKeys.Button.Y)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 0.9));
-
-        driverPad.getGamepadButton(GamepadKeys.Button.B)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 0.8));
-
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 0.75));
-
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 0.7));
-
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 0.67));
-
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 0.65));
 
         driverPad.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new ShooterControllerCommand(shooterSubsystem, 0));
