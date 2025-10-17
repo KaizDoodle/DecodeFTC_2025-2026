@@ -2,17 +2,17 @@ package org.firstinspires.ftc.teamcode.Config.Commands.Custom;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 
+import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
-public class ShooterControllerCommand extends InstantCommand {
+public class ManualLaunchCommand extends InstantCommand {
 
-
+    ShooterPosition shooter;
     ShooterSubsystem shooterSubsystem;
-    double distance;
 
-    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, double distance) {
+    public ManualLaunchCommand(ShooterSubsystem shooterSubsystem, ShooterPosition shooter) {
+        this.shooter = shooter;
         this.shooterSubsystem = shooterSubsystem;
-        this.distance = distance;
         addRequirements(shooterSubsystem);
 
     }
@@ -20,7 +20,9 @@ public class ShooterControllerCommand extends InstantCommand {
     @Override
     public void initialize() {
 
-        shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(distance));
+        shooterSubsystem.loadManual(shooter);
+
+
 
 
 

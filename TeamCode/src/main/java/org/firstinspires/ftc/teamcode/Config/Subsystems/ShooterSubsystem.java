@@ -5,17 +5,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
+
 public class ShooterSubsystem extends SubsystemBase {
     final double MIN_POWER = 0.45;
     final double MAX_POWER = 1;
 
-    public Servo cageLeft;
-    public Servo cageMiddle;
-    public Servo cageRight;
+    private Servo cageLeft;
+    private Servo cageMiddle;
+    private Servo cageRight;
 
-    public DcMotor shooterLeft;
-    public DcMotor shooterMiddle;
-    public DcMotor shooterRight;
+    private DcMotor shooterLeft;
+    private DcMotor shooterMiddle;
+    private DcMotor shooterRight;
 
 
     public ShooterSubsystem(HardwareMap hardwareMap){
@@ -29,26 +31,38 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void shootAll(double speed) {
+    public void loadAll() {
         cageLeft.setPosition(0.5);
         cageMiddle.setPosition(0.5);
         cageRight.setPosition(0.5);
-
-        shooterLeft.setPower(speed);
-        shooterMiddle.setPower(speed);
-        shooterRight.setPower(speed);
     }
 
-    public void shootLeft() {
+    public void loadLeft() {
         cageLeft.setPosition(0.5);
     }
 
-    public void shootMiddle() {
+    public void loadMiddle() {
         cageMiddle.setPosition(0.5);
     }
 
-    public void shootRight() {
+    public void loadRight() {
         cageRight.setPosition(0.5);
+    }
+    public void loadManual(ShooterPosition pos){
+        switch (pos){
+            case LEFT:
+                loadLeft();
+                break;
+            case MIDDLE:
+                loadMiddle();
+                break;
+            case RIGHT:
+                loadRight();
+                break;
+            case ALL:
+                loadAll();
+                break;
+        }
     }
 
     public void resetCages() {
