@@ -9,15 +9,16 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
 public class ShooterSubsystem extends SubsystemBase {
     final double MIN_POWER = 0.45;
+    final double LAUNCH_POSE = 0.2;
     final double MAX_POWER = 1;
 
     private Servo cageLeft;
     private Servo cageMiddle;
     private Servo cageRight;
 
-    private DcMotor shooterLeft;
-    private DcMotor shooterMiddle;
-    private DcMotor shooterRight;
+    private DcMotor shooterOne;
+    private DcMotor shooterTwo;
+    private DcMotor shooterThree;
 
 
     public ShooterSubsystem(HardwareMap hardwareMap){
@@ -25,28 +26,44 @@ public class ShooterSubsystem extends SubsystemBase {
         cageMiddle = hardwareMap.get(Servo.class, "cageMiddle");
         cageRight = hardwareMap.get(Servo.class, "cageRight");
 
-        shooterLeft = hardwareMap.get(DcMotor.class, "shooterLeft");
-        shooterMiddle = hardwareMap.get(DcMotor.class, "shooterMiddle");
-        shooterRight = hardwareMap.get(DcMotor.class, "shooterRight");
+        shooterOne = hardwareMap.get(DcMotor.class, "shooterOne");
+        shooterTwo = hardwareMap.get(DcMotor.class, "shooterTwo");
+        shooterThree = hardwareMap.get(DcMotor.class, "shooterThree");
 
     }
 
-    public void loadAll() {
-        cageLeft.setPosition(0.5);
-        cageMiddle.setPosition(0.5);
-        cageRight.setPosition(0.5);
+    private void loadAll() {
+        cageLeft.setPosition(LAUNCH_POSE);
+        cageMiddle.setPosition(LAUNCH_POSE);
+        cageRight.setPosition(LAUNCH_POSE);
+    }
+    private void resetAll() {
+        cageLeft.setPosition(LAUNCH_POSE);
+        cageMiddle.setPosition(LAUNCH_POSE);
+        cageRight.setPosition(LAUNCH_POSE);
     }
 
-    public void loadLeft() {
-        cageLeft.setPosition(0.5);
+    private void loadLeft() {
+        cageLeft.setPosition(LAUNCH_POSE);
     }
 
-    public void loadMiddle() {
-        cageMiddle.setPosition(0.5);
+    private void loadMiddle() {
+        cageMiddle.setPosition(LAUNCH_POSE);
     }
 
-    public void loadRight() {
-        cageRight.setPosition(0.5);
+    private void loadRight() {
+        cageRight.setPosition(LAUNCH_POSE);
+    }
+    private void resetLeft() {
+        cageLeft.setPosition(0);
+    }
+
+    private void resetMiddle() {
+        cageMiddle.setPosition(0);
+    }
+
+    private void resetRight() {
+        cageRight.setPosition(0);
     }
     public void loadManual(ShooterPosition pos){
         switch (pos){
@@ -64,25 +81,39 @@ public class ShooterSubsystem extends SubsystemBase {
                 break;
         }
     }
+    public void resetManual(ShooterPosition pos){
+        switch (pos){
+            case LEFT:
+                resetLeft();
+                break;
+            case MIDDLE:
+                resetMiddle();
+                break;
+            case RIGHT:
+                resetRight();
+                break;
+            case ALL:
+                resetAll();
+                break;
+        }
+    }
+    public void resetManual(){
+                loadAll();
+        }
+
 
     public void shootGreen() {
-        cageRight.setPosition(0.5);
+        cageRight.setPosition(LAUNCH_POSE);
     }
 
     public void shootPurple() {
-        cageRight.setPosition(0.5);
-    }
-
-    public void resetCages() {
-        cageLeft.setPosition(0);
-        cageMiddle.setPosition(0);
-        cageRight.setPosition(0);
+        cageRight.setPosition(LAUNCH_POSE);
     }
 
     public void setShooterSpeed(double speed){
-        shooterLeft.setPower(speed);
-        shooterMiddle.setPower(speed);
-        shooterRight.setPower(speed);
+        shooterOne.setPower(speed);
+        shooterTwo.setPower(speed);
+        shooterThree.setPower(speed);
 
     }
 

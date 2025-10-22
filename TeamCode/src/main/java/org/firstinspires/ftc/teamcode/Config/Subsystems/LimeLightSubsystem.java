@@ -27,9 +27,10 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
 
     //returns list of april tags seen at a given time
-    public LLResultTypes.FiducialResult getAprilTag(){
+    public LLResultTypes.FiducialResult getAprilTag(int tagID){
+
         for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
-            if (dr.getFiducialId() == 20)
+            if (dr != null && dr.getFiducialId() == tagID)
                 apriltag = dr;
         }
         return apriltag;
@@ -38,19 +39,20 @@ public class LimeLightSubsystem extends SubsystemBase {
     public double getPowerModifier(){
         return 1 - ((getDistance() /100) * 0.3);
     }
+
     public double getDistance(){
-        LLResultTypes.FiducialResult tag = getAprilTag();
+        LLResultTypes.FiducialResult tag = getAprilTag(20);
         if (tag != null) {
             return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE) );
         }
         return -1; // Return -1 if no tag was detected
     }
     public double getYawOffset(){
-        LLResultTypes.FiducialResult tag = getAprilTag();
+        LLResultTypes.FiducialResult tag = getAprilTag(20);
         if (tag != null) {
-            return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE) );
+            return tag.getTargetXDegrees();
         }
-        return -1; // Return -1 if no tag was detected
+        return -1;
     }
     public void limeLightStart(){
         limelight.start();
