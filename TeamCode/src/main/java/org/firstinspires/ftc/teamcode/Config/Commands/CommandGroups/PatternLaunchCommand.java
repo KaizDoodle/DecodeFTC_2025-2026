@@ -57,23 +57,4 @@ public class PatternLaunchCommand extends InstantCommand {
         }
     }
 
-    public static void setPattern(Pattern pattern) {
-        currentPattern = pattern;
-        resetSequence();
-    }
-
-    public static void resetSequence() {
-        for (int i = 0; i < 3; i++) {
-            shotPositions[i] = false;
-        }
-    }
-
-    public static boolean isSequenceComplete() {
-        for (int i = 0; i < 3; i++) {
-            if (!shotPositions[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

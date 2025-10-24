@@ -13,27 +13,19 @@ public class FieldCentricTest extends OpMode {
 
     RobotContainer robot;
 
-    public void configureOperator() {
-
-    }
 
     @Override
     public void init() {
         robot = new RobotContainer(hardwareMap, gamepad1, gamepad2, Alliance.BLUE, telemetry);
-
         robot.teleOpControl();
     }
 
     @Override
     public void loop() {
-
         robot.periodic();
-
     }
     @Override
     public void start(){
         robot.tStart();
-
-
     }
 }

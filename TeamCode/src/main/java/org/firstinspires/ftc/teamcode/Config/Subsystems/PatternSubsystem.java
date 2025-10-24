@@ -1,80 +1,68 @@
 package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import org.firstinspires.ftc.teamcode.Config.Core.Util.Pattern;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PatternSubsystem extends SubsystemBase {
 
-    int supplyGreen;
-    int supplyPurple;
-    public AtomicInteger shotCounter;
-
-    String pattern;
-
-    char getNextColor;
-    static int index;
+    private int supplyGreen;
+    private int supplyPurple;
+    private final AtomicInteger shotCounter;
+    private String pattern;
 
     public PatternSubsystem() {
-
+        this.pattern = ""; // default empty until set
+        this.shotCounter = new AtomicInteger(0);
     }
 
+    // Counts purple balls in the given pattern
     public int getSupplyPurple(String pattern){
-        int count  = 0;
-
-        for (int i = 0; i < pattern.length(); i++){
-            if (pattern.charAt(i) == 'p'){
-                count++;
-            }
+        int count = 0;
+        for (int i = 0; i < pattern.length(); i++) {
+            if (pattern.charAt(i) == 'p') count++;
         }
         return count;
     }
 
+    // Counts green balls in the given pattern
     public int getSupplyGreen(String pattern){
-        int count  = 0;
-
-        for (int i = 0; i < pattern.length(); i++){
-            if (pattern.charAt(i) == 'p'){
-                count++;
-            }
+        int count = 0;
+        for (int i = 0; i < pattern.length(); i++) {
+            if (pattern.charAt(i) == 'g') count++;
         }
         return count;
     }
 
-    // gets a pattern in the parameters and returns the next color of the pattern
+    // Returns the next color we need to shoot based on current pattern
     public char getNextColor() {
         if (pattern == null || pattern.isEmpty()) return '0';
         int index = shotCounter.get() % pattern.length();
         return pattern.charAt(index);
     }
 
-    // increments the shot count after a successful launch
+    // Records that a shot happened (so next call moves on)
     public void recordShot() {
         shotCounter.incrementAndGet();
     }
 
-    // reset shot counter if needed
+    // Reset to start over
     public void resetCounter() {
         shotCounter.set(0);
     }
 
-    // allow pattern update at runtime
+    // Change pattern and reset sequence
     public void setPattern(String newPattern) {
         this.pattern = newPattern.toLowerCase();
         resetCounter();
+        this.supplyGreen = getSupplyGreen(newPattern);
+        this.supplyPurple = getSupplyPurple(newPattern);
     }
 
-    // for debugging
+    public String getPattern() {
+        return pattern;
+    }
+
     public int getShotCount() {
         return shotCounter.get();
     }
-
-
-    // Method to convert the string into individual chars
-    // getPattern command to get it from the limelight, need a variable to be changed
-    // create a variable called supply to determine how much of each ball we currently have
-    // create a variable called getSupply to figure out how much of each ball we need to get
-    // create a variable called getNextColor to figure out what color we need next
-
 }

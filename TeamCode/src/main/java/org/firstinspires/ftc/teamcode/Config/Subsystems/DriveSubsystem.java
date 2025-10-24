@@ -13,14 +13,14 @@ public class DriveSubsystem extends SubsystemBase {
     Follower follower;
 
 
-    public DriveSubsystem(final HardwareMap hardwareMap, Follower follower) {
+    public DriveSubsystem(Follower follower) {
         this.follower = follower;
     }
 
-    public void driveFieldCentric(double left_stick_x, double left_stick_y , double gamepadRX) {
-        follower.setTeleOpDrive(-left_stick_y, -left_stick_x, -gamepadRX, false);
-        follower.update();
-    }
+//    public void driveFieldCentric(double left_stick_x, double left_stick_y , double gamepadRX) {
+//        follower.setTeleOpDrive(-left_stick_y, -left_stick_x, -gamepadRX, false);
+//        follower.update();
+//    }
 
     public double getHeadingRads() {
         return odo.getHeading(AngleUnit.RADIANS);

@@ -5,8 +5,6 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.AUTONOMOUS;
 import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -21,8 +19,6 @@ import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.PatternLaunc
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualLaunchCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
@@ -30,7 +26,6 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Pattern;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.ColorSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
@@ -48,7 +43,7 @@ public class RobotContainer {
     public ShooterSubsystem shooterSubsystem;
     public IntakeSubsystem intakeSubsystem;
 //    public ColorSubsystem colorSubsystem;
-    public Follower followerSubsystem;
+    public Follower follower;
     public PatternSubsystem patternSubsystem;
 
     protected GamepadEx driverPad;
@@ -66,7 +61,7 @@ public class RobotContainer {
         this.alliance = alliance;
 
 
-//        drive = new DriveSubsystem(hardwareMap, follower);
+        driveSubsystem = new DriveSubsystem(follower);
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
@@ -74,7 +69,7 @@ public class RobotContainer {
 //        lmec = new LMECSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem((hardwareMap));
 
-//        follower.setStartingPose(new Pose(0,0,0));
+        follower.setStartingPose(new Pose(0,0,0));
         CommandScheduler.getInstance().registerSubsystem();
 
     }
@@ -85,24 +80,30 @@ public class RobotContainer {
         this.driverPad = new GamepadEx(driver);
         this.operatorPad = new GamepadEx(operator);
         this.telemetry = telemetry;
-        followerSubsystem = Constants.createFollower(hardwareMap);
+        follower = Constants.createFollower(hardwareMap);
 
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
-        driveSubsystem = new DriveSubsystem(hardwareMap, followerSubsystem);
+        driveSubsystem = new DriveSubsystem(follower);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
 //        colorSubsystem = new ColorSubsystem(hardwareMap);
+        patternSubsystem = new PatternSubsystem();
 
 
-
-        followerSubsystem.setStartingPose(new Pose(0,0,0));
-        CommandScheduler.getInstance().registerSubsystem();
+        follower.setStartingPose(new Pose(0,0,0));
+        CommandScheduler.getInstance().registerSubsystem(
+                driveSubsystem,
+                limeLightSubsystem,
+                intakeSubsystem,
+                shooterSubsystem,
+                patternSubsystem);
 
     }
 
     public void periodic() {
 //        if (lmec.getState() == LMECSubsystem.LockState.UNLOCKED)
-//            followerSubsystem.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.5 , false);
+        follower.update();
+            follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), -driverPad.getRightX() * 0.65 , false);
 //        if (lmec.getState() == LMECSubsystem.LockState.LOCKED)
 //            followerSubsystem.setTeleOpDrive(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
 
@@ -112,15 +113,15 @@ public class RobotContainer {
 //        l.periodic();
 //        i.periodic();
 //        o.periodic();
-        followerSubsystem.update();
+
 //        t.update();
         CommandScheduler.getInstance().run();
     }
     public void tStart(){
-        followerSubsystem.startTeleopDrive();
+        follower.update();
+        follower.startTeleopDrive();
         limeLightSubsystem.limeLightStart();
         shooterSubsystem.resetManual(ShooterPosition.ALL);
-
     }
 
     public void teleOpControl(){
@@ -137,7 +138,7 @@ public class RobotContainer {
         );
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-                new PatternLaunchCommand(shooterSubsystem, patternSubsystem.nextChar())
+                new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
         );
 
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
