@@ -72,9 +72,9 @@ public class LimeLightSubsystem extends SubsystemBase {
 
         for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
             if (dr != null)
-                apriltag = dr;
+                return apriltag;
         }
-        return apriltag;
+        return null;
     }
 
 

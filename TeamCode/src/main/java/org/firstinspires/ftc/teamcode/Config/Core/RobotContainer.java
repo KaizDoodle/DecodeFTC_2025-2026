@@ -5,6 +5,8 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.AUTONOMOUS;
 import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -12,6 +14,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.LockOnCommand;
@@ -23,10 +26,8 @@ import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCo
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
-import org.firstinspires.ftc.teamcode.Config.Core.Util.Pattern;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
@@ -37,7 +38,6 @@ import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
 public class RobotContainer {
 
-    public DriveSubsystem driveSubsystem;
     public LimeLightSubsystem limeLightSubsystem;
     public LMECSubsystem lmecSubsystem;
     public ShooterSubsystem shooterSubsystem;
@@ -50,7 +50,7 @@ public class RobotContainer {
     protected GamepadEx operatorPad;
 
     Telemetry telemetry;
-
+    double headingPower =0 ;
     private Alliance alliance;
     private Opmode opmode;
     public CommandScheduler cs = CommandScheduler.getInstance();
@@ -61,7 +61,6 @@ public class RobotContainer {
         this.alliance = alliance;
 
 
-        driveSubsystem = new DriveSubsystem(follower);
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
@@ -69,7 +68,7 @@ public class RobotContainer {
 //        lmec = new LMECSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem((hardwareMap));
 
-        follower.setStartingPose(new Pose(0,0,0));
+        follower.setStartingPose(new Pose(0,0,180));
         CommandScheduler.getInstance().registerSubsystem();
 
     }
@@ -83,7 +82,6 @@ public class RobotContainer {
         follower = Constants.createFollower(hardwareMap);
 
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
-        driveSubsystem = new DriveSubsystem(follower);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
 //        colorSubsystem = new ColorSubsystem(hardwareMap);
@@ -92,7 +90,6 @@ public class RobotContainer {
 
         follower.setStartingPose(new Pose(0,0,0));
         CommandScheduler.getInstance().registerSubsystem(
-                driveSubsystem,
                 limeLightSubsystem,
                 intakeSubsystem,
                 shooterSubsystem,
@@ -101,24 +98,43 @@ public class RobotContainer {
     }
 
     public void periodic() {
+
         follower.update();
-//
-//        double headingError;
-//        double kP = 0.03; // <-- tune this value between 0.02–0.05 for your bot
-//        rotationPower = yawError * kP;
-//
-//        // Clamp to avoid over-rotation
-//        rotationPower = Math.max(-1, Math.min(1, rotationPower));
+
+        double headingPower;
+        double yaw = limeLightSubsystem.getYawOffset();
+
+        if (limeLightSubsystem.getAprilTag() != null) {
+            // Tag detected: smoothly approach target rotation
+            headingPower = (yaw / 24 ) * 0.4;
+            headingPower = Range.clip(headingPower, -0.5, 0.5);
+
+        }
+        else{
+            headingPower = driverPad.getRightX() * 0.65;
+        }
+
+        telemetry.addData("limelight yaw offset ",limeLightSubsystem.getYawOffset() );
+        telemetry.addData("limelight get distance ",limeLightSubsystem.getDistance());
+        telemetry.addData("limelight power percentage ", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+        telemetry.addData("get shooter power ", shooterSubsystem.getLaunchVelocity());
+        telemetry.addData("heading power", headingPower);
+
+
+
 
         switch (robotState) {
             case AIM:
                 // Field-centric drive, rotation controlled by Limelight
-                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), limeLightSubsystem.getYawOffset(), false);
+                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), headingPower, true);
+                shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
                 break;
             case NONE:
             default:
                 // Normal field-centric drive
-                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), -driverPad.getRightX() * 0.65, false);
+                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), driverPad.getRightX() * 0.65, true);
+                shooterSubsystem.setShooterSpeed(0);
+
                 break;
         }
 
@@ -137,6 +153,7 @@ public class RobotContainer {
         follower.startTeleopDrive();
         limeLightSubsystem.limeLightStart();
         shooterSubsystem.resetManual(ShooterPosition.ALL);
+        robotState = RobotStates.NONE;
     }
 
     public void teleOpControl(){
@@ -149,12 +166,16 @@ public class RobotContainer {
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> setState(RobotStates.AIM)),
+                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
+                )
         );
+
         //aim command limelight
-        driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
-                new LockOnCommand(limeLightSubsystem, driveSubsystem)
-        );
+        driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whileHeld(new InstantCommand(() -> setState(RobotStates.AIM)))
+                .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                         new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
@@ -176,13 +197,9 @@ public class RobotContainer {
                 .whenInactive(new IntakeControlCommand(intakeSubsystem, 0));
 
         //Left trigger hold, lock mecanum
-        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
-                .whenActive(new LMECControl(lmecSubsystem, true ))
-                .whenInactive(new LMECControl(lmecSubsystem, false));
-
-        driverPad.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new ShooterControllerCommand(shooterSubsystem, 1));
-
+//        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
+//                .whenActive(new LMECControl(lmecSubsystem, true ))
+//                .whenInactive(new LMECControl(lmecSubsystem, false));
     }
     public RobotStates robotState = RobotStates.NONE;
 

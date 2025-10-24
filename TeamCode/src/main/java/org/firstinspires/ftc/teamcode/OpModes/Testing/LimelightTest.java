@@ -26,14 +26,18 @@ public class LimelightTest extends OpModeCommand {
 
     @Override
     public void loop() {
+        robot.periodic();
+
         telemetry.addData("distance", robot.limeLightSubsystem.getDistance());
-        telemetry.update();
         telemetry.addData("yaw offset", robot.limeLightSubsystem.getYawOffset());
+
+        telemetry.update();
+
+
         schedule(
-                new RunCommand(robot::periodic),
                 new SequentialCommandGroup(
-                        new UpdateRobotOrientationLimelightCommand(robot.limeLightSubsystem, robot.driveSubsystem.getHeadingDeg())
-//                        new ShooterControllerCommand( robot.shooterSubsystem, robot.limeLightSubsystem.getDistance())
+                        new UpdateRobotOrientationLimelightCommand(robot.limeLightSubsystem, robot.follower.getHeading()),
+                        new ShooterControllerCommand( robot.shooterSubsystem, robot.limeLightSubsystem.getDistance())
 
                 )
         );

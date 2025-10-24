@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -17,7 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private Servo cageRight;
 
     private DcMotor shooterOne;
-    private DcMotor shooterTwo;
+    private DcMotorEx shooterTwo;
     private DcMotor shooterThree;
 
 
@@ -27,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
         cageRight = hardwareMap.get(Servo.class, "cageRight");
 
         shooterOne = hardwareMap.get(DcMotor.class, "shooterOne");
-        shooterTwo = hardwareMap.get(DcMotor.class, "shooterTwo");
+        shooterTwo = hardwareMap.get(DcMotorEx.class, "shooterTwo");
         shooterThree = hardwareMap.get(DcMotor.class, "shooterThree");
 
     }
@@ -97,24 +100,16 @@ public class ShooterSubsystem extends SubsystemBase {
                 break;
         }
     }
-    public void resetManual(){
-                loadAll();
-        }
 
 
-    public void shootGreen() {
-        cageRight.setPosition(LAUNCH_POSE);
-    }
-
-    public void shootPurple() {
-        cageRight.setPosition(LAUNCH_POSE);
-    }
 
     public void setShooterSpeed(double speed){
         shooterOne.setPower(speed);
         shooterTwo.setPower(speed);
         shooterThree.setPower(speed);
-
+    }
+    public double getLaunchVelocity(){
+        return shooterTwo.getVelocity();
     }
 
     public double calculatePowerPercentage(double distancePercent){
