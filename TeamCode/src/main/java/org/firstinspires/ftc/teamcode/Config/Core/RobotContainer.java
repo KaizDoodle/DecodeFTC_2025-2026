@@ -51,7 +51,8 @@ public class RobotContainer {
 
     Telemetry telemetry;
     double headingPower =0 ;
-    private Alliance alliance;
+
+    public Alliance alliance;
     private Opmode opmode;
     public CommandScheduler cs = CommandScheduler.getInstance();
 
@@ -60,13 +61,15 @@ public class RobotContainer {
         this.opmode = AUTONOMOUS;
         this.alliance = alliance;
 
-
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
 
 //        lmec = new LMECSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem((hardwareMap));
+
+        follower.setStartingPose(new Pose(0,0,0));
+        follower = Constants.createFollower(hardwareMap);
 
         follower.setStartingPose(new Pose(0,0,180));
         CommandScheduler.getInstance().registerSubsystem();
