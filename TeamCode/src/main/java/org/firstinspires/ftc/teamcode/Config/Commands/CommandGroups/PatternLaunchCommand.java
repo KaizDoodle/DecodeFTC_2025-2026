@@ -27,12 +27,6 @@ public class PatternLaunchCommand extends InstantCommand {
 
     // create a supply int with  either purple or green that gets incrimented from values from a color senseor based on how many of each char
 
-    //
-
-
-
-
-
     /**
      * Creates a command to shoot the next available ball of a specific color.
      *
