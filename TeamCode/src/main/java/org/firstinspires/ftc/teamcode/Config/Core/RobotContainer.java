@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.LockOnCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.PatternLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCo
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
+import org.firstinspires.ftc.teamcode.Config.Core.Util.Pattern;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ColorSubsystem;
@@ -33,6 +35,7 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
+import org.firstinspires.ftc.teamcode.Config.Subsystems.PatternSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
@@ -46,6 +49,8 @@ public class RobotContainer {
     public IntakeSubsystem intakeSubsystem;
 //    public ColorSubsystem colorSubsystem;
     public Follower followerSubsystem;
+    public PatternSubsystem patternSubsystem;
+
     protected GamepadEx driverPad;
     protected GamepadEx operatorPad;
 
@@ -130,6 +135,11 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
         );
+
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
+                new PatternLaunchCommand(shooterSubsystem, patternSubsystem.nextChar())
+        );
+
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
                 new LockOnCommand(limeLightSubsystem, driveSubsystem)
         );

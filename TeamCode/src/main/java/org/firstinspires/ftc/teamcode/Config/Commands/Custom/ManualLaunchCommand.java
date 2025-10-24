@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 public class ManualLaunchCommand extends InstantCommand {
 
     ShooterPosition shooter;
+    int i;
     ShooterSubsystem shooterSubsystem;
 
     public ManualLaunchCommand(ShooterSubsystem shooterSubsystem, ShooterPosition shooter) {
@@ -15,6 +16,23 @@ public class ManualLaunchCommand extends InstantCommand {
         this.shooterSubsystem = shooterSubsystem;
 //        addRequirements(shooterSubsystem);
 
+    }
+    public ManualLaunchCommand(ShooterSubsystem shooterSubsystem, int i) {
+        this.i = i;
+        this.shooterSubsystem = shooterSubsystem;
+
+        switch (i) {
+            case 0: // Left
+                shooter = ShooterPosition.LEFT;
+                break;
+            case 1: // Middle
+                shooter = ShooterPosition.MIDDLE;
+                break;
+            case 2: // Right
+                shooter = ShooterPosition.RIGHT;
+                break;
+        }
+//        addRequirements(shooterSubsystem);
     }
 
     @Override
