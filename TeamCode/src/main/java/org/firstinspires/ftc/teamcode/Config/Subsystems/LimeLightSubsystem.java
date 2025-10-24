@@ -2,16 +2,9 @@
 package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.OpModes.Testing.LimelightTest;
-
-import java.util.List;
 
 public class LimeLightSubsystem extends SubsystemBase {
     public Limelight3A limelight;
@@ -27,14 +20,6 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
 
     //returns list of april tags seen at a given time
-    public LLResultTypes.FiducialResult getAprilTag(int tagID){
-
-        for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
-            if (dr != null && dr.getFiducialId() == tagID)
-                apriltag = dr;
-        }
-        return apriltag;
-    }//modifier / 100.0) * 0.3;
 
     public double getPowerModifier(){
         return 1 - ((getDistance() /100) * 0.3);
@@ -47,6 +32,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         }
         return -1; // Return -1 if no tag was detected
     }
+
     public double getYawOffset(){
         LLResultTypes.FiducialResult tag = getAprilTag(20);
         if (tag != null) {
@@ -54,12 +40,41 @@ public class LimeLightSubsystem extends SubsystemBase {
         }
         return -1;
     }
+    public String getPattern(){
+        String colors = "";
+
+        if (getAprilTag().getFiducialId() == 20 )
+            colors = "gpp";
+        if (getAprilTag().getFiducialId() == 21 )
+            colors = "pgp";
+        if (getAprilTag().getFiducialId() == 22 )
+            colors = "ppg";
+
+        return colors;
+    }
     public void limeLightStart(){
         limelight.start();
         limelight.pipelineSwitch(0);
     }
-    public void inputPutDistance(double heading){
+    public void inputDistance(double heading){
         limelight.updateRobotOrientation(heading);
+    }
+
+    public LLResultTypes.FiducialResult getAprilTag(int tagID){
+
+        for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
+            if (dr != null && dr.getFiducialId() == tagID)
+                apriltag = dr;
+        }
+        return apriltag;
+    }//modifier / 100.0) * 0.3;
+    public LLResultTypes.FiducialResult getAprilTag(){
+
+        for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
+            if (dr != null)
+                apriltag = dr;
+        }
+        return apriltag;
     }
 
 

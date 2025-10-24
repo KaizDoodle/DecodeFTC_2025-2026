@@ -14,7 +14,7 @@ public class UpdateRobotOrientationLimelightCommand extends InstantCommand {
     }
     @Override
     public void initialize() {
-        limelight.inputPutDistance(heading);
+        limelight.inputDistance(heading);
     }
 
 

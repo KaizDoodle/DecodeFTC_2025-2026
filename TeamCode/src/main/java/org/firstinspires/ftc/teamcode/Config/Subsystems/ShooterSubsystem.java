@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
 public class ShooterSubsystem extends SubsystemBase {
     final double MIN_POWER = 0.45;
-    final double LAUNCH_POSE = 0.2;
+    final double LAUNCH_POSE = 0.15;
     final double MAX_POWER = 1;
 
     private Servo cageLeft;
@@ -38,9 +38,9 @@ public class ShooterSubsystem extends SubsystemBase {
         cageRight.setPosition(LAUNCH_POSE);
     }
     private void resetAll() {
-        cageLeft.setPosition(LAUNCH_POSE);
-        cageMiddle.setPosition(LAUNCH_POSE);
-        cageRight.setPosition(LAUNCH_POSE);
+        cageLeft.setPosition(0);
+        cageMiddle.setPosition(0);
+        cageRight.setPosition(0);
     }
 
     private void loadLeft() {

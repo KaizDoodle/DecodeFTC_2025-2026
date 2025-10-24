@@ -11,11 +11,13 @@ import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.LockOnCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualLaunchCommand;
@@ -26,6 +28,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
 import org.firstinspires.ftc.teamcode.Config.Core.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
+import org.firstinspires.ftc.teamcode.Config.Subsystems.ColorSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
@@ -41,6 +44,7 @@ public class RobotContainer {
     public LMECSubsystem lmecSubsystem;
     public ShooterSubsystem shooterSubsystem;
     public IntakeSubsystem intakeSubsystem;
+//    public ColorSubsystem colorSubsystem;
     public Follower followerSubsystem;
     protected GamepadEx driverPad;
     protected GamepadEx operatorPad;
@@ -82,18 +86,20 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(hardwareMap, followerSubsystem);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
+//        colorSubsystem = new ColorSubsystem(hardwareMap);
 
 
-//        follower.setStartingPose(new Pose(0,0,0));
+
+        followerSubsystem.setStartingPose(new Pose(0,0,0));
         CommandScheduler.getInstance().registerSubsystem();
 
     }
 
     public void periodic() {
 //        if (lmec.getState() == LMECSubsystem.LockState.UNLOCKED)
-//            follower.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.5 , false);
+//            followerSubsystem.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.5 , false);
 //        if (lmec.getState() == LMECSubsystem.LockState.LOCKED)
-//            follower.setTeleOpDrive(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
+//            followerSubsystem.setTeleOpDrive(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
 
 
 //        t.addData("path", f.getCurrentPath());
@@ -101,13 +107,15 @@ public class RobotContainer {
 //        l.periodic();
 //        i.periodic();
 //        o.periodic();
-//        follower.update();
+        followerSubsystem.update();
 //        t.update();
         CommandScheduler.getInstance().run();
     }
     public void tStart(){
-//        follower.startTeleopDrive();
+        followerSubsystem.startTeleopDrive();
         limeLightSubsystem.limeLightStart();
+        shooterSubsystem.resetManual(ShooterPosition.ALL);
+
     }
 
     public void teleOpControl(){
@@ -119,39 +127,22 @@ public class RobotContainer {
         // A = outtake
 
         // shoot auto
-        driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whileHeld(
-                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
+        driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
+                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
         );
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
                 new LockOnCommand(limeLightSubsystem, driveSubsystem)
         );
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-                .whenPressed(
-                        new SequentialCommandGroup(
-                                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.LEFT),
-                                new WaitCommand(500),
-                                new ManualResetCommand(shooterSubsystem, ShooterPosition.LEFT)
-                        )
-                );
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
+                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
+        );
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
+                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.MIDDLE)
+        );
 
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenPressed(
-                        new SequentialCommandGroup(
-                                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.MIDDLE),
-                                new WaitCommand(500),
-                                new ManualResetCommand(shooterSubsystem, ShooterPosition.MIDDLE)
-                        )
-                );
-
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(
-                        new SequentialCommandGroup(
-                                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT),
-                                new WaitCommand(500),
-                                new ManualResetCommand(shooterSubsystem, ShooterPosition.RIGHT)
-                        )
-                );
-
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
+                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
+        );
 
         //Right trigger hold, intake
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)

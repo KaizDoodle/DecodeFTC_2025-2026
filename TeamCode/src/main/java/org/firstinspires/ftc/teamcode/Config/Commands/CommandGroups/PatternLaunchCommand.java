@@ -14,6 +14,18 @@ public class PatternLaunchCommand extends SequentialCommandGroup {
     private static final long INTER_SHOT_DELAY_MS = 250;
 
 
+    // detect pattern using limelight
+
+    // pickup balls and catagorize into an string  GPP, PGP, PPG
+
+    // create a supply int with  either purple or green that gets incrimented from values from a color senseor based on how many of each char
+
+    //
+
+
+
+
+
     //@TODO LEO lets take out the wait command here and add it into the gamepad control maybe. lets have a static varible which holds the color of next shot or place in the sequnce and then then when the command is called it will just shoot the next in color in sequnce
     public PatternLaunchCommand(ShooterSubsystem shooter, IntakeSubsystem intake, Pattern pattern) {
 
