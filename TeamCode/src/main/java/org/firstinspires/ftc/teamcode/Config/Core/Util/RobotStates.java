@@ -5,6 +5,6 @@ public enum RobotStates {
     HANG,
     OUTTAKE,
     SPECIMEN,
-    FOLD,
+    AIM,
     NONE
 }

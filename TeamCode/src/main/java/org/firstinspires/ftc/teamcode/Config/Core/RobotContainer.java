@@ -101,11 +101,26 @@ public class RobotContainer {
     }
 
     public void periodic() {
-//        if (lmec.getState() == LMECSubsystem.LockState.UNLOCKED)
         follower.update();
-            follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), -driverPad.getRightX() * 0.65 , false);
-//        if (lmec.getState() == LMECSubsystem.LockState.LOCKED)
-//            followerSubsystem.setTeleOpDrive(driverPad.getLeftY(), 0, -driverPad.getRightX() * 0.8 , false);
+//
+//        double headingError;
+//        double kP = 0.03; // <-- tune this value between 0.02–0.05 for your bot
+//        rotationPower = yawError * kP;
+//
+//        // Clamp to avoid over-rotation
+//        rotationPower = Math.max(-1, Math.min(1, rotationPower));
+
+        switch (robotState) {
+            case AIM:
+                // Field-centric drive, rotation controlled by Limelight
+                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), limeLightSubsystem.getYawOffset(), false);
+                break;
+            case NONE:
+            default:
+                // Normal field-centric drive
+                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), -driverPad.getRightX() * 0.65, false);
+                break;
+        }
 
 
 //        t.addData("path", f.getCurrentPath());
@@ -136,23 +151,23 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
         );
-
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-                new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
-        );
-
+        //aim command limelight
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
                 new LockOnCommand(limeLightSubsystem, driveSubsystem)
         );
+
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                         new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
                         new MasterLaunchCommand(shooterSubsystem, ShooterPosition.MIDDLE)
         );
-
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
                         new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
+        );
+
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
+                new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
         );
 
         //Right trigger hold, intake
