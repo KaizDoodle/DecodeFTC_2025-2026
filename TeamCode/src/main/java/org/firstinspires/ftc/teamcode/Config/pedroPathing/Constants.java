@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass( 6.45)
+            .mass( 13)
             .forwardZeroPowerAcceleration(-40.69671127146222)
             .lateralZeroPowerAcceleration(-70.74379213578918)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.075,0,0.01,0))
@@ -38,14 +38,16 @@ public class Constants {
     }
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(3.598)
-            .strafePodX(-6.811)
+            .forwardPodY(-0.6875)
+            .strafePodX(-5.5)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("odo")
             .customEncoderResolution(74.54)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
