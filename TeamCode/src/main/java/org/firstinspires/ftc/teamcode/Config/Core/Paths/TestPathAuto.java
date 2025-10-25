@@ -34,7 +34,12 @@ public class TestPathAuto {
             start = start.mirror();
             linePickUp1 = linePickUp1.mirror();
             pickUp1 = pickUp1.mirror();
+            linePickUp2 = linePickUp2.mirror();
+            pickUp2 = pickUp2.mirror();
+            linePickUp3 = linePickUp3.mirror();
+            pickUp3 = pickUp3.mirror();
             farScore = farScore.mirror();
+            shortScore = shortScore.mirror();
         }
     }
 
