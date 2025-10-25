@@ -58,9 +58,9 @@ public class TestPathAuto {
 
     public PathChain pickUp1() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(start, linePickUp1))
+                .addPath(new BezierLine(farScore, linePickUp1))
                 .addPath(new BezierLine(linePickUp1, pickUp1))
-                .setLinearHeadingInterpolation(start.getHeading(), pickUp1.getHeading())
+                .setLinearHeadingInterpolation(farScore.getHeading(), pickUp1.getHeading())
                 .build();
     }
 
