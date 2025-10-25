@@ -167,7 +167,7 @@ public class RobotContainer {
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
                 new SequentialCommandGroup(
-                        new InstantCommand(() -> setState(RobotStates.AIM)),
+//                        new InstantCommand(() -> setState(RobotStates.AIM)),
                         new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
                 )
         );
