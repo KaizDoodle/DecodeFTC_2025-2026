@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 public class TestPathAuto {
     private final Follower follower;
 
+    // robot lined up to the side of the mat
     public Pose start = new Pose(56, 8, Math.toRadians(90));
     public Pose linePickUp1 = new Pose(45, 36, Math.toRadians(0));
     public Pose pickUp1 = new Pose(12, 36, Math.toRadians(0));
@@ -55,27 +56,11 @@ public class TestPathAuto {
                 .build();
     }
 
-    public PathChain linePickUp1() {
-        return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                start,
-                                linePickUp1
-                        )
-                )
-                .setLinearHeadingInterpolation(farScore.getHeading(), linePickUp1.getHeading())
-                .build();
-    }
-
     public PathChain pickUp1() {
         return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                linePickUp1,
-                                pickUp1
-                        )
-                )
-                .setLinearHeadingInterpolation(linePickUp1.getHeading(), pickUp1.getHeading())
+                .addPath(new BezierLine(start, linePickUp1))
+                .addPath(new BezierLine(linePickUp1, pickUp1))
+                .setLinearHeadingInterpolation(start.getHeading(), pickUp1.getHeading())
                 .build();
     }
 
@@ -91,31 +76,15 @@ public class TestPathAuto {
                 .build();
     }
 
-    public PathChain linePickUp2() {
-        return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                farScore,
-                                linePickUp2
-                        )
-                )
-                .setLinearHeadingInterpolation(farScore.getHeading(), linePickUp2.getHeading())
-                .build();
-    }
-
     public PathChain pickUp2() {
         return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                linePickUp2,
-                                pickUp2
-                        )
-                )
-                .setLinearHeadingInterpolation(linePickUp2.getHeading(), pickUp2.getHeading())
+                .addPath(new BezierLine(farScore, linePickUp2))
+                .addPath(new BezierLine(linePickUp2, pickUp2))
+                .setLinearHeadingInterpolation(farScore.getHeading(), pickUp2.getHeading())
                 .build();
     }
 
-    public PathChain shortScore() {
+    public PathChain score2() {
         return follower.pathBuilder()
                 .addPath(
                         new BezierLine(
@@ -127,31 +96,15 @@ public class TestPathAuto {
                 .build();
     }
 
-    public PathChain linePickUp3() {
-        return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                shortScore,
-                                linePickUp3
-                        )
-                )
-                .setLinearHeadingInterpolation(shortScore.getHeading(), linePickUp3.getHeading())
-                .build();
-    }
-
     public PathChain pickUp3() {
         return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                linePickUp3,
-                                pickUp3
-                        )
-                )
-                .setLinearHeadingInterpolation(linePickUp3.getHeading(), pickUp3.getHeading())
+                .addPath(new BezierLine(shortScore, linePickUp3))
+                .addPath(new BezierLine(linePickUp3, pickUp3))
+                .setLinearHeadingInterpolation(shortScore.getHeading(), pickUp3.getHeading())
                 .build();
     }
 
-    public PathChain shortScore2() {
+    public PathChain score3() {
         return follower.pathBuilder()
                 .addPath(
                         new BezierLine(

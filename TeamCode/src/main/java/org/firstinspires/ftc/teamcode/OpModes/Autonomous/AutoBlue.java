@@ -7,6 +7,9 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.FollowPathCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
@@ -16,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Paths.TestPathAuto;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
+import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 public class AutoBlue extends OpModeCommand {
 
@@ -32,19 +36,57 @@ public class AutoBlue extends OpModeCommand {
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
 
+        schedule(new RunCommand(robotContainer::periodic));
+
+        // Main autonomous sequence
         schedule(
-                new RunCommand(robotContainer::periodic),
                 new SequentialCommandGroup(
+                        // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
-                        new WaitCommand(5000),
-                        new ManualLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new FollowPathCommand(robotContainer.follower, auto.shootPreload()),
+                        new WaitCommand(4000),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new WaitCommand(1500),
+
+                        // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.follower, auto.pickUp1()),
+
+                        // --- SCORE AGAIN ---
+                        new FollowPathCommand(robotContainer.follower, auto.score1()),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
                         new WaitCommand(3000),
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0)
-                    // this is just shoots and stops shooter
-                        // @TODO figure out how to make commands for the paths, check baron's code
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new WaitCommand(1500),
 
+                        // --- SECOND PICKUP (continuous line→pickup) ---
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.follower, auto.pickUp2()),
+
+                        // --- SCORE AGAIN X2 ---
+                        new FollowPathCommand(robotContainer.follower, auto.score2()),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
+                        new WaitCommand(3000),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new WaitCommand(1500),
+
+                        // --- THRID PICKUP (continuous line→pickup) ---
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.follower, auto.pickUp3()),
+
+                        // --- SCORE AGAIN X3 ---
+                        new FollowPathCommand(robotContainer.follower, auto.score3()),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
+                        new WaitCommand(3000),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new WaitCommand(1500),
+
+                        // 0 Everything
+                        new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem)
                 )
-
         );
 
     }
