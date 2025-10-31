@@ -40,13 +40,13 @@ public class Constants {
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(-0.6875)
-            .strafePodX(-5.5)
+            .forwardPodY(-0.5)
+            .strafePodX(0.6875)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("odo")
             .customEncoderResolution(74.54)
-            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
 
     public static MecanumConstants driveConstants = new MecanumConstants()
