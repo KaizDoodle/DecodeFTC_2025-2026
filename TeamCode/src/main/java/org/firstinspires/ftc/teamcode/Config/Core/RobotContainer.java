@@ -130,13 +130,13 @@ public class RobotContainer {
         switch (robotState) {
             case AIM:
                 // Field-centric drive, rotation controlled by Limelight
-                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), headingPower, false);
+                follower.setTeleOpDrive(-driverPad.getLeftY(), -driverPad.getLeftX(), headingPower, false);
                 shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
                 break;
             case NONE:
             default:
                 // Normal field-centric drive
-                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), driverPad.getRightX() * 0.65, false);
+                follower.setTeleOpDrive(-driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.65, false);
                 shooterSubsystem.setShooterSpeed(0);
 
                 break;
