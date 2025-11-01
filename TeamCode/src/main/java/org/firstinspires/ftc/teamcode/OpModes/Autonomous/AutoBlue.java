@@ -30,7 +30,7 @@ public class AutoBlue extends OpModeCommand {
     public void initialize() {
         robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE);
 
-        TestPathAuto auto = new TestPathAuto(robotContainer);
+        TestPathAuto auto = new TestPathAuto(robotContainer.follower, Alliance.BLUE);
         robotContainer.follower.setStartingPose(auto.start);
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
@@ -42,7 +42,7 @@ public class AutoBlue extends OpModeCommand {
         schedule(
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, robotContainer.limeLightSubsystem),
                         new FollowPathCommand(robotContainer.follower, auto.shootPreload()),
                         new WaitCommand(4000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
@@ -55,7 +55,7 @@ public class AutoBlue extends OpModeCommand {
                         // --- SCORE AGAIN ---
                         new FollowPathCommand(robotContainer.follower, auto.score1()),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, robotContainer.limeLightSubsystem),
                         new WaitCommand(3000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(1500),
@@ -67,7 +67,7 @@ public class AutoBlue extends OpModeCommand {
                         // --- SCORE AGAIN X2 ---
                         new FollowPathCommand(robotContainer.follower, auto.score2()),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, robotContainer.limeLightSubsystem),
                         new WaitCommand(3000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(1500),
@@ -79,7 +79,7 @@ public class AutoBlue extends OpModeCommand {
                         // --- SCORE AGAIN X3 ---
                         new FollowPathCommand(robotContainer.follower, auto.score3()),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, new LimeLightSubsystem(hardwareMap)),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, robotContainer.limeLightSubsystem),
                         new WaitCommand(3000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(1500),

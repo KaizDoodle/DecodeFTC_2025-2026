@@ -13,7 +13,7 @@ public class MasterLaunchCommand extends SequentialCommandGroup {
         addCommands(
                 new ManualLaunchCommand(shooter, pos),
                 new WaitCommand(500),
-                new ManualResetCommand(shooter, pos)
+                new ManualResetCommand(shooter, ShooterPosition.ALL)
         );
     }
 }
