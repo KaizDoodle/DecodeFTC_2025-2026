@@ -24,9 +24,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.LockOnCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.PatternLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
 //import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LoadHumanPlayerCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
@@ -217,6 +220,7 @@ public class RobotContainer {
 //        );
 
         //aim command limelight
+        // @TODO set states for the loading and MasterLaunchCommand
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(() -> setState(RobotStates.AIM)))
                 .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
@@ -234,6 +238,11 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
                 new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
         );
+//        operatorPad.getGamepadButton(GamepadKeys.Button.A)
+//                .whileHeld(new LoadHumanPlayerCommand(shooterSubsystem))
+//                .whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL),
+//                                new
+
 
         //Right trigger hold, intake
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
