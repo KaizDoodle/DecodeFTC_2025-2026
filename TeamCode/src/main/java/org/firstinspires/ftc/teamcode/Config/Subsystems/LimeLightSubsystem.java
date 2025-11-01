@@ -11,7 +11,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     public LLResultTypes.FiducialResult apriltag;
     int id;
     final double MAX_DISTANCE = 0.03;
-    final double MIN_DISTANCE = 0.0023;
+    final double MIN_DISTANCE = 0.0015;
 
 
 
@@ -21,20 +21,21 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     //returns list of april tags seen at a given time
 
-    public double getPowerModifier(){
-        return 1 - ((getDistance() /100) * 0.3);
-    }
+//    public double getPowerModifier(){
+//        return 1 - ((getDistance() /100) * 0.3);
+//    }
 
-    public double getDistance(){
-        LLResultTypes.FiducialResult tag = getAprilTag(20);
+    public double getDistance() {
+        LLResultTypes.FiducialResult tag = getAprilTag();
         if (tag != null) {
-            return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE) );
-        }
-        return -1; // Return -1 if no tag was detected
+            return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE));
+        } else{
+            return 0; // Return -1 if no tag was detected
+    }
     }
 
-    public double getYawOffset(){
-        LLResultTypes.FiducialResult tag = getAprilTag(20);
+    public double getYawOffset(int tagID){
+        LLResultTypes.FiducialResult tag = getAprilTag(tagID);
         if (tag != null) {
             return tag.getTargetXDegrees();
         }
@@ -66,7 +67,7 @@ public class LimeLightSubsystem extends SubsystemBase {
             if (dr != null && dr.getFiducialId() == tagID)
                 apriltag = dr;
         }
-        return apriltag;
+        return null;
     }//modifier / 100.0) * 0.3;
     public LLResultTypes.FiducialResult getAprilTag(){
 

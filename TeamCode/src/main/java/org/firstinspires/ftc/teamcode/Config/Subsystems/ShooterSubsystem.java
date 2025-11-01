@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
 public class ShooterSubsystem extends SubsystemBase {
-    final double MIN_POWER = 0.45;
-    final double LAUNCH_POSE = 0.15;
-    final double MAX_POWER = 1;
+    final double MIN_POWER = 0.44;
+    final double LAUNCH_POSE = 0.2;
+    final double MAX_POWER = 0.85;
 
     private Servo cageLeft;
     private Servo cageMiddle;
@@ -113,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double calculatePowerPercentage(double distancePercent){
-        return MIN_POWER + (Math.pow(distancePercent, 1.2)) * (MAX_POWER - MIN_POWER);
+        return MIN_POWER + (Math.pow(distancePercent, 5)) * (MAX_POWER - MIN_POWER);
     }
 
 }

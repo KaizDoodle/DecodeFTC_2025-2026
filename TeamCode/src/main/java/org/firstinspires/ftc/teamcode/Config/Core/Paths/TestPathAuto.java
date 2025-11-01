@@ -12,26 +12,23 @@ public class TestPathAuto {
     private final Follower follower;
 
     // robot lined up to the side of the mat
-    public Pose start = new Pose(56, 8, Math.toRadians(90));
-    public Pose linePickUp1 = new Pose(45, 36, Math.toRadians(0));
-    public Pose pickUp1 = new Pose(12, 36, Math.toRadians(0));
-
-    public Pose farScore = new Pose(60, 20, Math.toRadians(115));
-
-    public Pose linePickUp2 = new Pose(45, 63, Math.toRadians(0));
-    public Pose pickUp2 = new Pose(12, 56, Math.toRadians(0));
-
-    public Pose shortScore = new Pose(56, 80, Math.toRadians(130));
-
-    public Pose linePickUp3 = new Pose(45, 84, Math.toRadians(0));
-    public Pose pickUp3 = new Pose(18, 84, Math.toRadians(0));
+    public static Pose start = new Pose(56, 8, Math.toRadians(90));
+    public static Pose linePickUp1 = new Pose(45, 36, Math.toRadians(0));
+    public static Pose pickUp1 = new Pose(12, 36, Math.toRadians(0));
+    public static Pose farScore = new Pose(60, 20, Math.toRadians(115));
+    public static Pose driveOutOfBox = new Pose(56, 30, Math.toRadians(90));
+    public static Pose linePickUp2 = new Pose(45, 63, Math.toRadians(0));
+    public static Pose pickUp2 = new Pose(12, 56, Math.toRadians(0));
+    public static  Pose shortScore = new Pose(56, 80, Math.toRadians(130));
+    public static Pose linePickUp3 = new Pose(45, 84, Math.toRadians(0));
+    public static Pose pickUp3 = new Pose(18, 84, Math.toRadians(0));
 
 
 
-    public TestPathAuto(RobotContainer robotContainer) {
-        this.follower = robotContainer.follower;
+    public TestPathAuto(Follower follower, Alliance alliance) {
+        this.follower = follower;
 
-        if (robotContainer.alliance.equals(Alliance.RED)) {
+        if (alliance == Alliance.RED) {
             start = start.mirror();
             linePickUp1 = linePickUp1.mirror();
             pickUp1 = pickUp1.mirror();
@@ -49,10 +46,10 @@ public class TestPathAuto {
                 .addPath(
                         new BezierLine(
                                 start,
-                                farScore
+                                driveOutOfBox
                         )
                 )
-                .setLinearHeadingInterpolation(start.getHeading(), farScore.getHeading())
+                .setLinearHeadingInterpolation(start.getHeading(), driveOutOfBox.getHeading())
                 .build();
     }
 

@@ -16,7 +16,7 @@ public class ShooterControllerCommand extends InstantCommand {
         this.distance = distance;
         addRequirements(shooterSubsystem);
     }
-    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, LimeLightSubsystem limeLightSubsystem) {
+    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, LimeLightSubsystem limeLightSubsystem, int tagID) {
         this.limeLightSubsystem = limeLightSubsystem;
         addRequirements(shooterSubsystem);
         distance = limeLightSubsystem.getDistance();

@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode.Config.Core;
 import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.AUTONOMOUS;
 import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 
+import androidx.loader.content.Loader;
+
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -12,6 +14,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.limelightvision.LLFieldMap;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -57,22 +61,29 @@ public class RobotContainer {
     public CommandScheduler cs = CommandScheduler.getInstance();
 
     //CONSTRUCTOR FOR AUTO TEST
-    public RobotContainer(HardwareMap hardwareMap, Alliance alliance){
+    public RobotContainer(HardwareMap hardwareMap, Alliance alliance, Pose startPose){
         this.opmode = AUTONOMOUS;
         this.alliance = alliance;
+        follower = Constants.createFollower(hardwareMap);
+
 
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        shooterSubsystem = new ShooterSubsystem(hardwareMap);
+        patternSubsystem = new PatternSubsystem();
+        shooterSubsystem = new ShooterSubsystem((hardwareMap));
+
+
 
 //        intake = new IntakeSubsystem(hardwareMap, telemetry);
 
 //        lmec = new LMECSubsystem(hardwareMap);
-        shooterSubsystem = new ShooterSubsystem((hardwareMap));
 
-        follower.setStartingPose(new Pose(0,0,0));
-        follower = Constants.createFollower(hardwareMap);
-
-        follower.setStartingPose(new Pose(0,0,180));
-        CommandScheduler.getInstance().registerSubsystem();
+        CommandScheduler.getInstance().registerSubsystem(
+                limeLightSubsystem,
+                intakeSubsystem,
+                shooterSubsystem,
+                patternSubsystem);
 
     }
 
@@ -99,15 +110,40 @@ public class RobotContainer {
                 patternSubsystem);
 
     }
-
-    public void periodic() {
+    public void aPeriodic() {
 
         follower.update();
 
-        double headingPower;
-        double yaw = limeLightSubsystem.getYawOffset();
 
-        if (limeLightSubsystem.getAprilTag() != null) {
+
+
+
+
+//        t.addData("path", f.getCurrentPath());
+//        e.periodic();
+//        l.periodic();
+//        i.periodic();
+//        o.periodic();
+
+//        t.update();
+        CommandScheduler.getInstance().run();
+    }
+    public void periodic() {
+
+
+        follower.update();
+        int tagID = 0;
+        if (alliance.equals( Alliance.BLUE))
+            tagID = 20;
+        if (alliance.equals( Alliance.RED))
+            tagID = 24;
+
+        LLResultTypes.FiducialResult tag = limeLightSubsystem.getAprilTag(tagID);
+
+        double headingPower;
+        double yaw = limeLightSubsystem.getYawOffset(tagID) -5 ;
+
+        if (tag != null && tag.getFiducialId() == tagID) {
             // Tag detected: smoothly approach target rotation
             headingPower = (yaw / 24 ) * 0.4;
             headingPower = Range.clip(headingPower, -0.5, 0.5);
@@ -117,7 +153,7 @@ public class RobotContainer {
             headingPower = driverPad.getRightX() * 0.65;
         }
 
-        telemetry.addData("limelight yaw offset ",limeLightSubsystem.getYawOffset() );
+        telemetry.addData("limelight yaw offset ",limeLightSubsystem.getYawOffset(tagID) );
         telemetry.addData("limelight get distance ",limeLightSubsystem.getDistance());
         telemetry.addData("limelight power percentage ", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
         telemetry.addData("get shooter power ", shooterSubsystem.getLaunchVelocity());
@@ -200,9 +236,9 @@ public class RobotContainer {
                 .whenInactive(new IntakeControlCommand(intakeSubsystem, 0));
 
         //Left trigger hold, lock mecanum
-//        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
-//                .whenActive(new LMECControl(lmecSubsystem, true ))
-//                .whenInactive(new LMECControl(lmecSubsystem, false));
+        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
+                .whenActive(new IntakeControlCommand(intakeSubsystem, -1))
+                    .whenInactive(new IntakeControlCommand(intakeSubsystem, 0));
     }
     public RobotStates robotState = RobotStates.NONE;
 
@@ -211,6 +247,10 @@ public class RobotContainer {
     }
     public void end() {
         cs.reset();
+    }
+
+    public Follower getFollower(){
+        return follower;
     }
 
     public void setState(RobotStates state) {
