@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.PatternLaunc
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LMECControl;
+//import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
@@ -165,13 +166,13 @@ public class RobotContainer {
         switch (robotState) {
             case AIM:
                 // Field-centric drive, rotation controlled by Limelight
-                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), headingPower, true);
+                follower.setTeleOpDrive(-driverPad.getLeftY(), -driverPad.getLeftX(), headingPower, false);
                 shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
                 break;
             case NONE:
             default:
                 // Normal field-centric drive
-                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), driverPad.getRightX() * 0.65, true);
+                follower.setTeleOpDrive(-driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.65, false);
                 shooterSubsystem.setShooterSpeed(0);
 
                 break;
@@ -210,6 +211,10 @@ public class RobotContainer {
                         new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
                 )
         );
+
+//        driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
+//                        new ResetIMUCommand();
+//        );
 
         //aim command limelight
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
