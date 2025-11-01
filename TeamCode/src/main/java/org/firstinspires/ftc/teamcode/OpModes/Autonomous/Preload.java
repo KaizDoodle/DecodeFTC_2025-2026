@@ -31,14 +31,14 @@ public class Preload extends OpModeCommand {
 
     @Override
     public void initialize() {
-        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE);
+        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, TestPathAuto.start);
         robotContainer.limeLightSubsystem.limeLightStart();
 
 
-        TestPathAuto auto = new TestPathAuto(robotContainer);
-        robotContainer.follower.setStartingPose(auto.start);
+        TestPathAuto auto = new TestPathAuto(robotContainer.getFollower(), robotContainer.getAlliance());
 
-        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
+
+        robotContainer.shooterSubsystem.resetManual(ShooterPosition.ALL);
 
 
 
@@ -49,11 +49,11 @@ public class Preload extends OpModeCommand {
                 new RunCommand(robotContainer::aPeriodic),
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 1),
-                        new WaitCommand(4000),
+                        new FollowPathCommand(robotContainer.getFollower(), auto.shootPreload()),
+                        new WaitCommand(1000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(1500),
-                        new FollowPathCommand(robotContainer.follower, auto.shootPreload()),
+
 
                         // 0 Everything
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem)

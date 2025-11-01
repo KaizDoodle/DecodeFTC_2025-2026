@@ -28,18 +28,19 @@ public class AutoBlue extends OpModeCommand {
 
     @Override
     public void initialize() {
-        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE);
+        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, TestPathAuto.start);
 
         TestPathAuto auto = new TestPathAuto(robotContainer.follower, Alliance.BLUE);
-        robotContainer.follower.setStartingPose(auto.start);
+
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
 
-        schedule(new RunCommand(robotContainer::periodic));
+        schedule();
 
         // Main autonomous sequence
         schedule(
+                new RunCommand(robotContainer::periodic),
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
 //                        new ShooterControllerCommand(robotContainer.shooterSubsystem, robotContainer.limeLightSubsystem),
