@@ -13,19 +13,13 @@ public class ManualResetCommand extends InstantCommand {
     public ManualResetCommand(ShooterSubsystem shooterSubsystem, ShooterPosition shooter) {
         this.shooter = shooter;
         this.shooterSubsystem = shooterSubsystem;
-        addRequirements(shooterSubsystem);
+//        addRequirements(shooterSubsystem);
 
     }
 
     @Override
     public void initialize() {
-
         shooterSubsystem.resetManual(shooter);
-
-
-
-
-
     }
 
 }

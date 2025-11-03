@@ -31,7 +31,7 @@ public class LimeLightSubsystem extends SubsystemBase {
             return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE));
         } else{
             return 0; // Return -1 if no tag was detected
-    }
+        }
     }
 
     public double getYawOffset(int tagID){

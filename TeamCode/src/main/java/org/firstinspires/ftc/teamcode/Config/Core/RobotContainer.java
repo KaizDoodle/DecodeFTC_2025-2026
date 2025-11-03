@@ -181,7 +181,14 @@ public class RobotContainer {
                 shooterSubsystem.setShooterSpeed(0);
 
                 break;
+
+            case INTAKE:
+
         }
+
+
+
+
 
 
 //        t.addData("path", f.getCurrentPath());
@@ -209,6 +216,10 @@ public class RobotContainer {
         // left trigger = LMEC
         // A = outtake
 
+        //        driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
+//                        new ResetIMUCommand();
+//        );
+
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
@@ -218,34 +229,27 @@ public class RobotContainer {
                 )
         );
 
-//        driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
-//                        new ResetIMUCommand();
-//        );
 
         //aim command limelight
         // @TODO set states for the loading and MasterLaunchCommand
+
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(() -> setState(RobotStates.AIM)))
                 .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
+                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.MIDDLE)
+                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.MIDDLE)
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
-                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
+                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
         );
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
                 new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
         );
-//        operatorPad.getGamepadButton(GamepadKeys.Button.A)
-//                .whileHeld(new LoadHumanPlayerCommand(shooterSubsystem))
-//                .whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL),
-//                                new
-
 
         //Right trigger hold, intake
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)

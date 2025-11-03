@@ -10,10 +10,10 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 public class MasterLaunchCommand extends SequentialCommandGroup {
     public MasterLaunchCommand(ShooterSubsystem shooter, ShooterPosition pos) {
-        addCommands(
-                new ManualLaunchCommand(shooter, pos),
-                new WaitCommand(500),
-                new ManualResetCommand(shooter, ShooterPosition.ALL)
-        );
+            addCommands(
+                    new ManualLaunchCommand(shooter, pos),
+                    new WaitCommand(500),
+                    new ManualResetCommand(shooter, pos)
+            );
     }
 }
