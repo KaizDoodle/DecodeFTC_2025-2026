@@ -153,9 +153,7 @@ public class RobotContainer {
             // Tag detected: smoothly approach target rotation
             headingPower = (yaw / 24 ) * 0.4;
             headingPower = Range.clip(headingPower, -0.5, 0.5);
-
-        }
-        else{
+        } else{
             headingPower = driverPad.getRightX() * 0.65;
         }
 
@@ -165,19 +163,16 @@ public class RobotContainer {
         telemetry.addData("get shooter power ", shooterSubsystem.getLaunchVelocity());
         telemetry.addData("heading power", headingPower);
 
-
-
-
         switch (robotState) {
             case AIM:
                 // Field-centric drive, rotation controlled by Limelight
-                follower.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), headingPower, false);
-                shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+                follower.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -headingPower, false);
+//                shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
                 break;
             case NONE:
             default:
                 // Normal field-centric drive
-                follower.setTeleOpDrive(driverPad.getLeftY(), driverPad.getLeftX(), driverPad.getRightX() * 0.65, false);
+                follower.setTeleOpDrive(driverPad.getLeftY(), -driverPad.getLeftX(), -driverPad.getRightX() * 0.65, false);
                 shooterSubsystem.setShooterSpeed(0);
 
                 break;
@@ -185,10 +180,6 @@ public class RobotContainer {
             case INTAKE:
 
         }
-
-
-
-
 
 
 //        t.addData("path", f.getCurrentPath());

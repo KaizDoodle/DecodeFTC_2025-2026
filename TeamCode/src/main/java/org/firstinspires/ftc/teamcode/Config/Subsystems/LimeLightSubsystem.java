@@ -17,6 +17,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     public LimeLightSubsystem(HardwareMap hardwareMap){
         limelight = hardwareMap.get(Limelight3A.class, "limeLight");
+//        limelight.setPollRateHz(250);
     }
 
     //returns list of april tags seen at a given time
