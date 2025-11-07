@@ -251,6 +251,11 @@ public class RobotContainer {
                 new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
         );
 
+        operatorPad.getGamepadButton(GamepadKeys.Button.A)
+                .whileHeld(new LoadHumanPlayerCommand(shooterSubsystem))
+                .whenReleased(new ResetAllCommand(shooterSubsystem, intakeSubsystem)
+        );
+
         //Right trigger hold, intake
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
                 .whenActive(new IntakeControlCommand(intakeSubsystem, 1))
