@@ -17,15 +17,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass( 13)
-            .forwardZeroPowerAcceleration(-40.69671127146222)
-            .lateralZeroPowerAcceleration(-70.74379213578918)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.075,0,0.01,0))
+            .mass(14)
+            .forwardZeroPowerAcceleration(-43)
+            .lateralZeroPowerAcceleration(-76)
+
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.11,0,0.01,0))
             .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.1,0,0.01,0))
-            .headingPIDFCoefficients(new PIDFCoefficients(1,0,0.75,0))
+
+            .headingPIDFCoefficients(new PIDFCoefficients(4,0,0.1,0))
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(2,0,0.1,0))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.009,0,0.0001,0.6,0))
+
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01,0,0.00001,0.6,0))
             .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.1,0,0,0.6,0))
+
             .centripetalScaling(0.00025);
 
 
@@ -61,6 +65,6 @@ public class Constants {
             .rightFrontMotorDirection(DcMotor.Direction.REVERSE)
             .rightRearMotorDirection(DcMotor.Direction.REVERSE)
             .useBrakeModeInTeleOp(true)
-            .xVelocity(0)
-            .yVelocity(0);
+            .xVelocity(70)
+            .yVelocity(62);
 }
