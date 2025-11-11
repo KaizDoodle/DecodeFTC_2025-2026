@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.Config.Core.Util;
 
 public enum RobotStates {
-    INTAKE,
-    HANG,
+    INTAKING,
+    LOADING,
     SHOOTING,
-    SPECIMEN,
-    AIM,
+    AIMING,
     NONE
 }

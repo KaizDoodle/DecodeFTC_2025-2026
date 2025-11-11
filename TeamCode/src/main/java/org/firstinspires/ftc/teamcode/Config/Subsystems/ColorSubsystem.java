@@ -36,6 +36,9 @@ public class ColorSubsystem extends SubsystemBase {
 
         return colors;
     }
+    public int getBallCount(){
+
+    }
 
 
 }

@@ -28,7 +28,7 @@ public class LimelightTest extends OpModeCommand {
     public void loop() {
         robot.periodic();
 
-//        telemetry.addData("distance", robot.limeLightSubsystem.getDistance());
+        telemetry.addData("distance", robot.limeLightSubsystem.getDistance());
 //        telemetry.addData("yaw offset", robot.limeLightSubsystem.getYawOffset());
 
         telemetry.update();

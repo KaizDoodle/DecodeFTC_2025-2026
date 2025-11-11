@@ -6,50 +6,46 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
+
 public class LimeLightSubsystem extends SubsystemBase {
     public Limelight3A limelight;
-    public LLResultTypes.FiducialResult apriltag;
-    int id;
-    final double MAX_DISTANCE = 0.03;
-    final double MIN_DISTANCE = 0.0015;
+    int allianceTagID = 0;
+    double SCALE = 36.1115;
+    double YAW_OFFSET = 5;
 
 
 
-    public LimeLightSubsystem(HardwareMap hardwareMap){
+    public LimeLightSubsystem(HardwareMap hardwareMap, Alliance alliance){
         limelight = hardwareMap.get(Limelight3A.class, "limeLight");
 //        limelight.setPollRateHz(250);
+        if (alliance == Alliance.BLUE)
+            allianceTagID = 20;
+        else if (alliance == Alliance.RED)
+            allianceTagID = 24;
     }
-
-    //returns list of april tags seen at a given time
-
-//    public double getPowerModifier(){
-//        return 1 - ((getDistance() /100) * 0.3);
-//    }
-
     public double getDistance() {
-        LLResultTypes.FiducialResult tag = getAprilTag();
-        if (tag != null) {
-            return ((MAX_DISTANCE - tag.getTargetArea()) / (MAX_DISTANCE - MIN_DISTANCE));
-        } else{
-            return 0; // Return -1 if no tag was detected
-        }
-    }
+        LLResultTypes.FiducialResult tag = getAllianceAprilTag();
+        if (tag != null)
+            return (SCALE / Math.sqrt(tag.getTargetArea()));
+        else return -1;
 
-    public double getYawOffset(int tagID){
-        LLResultTypes.FiducialResult tag = getAprilTag(tagID);
+    }
+    public double getYawOffset(){
+        LLResultTypes.FiducialResult tag = getAllianceAprilTag();
         if (tag != null) {
             return tag.getTargetXDegrees();
         }
-        return -1;
+        return 0;
     }
     public String getPattern(){
         String colors = "";
 
-        if (getAprilTag().getFiducialId() == 20 )
+        if (getAllianceAprilTag().getFiducialId() == 20 )
             colors = "gpp";
-        if (getAprilTag().getFiducialId() == 21 )
+        if (getAllianceAprilTag().getFiducialId() == 21 )
             colors = "pgp";
-        if (getAprilTag().getFiducialId() == 22 )
+        if (getAllianceAprilTag().getFiducialId() == 22 )
             colors = "ppg";
 
         return colors;
@@ -61,23 +57,23 @@ public class LimeLightSubsystem extends SubsystemBase {
     public void inputDistance(double heading){
         limelight.updateRobotOrientation(heading);
     }
+    public boolean isLocked(){
+        return getYawOffset() < YAW_OFFSET;
+    }
+    public LLResultTypes.FiducialResult getAllianceAprilTag(){
 
-    public LLResultTypes.FiducialResult getAprilTag(int tagID){
-
-        for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
-            if (dr != null && dr.getFiducialId() == tagID)
-                apriltag = dr;
-        }
+        LLResultTypes.FiducialResult result = getAprilTag();
+            if (result != null && result.getFiducialId() == allianceTagID)
+                return result;
         return null;
-    }//modifier / 100.0) * 0.3;
+
+    }
     public LLResultTypes.FiducialResult getAprilTag(){
 
         for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
             if (dr != null)
-                return apriltag;
+                return dr;
         }
         return null;
     }
-
-
 }
