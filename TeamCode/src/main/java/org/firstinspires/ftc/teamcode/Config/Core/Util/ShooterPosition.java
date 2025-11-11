@@ -4,5 +4,6 @@ public enum ShooterPosition {
     LEFT,
     MIDDLE,
     RIGHT,
-    ALL
+    ALL,
+    LOAD
 }

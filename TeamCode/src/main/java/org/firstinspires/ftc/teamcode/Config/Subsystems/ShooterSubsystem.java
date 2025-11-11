@@ -13,6 +13,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final double MIN_POWER = 0.44;
     private final double MAX_POWER = 0.85;
     private final double LAUNCH_POSE = 0.2;
+    private final double LOAD_POS = 0.15;
 
     private Servo cageLeft, cageMiddle, cageRight;
     private DcMotor shooterOne;
@@ -36,14 +37,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     public boolean isLauncherBusy(ShooterPosition pos) {
-        if (pos == ShooterPosition.ALL) {
+        if (pos == ShooterPosition.ALL || pos == ShooterPosition.LOAD) {
             return launcherBusy[0] || launcherBusy[1] || launcherBusy[2];
         }
         return launcherBusy[pos.ordinal()];
     }
 
     public void setLauncherBusy(ShooterPosition pos, boolean busy) {
-        if (pos == ShooterPosition.ALL) {
+        if (pos == ShooterPosition.ALL || pos == ShooterPosition.LOAD) {
             for (int i = 0; i < 3; i++) launcherBusy[i] = busy;
         } else {
             launcherBusy[pos.ordinal()] = busy;
@@ -61,6 +62,11 @@ public class ShooterSubsystem extends SubsystemBase {
                     cageLeft.setPosition(LAUNCH_POSE);
                     cageMiddle.setPosition(LAUNCH_POSE);
                     cageRight.setPosition(LAUNCH_POSE);
+                    break;
+                case LOAD:
+                    cageLeft.setPosition(LOAD_POS);
+                    cageMiddle.setPosition(LOAD_POS);
+                    cageRight.setPosition(LOAD_POS);
                     break;
             }
         }

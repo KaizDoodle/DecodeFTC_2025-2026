@@ -9,16 +9,19 @@ public class LoadHumanPlayerCommand extends InstantCommand {
 
     ShooterSubsystem shooterSubsystem;
 
-    public LoadHumanPlayerCommand(ShooterSubsystem shooterSubsystem){
+    public LoadHumanPlayerCommand(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
-
     }
 
     @Override
     public void initialize() {
-        shooterSubsystem.setShooterSpeed(-0.2);
-        shooterSubsystem.loadManual(ShooterPosition.ALL);
 
+    }
+
+    @Override
+    public void execute() {
+        shooterSubsystem.setShooterSpeed(-0.35);
+        shooterSubsystem.loadManual(ShooterPosition.LOAD);
     }
 }
