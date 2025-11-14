@@ -21,7 +21,7 @@ public class LoadHumanPlayerCommand extends InstantCommand {
 
     @Override
     public void execute() {
-        shooterSubsystem.setShooterSpeed(-0.35);
+        shooterSubsystem.setShooterSpeed(-0.4);
         shooterSubsystem.loadManual(ShooterPosition.LOAD);
     }
 }

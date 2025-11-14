@@ -13,10 +13,9 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 public class IntakingStateCommand extends ParallelCommandGroup {
 
     public IntakingStateCommand(IntakeSubsystem intake, ShooterSubsystem shooter, LMECSubsystem lmec) {
-        super(() -> {
+
             shooter.setShooterSpeed(0);
-            lmec.open();
-            intake.intakeOn();
-        });
+            lmec.unlockMechanum();
+//            intake.intakeOn();
     }
 }

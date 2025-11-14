@@ -138,24 +138,29 @@ public class RobotContainer {
     // -------------------- State Manager --------------------
     private void applyState() {
 
-            // schedule commands only on state entry
+        // schedule commands only on state entry
             switch (robotState) {
+
                 case INTAKING:
                     intakeSubsystem.intakeSpeed(1);
                     shooterSubsystem.setShooterSpeed(0);
+
                     break;
                 case AIMING:
 
                     break;
+                case LOADING:
+                    shooterSubsystem.setShooterSpeed(-0.35);
+                    shooterSubsystem.loadManual(ShooterPosition.LOAD);
                 case SHOOTING:
-                    new ShootingCommand(shooterSubsystem, lmecSubsystem).schedule();
-                    break;
+                    shooterSubsystem.setShooterSpeed(1);
+                    lmecSubsystem.lockMechanum();
                 case NONE:
 
                 default:
                     intakeSubsystem.stop();
                     shooterSubsystem.setShooterSpeed(0);
-                    lmecSubsystem.unlockMechanum();
+//                    lmecSubsystem.unlockMechanum();
                     break;
             }
 
@@ -193,13 +198,6 @@ public class RobotContainer {
         telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
         telemetry.addData("Distance", limeLightSubsystem.getDistance());
         telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-
-        // ---------------------------------
-        // AUTO TRANSITION AIM → SHOOT
-        // ---------------------------------
-        if (robotState == RobotStates.AIMING && limeLightSubsystem.isLocked()) {
-            setState(RobotStates.SHOOTING);
-        }
 
         applyState();
         cs.run();
@@ -239,8 +237,7 @@ public class RobotContainer {
         // @TODO set states for the loading and MasterLaunchCommand
 
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whileHeld(new InstantCommand(()
-                        -> setState(RobotStates.AIMING)))
+                .whileHeld(new InstantCommand(() -> setState(RobotStates.AIMING)))
                 .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
@@ -264,13 +261,13 @@ public class RobotContainer {
 
         //Right trigger hold, intake
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
-                .whenActive(new IntakeControlCommand(intakeSubsystem, 1))
-                .whenInactive(new IntakeControlCommand(intakeSubsystem, 0));
+                .whenActive(new InstantCommand(() -> setState(RobotStates.INTAKING)))
+                .whenInactive(new InstantCommand(() -> setState(RobotStates.NONE)));
 
-        //Left trigger hold, lock mecanum
+        //Left trigger hold, lock mecanum TODO make sure the when inactive doesnt interfere
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
-                .whenActive(new IntakeControlCommand(intakeSubsystem, -1))
-                    .whenInactive(new IntakeControlCommand(intakeSubsystem, 0));
+                .whenActive(new InstantCommand(() -> setState(RobotStates.INTAKING)))
+                .whenInactive(new InstantCommand(() -> setState(RobotStates.NONE)));
     }
     public RobotStates robotState = RobotStates.NONE;
 
@@ -289,15 +286,14 @@ public class RobotContainer {
     }
 
     public void setState(RobotStates state) {
+        // TARGET LOCK CHECK AIM → SHOOT
+        if (state == RobotStates.AIMING && limeLightSubsystem.isLocked())
+            state  = RobotStates.SHOOTING;
         robotState = state;
     }
 
     public RobotStates getState() {
         return robotState;
     }
-
-//    public Follower getFollower() {
-//        return follower;
-//    }
 
 }
