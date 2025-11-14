@@ -264,9 +264,9 @@ public class RobotContainer {
                 .whenInactive(new InstantCommand(() -> setState(RobotStates.NONE)));
 
         //Left trigger hold, lock mecanum TODO make sure the when inactive doesnt interfere
-        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
-                .whenActive(new InstantCommand(() -> setState(RobotStates.INTAKING)))
-                .whenInactive(new InstantCommand(() -> setState(RobotStates.NONE)));
+//        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
+//                .whenActive(new InstantCommand(() -> setState(RobotStates.INTAKING)))
+//                .whenInactive(new InstantCommand(() -> setState(RobotStates.NONE)));
     }
     public RobotStates robotState = RobotStates.NONE;
 
