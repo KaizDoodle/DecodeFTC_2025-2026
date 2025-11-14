@@ -138,39 +138,38 @@ public class RobotContainer {
     // -------------------- State Manager --------------------
     private void applyState() {
 
+        // schedule commands only on state entry
+            switch (robotState) {
+
+                case INTAKING:
+                    intakeSubsystem.intakeSpeed(1);
+                    break;
+                case AIMING:
+                    shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+                    break;
+                case LOADING:
+                    shooterSubsystem.setShooterSpeed(-0.35);
+                    shooterSubsystem.loadManual(ShooterPosition.LOAD);
+                    break;
+                case SHOOTING:
+                    shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+//                    lmecSubsystem.lockMechanum();
+                    break;
+                case NONE:
+                    intakeSubsystem.stop();
+                    shooterSubsystem.setShooterSpeed(0);
+                    intakeSubsystem.intakeSpeed(0);
+//                    lmecSubsystem.unlockMechanum();
+                    break;
+            }
+
+
         double yaw = limeLightSubsystem.getYawOffset();
         if (limeLightSubsystem.getAllianceAprilTag() != null) {
             headingPower = Range.clip((yaw / 24) * 0.4, -0.5, 0.5);
         } else {
             headingPower = driverPad.getRightX() * 0.65;
         }
-
-        // schedule commands only on state entry
-            switch (robotState) {
-
-                case INTAKING:
-                    intakeSubsystem.intakeSpeed(1);
-                    shooterSubsystem.setShooterSpeed(0);
-                    break;
-                case AIMING:
-                    shooterSubsystem.setShooterSpeed(1);
-                    intakeSubsystem.intakeSpeed(0);
-                    break;
-                case LOADING:
-                    shooterSubsystem.setShooterSpeed(-0.35);
-                    shooterSubsystem.loadManual(ShooterPosition.LOAD);
-                case SHOOTING:
-                    shooterSubsystem.setShooterSpeed(1);
-                    lmecSubsystem.lockMechanum();
-                case NONE:
-
-                default:
-                    intakeSubsystem.stop();
-                    shooterSubsystem.setShooterSpeed(0);
-//                    lmecSubsystem.unlockMechanum();
-                    break;
-            }
-
 
         // ---------------- Manual Drive Control ----------------
         double forward = driverPad.getLeftY();
