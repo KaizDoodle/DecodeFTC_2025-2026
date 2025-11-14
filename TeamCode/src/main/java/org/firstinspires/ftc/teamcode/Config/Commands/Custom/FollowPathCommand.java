@@ -21,7 +21,12 @@ public class FollowPathCommand extends CommandBase {
 
     @Override
     public void execute() {
-        follower.update();  // keep path following active
+        follower.update();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return !follower.isBusy();
     }
 
 }

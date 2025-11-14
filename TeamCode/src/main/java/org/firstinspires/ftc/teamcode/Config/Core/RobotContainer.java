@@ -60,9 +60,11 @@ public class RobotContainer {
     public CommandScheduler cs = CommandScheduler.getInstance();
 
     //CONSTRUCTOR FOR AUTO TEST
-    public RobotContainer(HardwareMap hardwareMap, Alliance alliance, Pose startPose){
+    public RobotContainer(HardwareMap hardwareMap, Alliance alliance, Pose startPose, Telemetry telemetry){
         this.opmode = AUTONOMOUS;
         this.alliance = alliance;
+        this.telemetry = telemetry;
+
         follower = Constants.createFollower(hardwareMap);
 
 
@@ -70,8 +72,7 @@ public class RobotContainer {
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         patternSubsystem = new PatternSubsystem();
-        shooterSubsystem = new ShooterSubsystem((hardwareMap));
-        lmecSubsystem = new LMECSubsystem(hardwareMap);
+//        lmecSubsystem = new LMECSubsystem(hardwareMap);
 
         follower.setStartingPose(startPose);
 
@@ -198,7 +199,9 @@ public class RobotContainer {
         telemetry.addData("Distance", limeLightSubsystem.getDistance());
         telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
 
-        applyState();
+        if (opmode == TELEOP) {
+            applyState();
+        }
         cs.run();
     }
 

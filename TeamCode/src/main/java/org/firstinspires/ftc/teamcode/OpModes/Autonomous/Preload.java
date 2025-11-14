@@ -31,7 +31,7 @@ public class Preload extends OpModeCommand {
 
     @Override
     public void initialize() {
-        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, TestPathAuto.start);
+        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, TestPathAuto.start, telemetry);
         robotContainer.limeLightSubsystem.limeLightStart();
 
 
@@ -39,8 +39,6 @@ public class Preload extends OpModeCommand {
 
 
         robotContainer.shooterSubsystem.resetManual(ShooterPosition.ALL);
-
-
 
 
 

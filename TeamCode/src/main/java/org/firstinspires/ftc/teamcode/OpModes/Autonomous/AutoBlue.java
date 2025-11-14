@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
+@Autonomous
 public class AutoBlue extends OpModeCommand {
 
     RobotContainer robotContainer;
@@ -28,19 +30,16 @@ public class AutoBlue extends OpModeCommand {
 
     @Override
     public void initialize() {
-        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, TestPathAuto.start);
+        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, TestPathAuto.start, telemetry);
+        robotContainer.limeLightSubsystem.limeLightStart();
 
         TestPathAuto auto = new TestPathAuto(robotContainer.follower, Alliance.BLUE);
 
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
-
-        schedule();
-
         // Main autonomous sequence
         schedule(
-                new RunCommand(robotContainer::periodic),
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
 //                        new ShooterControllerCommand(robotContainer.shooterSubsystem, robotContainer.limeLightSubsystem),

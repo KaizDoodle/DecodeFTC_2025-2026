@@ -16,7 +16,9 @@ public class TestPathAuto {
     public static Pose linePickUp1 = new Pose(45, 36, Math.toRadians(0));
     public static Pose pickUp1 = new Pose(12, 36, Math.toRadians(0));
     public static Pose farScore = new Pose(60, 20, Math.toRadians(115));
+
     public static Pose driveOutOfBox = new Pose(56, 30, Math.toRadians(90));
+
     public static Pose linePickUp2 = new Pose(45, 63, Math.toRadians(0));
     public static Pose pickUp2 = new Pose(12, 56, Math.toRadians(0));
     public static  Pose shortScore = new Pose(56, 80, Math.toRadians(130));
@@ -46,10 +48,10 @@ public class TestPathAuto {
                 .addPath(
                         new BezierLine(
                                 start,
-                                driveOutOfBox
+                                farScore
                         )
                 )
-                .setLinearHeadingInterpolation(start.getHeading(), driveOutOfBox.getHeading())
+                .setLinearHeadingInterpolation(start.getHeading(), farScore.getHeading())
                 .build();
     }
 
@@ -57,7 +59,7 @@ public class TestPathAuto {
         return follower.pathBuilder()
                 .addPath(new BezierLine(farScore, linePickUp1))
                 .addPath(new BezierLine(linePickUp1, pickUp1))
-                .setLinearHeadingInterpolation(farScore.getHeading(), pickUp1.getHeading())
+                .setConstantHeadingInterpolation(pickUp1.getHeading())
                 .build();
     }
 
@@ -77,7 +79,7 @@ public class TestPathAuto {
         return follower.pathBuilder()
                 .addPath(new BezierLine(farScore, linePickUp2))
                 .addPath(new BezierLine(linePickUp2, pickUp2))
-                .setLinearHeadingInterpolation(farScore.getHeading(), pickUp2.getHeading())
+                .setConstantHeadingInterpolation(pickUp2.getHeading())
                 .build();
     }
 
@@ -97,7 +99,7 @@ public class TestPathAuto {
         return follower.pathBuilder()
                 .addPath(new BezierLine(shortScore, linePickUp3))
                 .addPath(new BezierLine(linePickUp3, pickUp3))
-                .setLinearHeadingInterpolation(shortScore.getHeading(), pickUp3.getHeading())
+                .setConstantHeadingInterpolation(pickUp3.getHeading())
                 .build();
     }
 
