@@ -138,16 +138,23 @@ public class RobotContainer {
     // -------------------- State Manager --------------------
     private void applyState() {
 
+        double yaw = limeLightSubsystem.getYawOffset();
+        if (limeLightSubsystem.getAllianceAprilTag() != null) {
+            headingPower = Range.clip((yaw / 24) * 0.4, -0.5, 0.5);
+        } else {
+            headingPower = driverPad.getRightX() * 0.65;
+        }
+
         // schedule commands only on state entry
             switch (robotState) {
 
                 case INTAKING:
                     intakeSubsystem.intakeSpeed(1);
                     shooterSubsystem.setShooterSpeed(0);
-
                     break;
                 case AIMING:
-
+                    shooterSubsystem.setShooterSpeed(1);
+                    intakeSubsystem.intakeSpeed(0);
                     break;
                 case LOADING:
                     shooterSubsystem.setShooterSpeed(-0.35);
@@ -187,13 +194,6 @@ public class RobotContainer {
 
     public void periodic() {
         follower.update();
-
-        double yaw = limeLightSubsystem.getYawOffset();
-        if (limeLightSubsystem.getAllianceAprilTag() != null) {
-            headingPower = Range.clip((yaw / 24) * 0.4, -0.5, 0.5);
-        } else {
-            headingPower = driverPad.getRightX() * 0.65;
-        }
 
         telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
         telemetry.addData("Distance", limeLightSubsystem.getDistance());
