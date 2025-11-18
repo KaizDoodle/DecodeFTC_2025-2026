@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -25,6 +26,8 @@ import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.StateCommand
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 //import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LoadHumanPlayerCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualLaunchCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
@@ -53,6 +56,7 @@ public class RobotContainer {
 
     Telemetry telemetry;
     private double headingPower =0 ;
+    private double rotation;
     int tagID = 0;
 
     public Alliance alliance;
@@ -145,12 +149,11 @@ public class RobotContainer {
                 case INTAKING:
                     intakeSubsystem.intakeSpeed(1);
                     break;
+                case LOADING:
+                    shooterSubsystem.setShooterSpeed(-0.3);
+                    break;
                 case AIMING:
                     shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-                    break;
-                case LOADING:
-                    shooterSubsystem.setShooterSpeed(-0.35);
-                    shooterSubsystem.loadManual(ShooterPosition.LOAD);
                     break;
                 case SHOOTING:
                     shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
@@ -166,16 +169,17 @@ public class RobotContainer {
 
 
         double yaw = limeLightSubsystem.getYawOffset();
+
         if (limeLightSubsystem.getAllianceAprilTag() != null) {
-            headingPower = Range.clip((yaw / 24) * 0.4, -0.5, 0.5);
+            headingPower = Range.clip((yaw / 24) * 0.6, -0.7, 0.7);
         } else {
-            headingPower = driverPad.getRightX() * 0.65;
+            headingPower = driverPad.getRightX() * 0.7;
         }
 
         // ---------------- Manual Drive Control ----------------
         double forward = driverPad.getLeftY();
         double strafe = -driverPad.getLeftX();
-        double rotation;
+
 
         switch (robotState) {
             case AIMING:
@@ -185,7 +189,7 @@ public class RobotContainer {
                 rotation = 0; // don't rotate
                 break;
             default:
-                rotation = -driverPad.getRightX() * 0.4;
+                rotation = -driverPad.getRightX() * 0.7;
                 break;
         }
 
@@ -196,6 +200,13 @@ public class RobotContainer {
         follower.update();
 
         telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
+        telemetry.addData("roataton", rotation);
+        telemetry.addData("state", getState());
+
+        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity1());
+        telemetry.addData("shooter two", shooterSubsystem.getLaunchVelocity2());
+        telemetry.addData("shooter three", shooterSubsystem.getLaunchVelocity3());
+
         telemetry.addData("Distance", limeLightSubsystem.getDistance());
         telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
 
@@ -228,11 +239,11 @@ public class RobotContainer {
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new SequentialCommandGroup(
+//                new SequentialCommandGroup(
 //                        new InstantCommand(() -> setState(RobotStates.AIM)),
-                        new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
-                )
-        );
+                        new ManualLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
+//                )
+        ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL));
 
 
         //aim command limelight
@@ -256,15 +267,34 @@ public class RobotContainer {
                 new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
         );
 
-        operatorPad.getGamepadButton(GamepadKeys.Button.A)
-                .whileHeld(new LoadHumanPlayerCommand(shooterSubsystem))
-                .whenReleased(new ResetAllCommand(shooterSubsystem, intakeSubsystem)
-        );
+        driverPad.getGamepadButton(GamepadKeys.Button.A)
+                .whileHeld(
+                        new ParallelCommandGroup(
+                                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.LOAD),
+                                new InstantCommand(() -> setState(RobotStates.LOADING))
+                        )
+                )
+                .whenReleased(
+                        new ParallelCommandGroup(
+                                new ManualResetCommand(shooterSubsystem, ShooterPosition.LOAD),
+                                new InstantCommand(() -> setState(RobotStates.NONE))
+                        )
+                );
 
         //Right trigger hold, intake
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
-                .whenActive(new InstantCommand(() -> setState(RobotStates.INTAKING)))
-                .whenInactive(new InstantCommand(() -> setState(RobotStates.NONE)));
+                .whenActive(
+                        new ParallelCommandGroup(
+                                new InstantCommand(() -> setState(RobotStates.INTAKING)),
+                                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.INTAKE)
+                        )
+                )
+                .whenInactive(
+                        new ParallelCommandGroup(
+                                new InstantCommand(() -> setState(RobotStates.NONE)),
+                                new ManualResetCommand(shooterSubsystem, ShooterPosition.INTAKE)
+                                )
+                );
 
         //Left trigger hold, lock mecanum TODO make sure the when inactive doesnt interfere
 //        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)

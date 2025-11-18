@@ -11,8 +11,11 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 public class LimeLightSubsystem extends SubsystemBase {
     public Limelight3A limelight;
     int allianceTagID = 0;
-    double SCALE = 36.1115;
-    double YAW_OFFSET = 5;
+    double SCALE = 6.8;
+    double YAW_OFFSET = 2;
+//150 0.046
+//100 0.06
+//50 0.1395
 
 
 
@@ -27,16 +30,18 @@ public class LimeLightSubsystem extends SubsystemBase {
     public double getDistance() {
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
         if (tag != null)
-            return (SCALE / Math.sqrt(tag.getTargetArea()));
+            return (SCALE/ Math.sqrt(tag.getTargetArea()));
         else return -1;
 
     }
     public double getYawOffset(){
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
         if (tag != null) {
-            return tag.getTargetXDegrees();
+            return tag.getTargetXDegrees() -4;
+
         }
-        return 0;
+
+        return -1;
     }
     public String getPattern(){
         String colors = "";
@@ -58,7 +63,9 @@ public class LimeLightSubsystem extends SubsystemBase {
         limelight.updateRobotOrientation(heading);
     }
     public boolean isLocked(){
-        return getYawOffset() < YAW_OFFSET;
+        if (getYawOffset() != -1)
+            return Math.abs(getYawOffset()) < 2;
+        else return false;
     }
     public LLResultTypes.FiducialResult getAllianceAprilTag(){
 
