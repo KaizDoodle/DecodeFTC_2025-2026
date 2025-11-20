@@ -7,13 +7,11 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -21,12 +19,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.PatternLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.StateCommands.IntakingStateCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 //import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.LoadHumanPlayerCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualLaunchCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
@@ -241,7 +235,7 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
 //                new SequentialCommandGroup(
 //                        new InstantCommand(() -> setState(RobotStates.AIM)),
-                        new ManualLaunchCommand(shooterSubsystem, ShooterPosition.ALL)
+                        new ManualCageControlCommand(shooterSubsystem, ShooterPosition.ALL)
 //                )
         ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL));
 
@@ -270,7 +264,7 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.A)
                 .whileHeld(
                         new ParallelCommandGroup(
-                                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.LOAD),
+                                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.LOAD),
                                 new InstantCommand(() -> setState(RobotStates.LOADING))
                         )
                 )
@@ -286,7 +280,7 @@ public class RobotContainer {
                 .whenActive(
                         new ParallelCommandGroup(
                                 new InstantCommand(() -> setState(RobotStates.INTAKING)),
-                                new ManualLaunchCommand(shooterSubsystem, ShooterPosition.INTAKE)
+                                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.INTAKE)
                         )
                 )
                 .whenInactive(

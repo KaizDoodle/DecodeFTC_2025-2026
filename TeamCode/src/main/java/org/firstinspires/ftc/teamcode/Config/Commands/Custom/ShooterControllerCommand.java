@@ -11,11 +11,20 @@ public class ShooterControllerCommand extends InstantCommand {
     ShooterSubsystem shooterSubsystem;
     LimeLightSubsystem limeLightSubsystem;
     double distance;
-    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, double distance) {
+    double speed;
+
+//    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, double distance) {
+//        this.shooterSubsystem = shooterSubsystem;
+//        this.distance = distance;
+//        addRequirements(shooterSubsystem);
+//    }
+
+    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, double speed) {
         this.shooterSubsystem = shooterSubsystem;
-        this.distance = distance;
+        this.speed = speed;
         addRequirements(shooterSubsystem);
     }
+
     public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, LimeLightSubsystem limeLightSubsystem, int tagID) {
         this.limeLightSubsystem = limeLightSubsystem;
         addRequirements(shooterSubsystem);
@@ -24,12 +33,8 @@ public class ShooterControllerCommand extends InstantCommand {
     }
 
     @Override
-    public void initialize() {
-
-        shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(distance));
-
-
-
+    public void execute() {
+        shooterSubsystem.setShooterSpeed(speed);
     }
 
 }

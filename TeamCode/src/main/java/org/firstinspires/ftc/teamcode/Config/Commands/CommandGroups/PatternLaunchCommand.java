@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
 
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualLaunchCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Pattern;
-import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 /**
@@ -48,7 +47,7 @@ public class PatternLaunchCommand extends InstantCommand {
             // Check if this position has the right color and hasn't been shot yet.
             if (colorAtPosition == colorToShoot && !shotPositions[i]) {
                 // Fire the corresponding shooter.
-                new ManualLaunchCommand(shooter, i);
+                new ManualCageControlCommand(shooter, i);
                 // Mark this position as shot.
                 shotPositions[i] = true;
                 // Exit after firing one ball.

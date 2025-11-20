@@ -45,7 +45,7 @@ public class Constants {
             .strafePodX(5.4375)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("odo")
-            .customEncoderResolution(2.52)
+            .customEncoderResolution(2.9)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 

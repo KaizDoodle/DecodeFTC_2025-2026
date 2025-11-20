@@ -5,19 +5,19 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
-public class ManualLaunchCommand extends InstantCommand {
+public class ManualCageControlCommand extends InstantCommand {
 
     ShooterPosition shooter;
     int i;
     ShooterSubsystem shooterSubsystem;
 
-    public ManualLaunchCommand(ShooterSubsystem shooterSubsystem, ShooterPosition shooter) {
+    public ManualCageControlCommand(ShooterSubsystem shooterSubsystem, ShooterPosition shooter) {
         this.shooter = shooter;
         this.shooterSubsystem = shooterSubsystem;
 //        addRequirements(shooterSubsystem);
 
     }
-    public ManualLaunchCommand(ShooterSubsystem shooterSubsystem, int i) {
+    public ManualCageControlCommand(ShooterSubsystem shooterSubsystem, int i) {
         this.i = i;
         this.shooterSubsystem = shooterSubsystem;
 
