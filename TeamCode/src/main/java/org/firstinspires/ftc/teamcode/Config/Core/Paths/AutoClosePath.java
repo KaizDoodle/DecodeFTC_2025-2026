@@ -27,9 +27,10 @@ public class AutoClosePath {
     public Pose linePickUp3 = new Pose(50, 36, Math.toRadians(0));
     public Pose pickUp3 = new Pose(12, 36, Math.toRadians(0));
 
-    public Pose driveOutOfBox = new Pose(24, 72, Math.toRadians(90));
+    public Pose driveOutOfBox = new Pose(30, 72, Math.toRadians(90));
 
     public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
+    private int index = 0;
 
 
 
@@ -141,6 +142,19 @@ public class AutoClosePath {
                 )
                 .setLinearHeadingInterpolation(shortScore.getHeading(), driveOutOfBox.getHeading())
                 .build();
+    }
+    public PathChain next() {
+        switch (index++) {
+            case 0: return shootPreload();
+            case 1: return pickUp1();
+            case 2: return score1();
+            case 3: return pickUp2();
+            case 4: return score2();
+            case 5: return pickUp3();
+            case 6: return score3();
+            case 7: return outOfBox();
+            default: return null;
+        }
     }
 
 }

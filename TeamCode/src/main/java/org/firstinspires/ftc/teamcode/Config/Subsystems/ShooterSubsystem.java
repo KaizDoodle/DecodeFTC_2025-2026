@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Config.Subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -21,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // 10 .7
     // 11 .72
 
-    private final double MIN_POWER = 0.5;
+    private final double MIN_POWER = 0.45;
     private final double MAX_POWER = 0.7;
     private final double MAX_VELOCITY = 1500;
 
@@ -50,14 +51,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
     public boolean isLauncherBusy(ShooterPosition pos) {
-        if (pos == ShooterPosition.ALL || pos == ShooterPosition.LOAD || pos == ShooterPosition.INTAKE) {
+        if (pos == ShooterPosition.ALL || pos == ShooterPosition.INTAKE) {
             return launcherBusy[0] || launcherBusy[1] || launcherBusy[2];
         }
         return launcherBusy[pos.ordinal()];
     }
 
     public void setLauncherBusy(ShooterPosition pos, boolean busy) {
-        if (pos == ShooterPosition.ALL || pos == ShooterPosition.LOAD || pos == ShooterPosition.INTAKE) {
+        if (pos == ShooterPosition.ALL || pos == ShooterPosition.INTAKE) {
             for (int i = 0; i < 3; i++) launcherBusy[i] = busy;
         } else {
             launcherBusy[pos.ordinal()] = busy;
@@ -76,11 +77,6 @@ public class ShooterSubsystem extends SubsystemBase {
                     cageMiddle.setPosition(LAUNCH_POSE);
                     cageRight.setPosition(LAUNCH_POSE);
                     break;
-                case LOAD:
-                    cageLeft.setPosition(LOAD_POS);
-                    cageMiddle.setPosition(LOAD_POS);
-                    cageRight.setPosition(LOAD_POS);
-                    break;
                 case INTAKE:
                     cageLeft.setPosition(0);
                     cageMiddle.setPosition(0);
@@ -95,7 +91,6 @@ public class ShooterSubsystem extends SubsystemBase {
             case MIDDLE: cageMiddle.setPosition(0.075); break;
             case RIGHT: cageRight.setPosition(0.075); break;
             case INTAKE:
-            case LOAD:
             case ALL:
                 cageLeft.setPosition(0.075);
                 cageMiddle.setPosition(0.075);

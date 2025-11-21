@@ -5,6 +5,5 @@ public enum ShooterPosition {
     MIDDLE,
     RIGHT,
     ALL,
-    LOAD,
     INTAKE
 }

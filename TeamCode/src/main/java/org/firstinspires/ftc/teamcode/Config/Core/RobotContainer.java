@@ -116,23 +116,21 @@ public class RobotContainer {
 
     }
     public void aPeriodic() {
+        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
+        telemetry.addData("state", getState());
 
-        follower.update();
+        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
+        telemetry.addData("", shooterSubsystem);
 
-//        t.addData("path", f.getCurrentPath());
-//        e.periodic();
-//        l.periodic();
-//        i.periodic();
-//        o.periodic();
+        telemetry.addData("Distance", limeLightSubsystem.getDistance());
+        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
 
-//        t.update();
-        CommandScheduler.getInstance().run();
+
+        telemetry.update();
     }
 
     // ------------------------------- STATE MANAGER -------------------------------
 
-
-    // -------------------- State Manager --------------------
     private void applyState() {
 
         // schedule commands only on state entry
@@ -262,13 +260,13 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.A)
                 .whileHeld(
                         new ParallelCommandGroup(
-                                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.LOAD),
+                                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.ALL),
                                 new InstantCommand(() -> setState(RobotStates.LOADING))
                         )
                 )
                 .whenReleased(
                         new ParallelCommandGroup(
-                                new ManualResetCommand(shooterSubsystem, ShooterPosition.LOAD),
+                                new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL),
                                 new InstantCommand(() -> setState(RobotStates.NONE))
                         )
                 );

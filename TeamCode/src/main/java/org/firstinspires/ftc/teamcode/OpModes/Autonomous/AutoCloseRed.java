@@ -31,23 +31,17 @@ public class AutoCloseRed extends OpModeCommand {
         robotContainer = new RobotContainer(hardwareMap, Alliance.RED, telemetry);
         robotContainer.limeLightSubsystem.limeLightStart();
 
-        AutoClosePath auto = new AutoClosePath(robotContainer.follower, Alliance.RED);
+        auto = new AutoClosePath(robotContainer.follower, Alliance.RED);
 
         robotContainer.setStartingPose(auto.start);
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
-
-
-    }
-    @Override
-    public void run(){
-        // Main autonomous sequence
         schedule(
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.53),
-                        new FollowPathCommand(robotContainer.follower, auto.shootPreload()),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.55),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitCommand(3000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(500),
@@ -55,10 +49,10 @@ public class AutoCloseRed extends OpModeCommand {
                         // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-                        new FollowPathCommand(robotContainer.follower, auto.pickUp1()),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
 
                         // --- SCORE AGAIN ---
-                        new FollowPathCommand(robotContainer.follower, auto.score1()),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
                         new WaitCommand(500),
@@ -68,10 +62,10 @@ public class AutoCloseRed extends OpModeCommand {
                         // --- SECOND PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-                        new FollowPathCommand(robotContainer.follower, auto.pickUp2()),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
 
                         // --- SCORE AGAIN X2 ---
-                        new FollowPathCommand(robotContainer.follower, auto.score2()),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
                         new WaitCommand(500),
@@ -81,22 +75,23 @@ public class AutoCloseRed extends OpModeCommand {
                         // --- THRID PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-                        new FollowPathCommand(robotContainer.follower, auto.pickUp3()),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
 
                         // --- SCORE AGAIN X3 ---
-                        new FollowPathCommand(robotContainer.follower, auto.score3()),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitCommand(500),
+                        new WaitCommand(1000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(500),
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),
-                        new FollowPathCommand(robotContainer.follower, auto.outOfBox())
+                        new FollowPathCommand(robotContainer.follower, auto.next())
 
                 )
         );
     }
+
 
 }

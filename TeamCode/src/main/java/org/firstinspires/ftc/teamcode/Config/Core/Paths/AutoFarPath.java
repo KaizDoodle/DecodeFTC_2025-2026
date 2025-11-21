@@ -26,6 +26,7 @@ public class AutoFarPath {
     public Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(90));
 
     public Pose farScore = new Pose(58, 20, Math.toRadians(107));
+    private int index = 0;
 
 
 
@@ -135,5 +136,20 @@ public class AutoFarPath {
                 .setLinearHeadingInterpolation(farScore.getHeading(), driveOutOfBox.getHeading())
                 .build();
     }
+
+    public PathChain next() {
+        switch (index++) {
+            case 0: return shootPreload();
+            case 1: return pickUp1();
+            case 2: return score1();
+            case 3: return pickUp2();
+            case 4: return score2();
+            case 5: return pickUp3();
+            case 6: return score3();
+            case 7: return outOfBox();
+            default: return null;
+        }
+    }
+
 
 }
