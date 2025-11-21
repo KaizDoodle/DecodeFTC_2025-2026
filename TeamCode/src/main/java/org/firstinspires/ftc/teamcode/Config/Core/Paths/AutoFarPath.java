@@ -12,20 +12,20 @@ public class AutoFarPath {
     private final Follower follower;
 
     // robot lined up to the edge of the mat
-    public static Pose start = new Pose(57, 9, Math.toRadians(90));
+    public Pose start = new Pose(57, 9, Math.toRadians(90));
 
-    public static Pose linePickUp3 = new Pose(50, 84, Math.toRadians(0));
-    public static Pose pickUp3 = new Pose(18, 84, Math.toRadians(0));
+    public Pose linePickUp3 = new Pose(50, 84, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(18, 84, Math.toRadians(0));
 
-    public static Pose linePickUp2 = new Pose(50, 60, Math.toRadians(0));
-    public static Pose pickUp2 = new Pose(12, 60, Math.toRadians(0));
+    public Pose linePickUp2 = new Pose(50, 60, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(12, 60, Math.toRadians(0));
 
-    public static Pose linePickUp1 = new Pose(50, 36, Math.toRadians(0));
-    public static Pose pickUp1 = new Pose(12, 36, Math.toRadians(0));
+    public Pose linePickUp1 = new Pose(50, 36, Math.toRadians(0));
+    public Pose pickUp1 = new Pose(12, 36, Math.toRadians(0));
 
-    public static Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(90));
+    public Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(90));
 
-    public static Pose farScore = new Pose(58, 20, Math.toRadians(107));
+    public Pose farScore = new Pose(58, 20, Math.toRadians(107));
 
 
 

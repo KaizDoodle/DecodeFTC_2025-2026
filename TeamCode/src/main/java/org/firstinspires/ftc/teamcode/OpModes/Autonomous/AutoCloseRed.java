@@ -23,18 +23,25 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 public class AutoCloseRed extends OpModeCommand {
 
     RobotContainer robotContainer;
+    public AutoClosePath auto;
 
 
     @Override
     public void initialize() {
-        robotContainer = new RobotContainer(hardwareMap, Alliance.RED, AutoClosePath.start, telemetry);
+        robotContainer = new RobotContainer(hardwareMap, Alliance.RED, telemetry);
         robotContainer.limeLightSubsystem.limeLightStart();
 
         AutoClosePath auto = new AutoClosePath(robotContainer.follower, Alliance.RED);
 
+        robotContainer.setStartingPose(auto.start);
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
+
+
+    }
+    @Override
+    public void run(){
         // Main autonomous sequence
         schedule(
                 new SequentialCommandGroup(
@@ -90,7 +97,6 @@ public class AutoCloseRed extends OpModeCommand {
 
                 )
         );
-
     }
 
 }

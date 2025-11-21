@@ -24,18 +24,23 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 public class AutoFarBlue extends OpModeCommand {
 
     RobotContainer robotContainer;
-
+    AutoFarPath auto;
 
     @Override
     public void initialize() {
-        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, AutoFarPath.start, telemetry);
+        robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, telemetry);
         robotContainer.limeLightSubsystem.limeLightStart();
 
-        AutoFarPath auto = new AutoFarPath(robotContainer.follower, Alliance.BLUE);
+        new AutoFarPath(robotContainer.follower, Alliance.BLUE);
 
+        robotContainer.setStartingPose(auto.start);
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
+    }
+
+    @Override
+    public void run(){
         // Main autonomous sequence
         schedule(
                 new SequentialCommandGroup(
@@ -91,7 +96,6 @@ public class AutoFarBlue extends OpModeCommand {
 
                 )
         );
-
     }
 
 }

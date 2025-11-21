@@ -13,28 +13,29 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 
 public class AutoClosePath {
     private final Follower follower;
+    private final Alliance alliance;
 
     // robot lined up facing the goal, left side to the crevice of the goal and the ramp
-    public static Pose start = new Pose(19, 121, Math.toRadians(144));
+    public Pose start = new Pose(19, 121, Math.toRadians(144));
 
-    public static Pose linePickUp1 = new Pose(50, 84, Math.toRadians(0));
-    public static Pose pickUp1 = new Pose(18, 84, Math.toRadians(0));
+    public Pose linePickUp1 = new Pose(50, 84, Math.toRadians(0));
+    public Pose pickUp1 = new Pose(18, 84, Math.toRadians(0));
 
-    public static Pose linePickUp2 = new Pose(50, 60, Math.toRadians(0));
-    public static Pose pickUp2 = new Pose(12, 60, Math.toRadians(0));
+    public Pose linePickUp2 = new Pose(50, 60, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(12, 60, Math.toRadians(0));
 
-    public static Pose linePickUp3 = new Pose(50, 36, Math.toRadians(0));
-    public static Pose pickUp3 = new Pose(12, 36, Math.toRadians(0));
+    public Pose linePickUp3 = new Pose(50, 36, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(12, 36, Math.toRadians(0));
 
-    public static Pose driveOutOfBox = new Pose(24, 72, Math.toRadians(90));
+    public Pose driveOutOfBox = new Pose(24, 72, Math.toRadians(90));
 
-    public static Pose shortScore = new Pose(47, 98, Math.toRadians(138));
-
+    public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
 
 
 
     public AutoClosePath(Follower follower, Alliance alliance) {
         this.follower = follower;
+        this.alliance = alliance;
 
         if (alliance == Alliance.RED) {
             start = start.mirror();
@@ -47,6 +48,9 @@ public class AutoClosePath {
             shortScore = shortScore.mirror();
             driveOutOfBox = driveOutOfBox.mirror();
         }
+    }
+    public Pose returnStart(){
+        return start;
     }
 
     public PathChain shootPreload() {
