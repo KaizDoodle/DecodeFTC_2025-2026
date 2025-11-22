@@ -37,54 +37,72 @@ public class AutoFarRed extends OpModeCommand {
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
-
         schedule(
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.69),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.65),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitCommand(3000),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT),
+                        new WaitCommand(500),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE),
+                        new WaitCommand(500),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT),
                         new WaitCommand(500),
 
-                        // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
-                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        // Drive to pick preloads + shoot
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
+                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-
-                        // --- SCORE AGAIN ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+                        new WaitCommand(1000),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT),
                         new WaitCommand(500),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE),
                         new WaitCommand(500),
-
-                        // --- SECOND PICKUP (continuous line→pickup) ---
-                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-
-                        // --- SCORE AGAIN X2 ---
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitCommand(500),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT),
                         new WaitCommand(500),
 
-                        // --- THRID PICKUP (continuous line→pickup) ---
-                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
 
-                        // --- SCORE AGAIN X3 ---
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitCommand(500),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
-                        new WaitCommand(500),
+//                        // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
+//                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+//                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
+//                        new FollowPathCommand(robotContainer.follower, auto.next()),
+//
+//                        // --- SCORE AGAIN ---
+//                        new FollowPathCommand(robotContainer.follower, auto.next()),
+//                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+//                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+//                        new WaitCommand(1000),
+//                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+//                        new WaitCommand(500),
+//
+//                        // --- SECOND PICKUP (continuous line→pickup) ---
+//                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+//                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
+//                        new FollowPathCommand(robotContainer.follower, auto.next()),
+//
+//                        // --- SCORE AGAIN X2 ---
+//                        new FollowPathCommand(robotContainer.follower, auto.next()),
+//                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+//                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+//                        new WaitCommand(1000),
+//                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+//                        new WaitCommand(500),
+//
+//                        // --- THRID PICKUP (continuous line→pickup) ---
+//                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+//                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
+//                        new FollowPathCommand(robotContainer.follower, auto.next()),
+//
+//                        // --- SCORE AGAIN X3 ---
+//                        new FollowPathCommand(robotContainer.follower, auto.next()),
+//                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+//                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+//                        new WaitCommand(1000),
+//                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+//                        new WaitCommand(500),
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),

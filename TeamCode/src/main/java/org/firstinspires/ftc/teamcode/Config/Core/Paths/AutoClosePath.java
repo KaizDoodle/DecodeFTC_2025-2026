@@ -15,7 +15,7 @@ public class AutoClosePath {
     private final Follower follower;
     private final Alliance alliance;
 
-    // robot lined up facing the goal, left side to the crevice of the goal and the ramp
+    // robot lined up facing the goal, side to the crevice of the goal and the ramp
     public Pose start = new Pose(19, 121, Math.toRadians(144));
 
     public Pose linePickUp1 = new Pose(50, 84, Math.toRadians(0));
@@ -51,6 +51,10 @@ public class AutoClosePath {
             pickUp3 = pickUp3.mirror();
             shortScore = shortScore.mirror();
             driveOutOfBox = driveOutOfBox.mirror();
+            transition1 = transition1.mirror();
+            transition2 = transition2.mirror();
+            transition3 = transition3.mirror();
+
         }
     }
     public Pose returnStart(){

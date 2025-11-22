@@ -22,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // 10 .7
     // 11 .72
 
-    private final double MIN_POWER = 0.48;
+    private final double MIN_POWER = 0.55;
     private final double MAX_POWER = 0.7;
     private final double MAX_VELOCITY = 1500;
 
@@ -69,11 +69,11 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!isLauncherBusy(pos)) {
             setLauncherBusy(pos, true);
             switch (pos) {
-                case LEFT: cageLeft.setPosition(0.21); break;
+                case LEFT: cageLeft.setPosition(0.215); break;
                 case MIDDLE: cageMiddle.setPosition(LAUNCH_POSE); break;
                 case RIGHT: cageRight.setPosition(LAUNCH_POSE); break;
                 case ALL:
-                    cageLeft.setPosition(0.21);
+                    cageLeft.setPosition(0.215);
                     cageMiddle.setPosition(LAUNCH_POSE);
                     cageRight.setPosition(LAUNCH_POSE);
                     break;
@@ -87,12 +87,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void resetManual(ShooterPosition pos) {
         switch (pos) {
-            case LEFT: cageLeft.setPosition(0.11); break;
+            case LEFT: cageLeft.setPosition(0.115); break;
             case MIDDLE: cageMiddle.setPosition(0.1); break;
             case RIGHT: cageRight.setPosition(0.1); break;
             case INTAKE:
             case ALL:
-                cageLeft.setPosition(0.11);
+                cageLeft.setPosition(0.115);
                 cageMiddle.setPosition(0.1);
                 cageRight.setPosition(0.1);
                 break;

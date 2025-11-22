@@ -14,6 +14,13 @@ public class AutoFarPath {
     // robot lined up to the edge of the mat
     public Pose start = new Pose(57, 9, Math.toRadians(90));
 
+    public Pose lineUpPickUpPreload = new Pose(13, 20, Math.toRadians(7));
+    public Pose pickUpPreloadAngled = new Pose(12.5, 12.5, Math.toRadians(7));
+    public Pose lineUpToRam = new Pose(9.5, 20, Math.toRadians(90));
+    public Pose ram = new Pose(9.5, 12, Math.toRadians(90));
+
+    public Pose transitionScoreFromPickUpPreload = new Pose(50,20,Math.toRadians(100));
+
     public Pose linePickUp3 = new Pose(50, 84, Math.toRadians(0));
     public Pose transition3 = new Pose(58, 84, Math.toRadians(0));
     public Pose pickUp3 = new Pose(19, 84, Math.toRadians(0));
@@ -26,7 +33,7 @@ public class AutoFarPath {
 
     public Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(180));
 
-    public Pose farScore = new Pose(58, 20, Math.toRadians(107));
+    public Pose farScore = new Pose(58, 20, Math.toRadians(108));
     private int index = 0;
 
 
@@ -45,17 +52,43 @@ public class AutoFarPath {
             pickUp3 = pickUp3.mirror();
             farScore = farScore.mirror();
             driveOutOfBox = driveOutOfBox.mirror();
+
+            lineUpPickUpPreload = lineUpPickUpPreload.mirror();
+            pickUpPreloadAngled = pickUpPreloadAngled.mirror();
+            lineUpToRam = lineUpToRam.mirror();
+            ram = ram.mirror();
         }
+    }
+
+    public PathChain pickUpPreload() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(farScore, lineUpPickUpPreload))
+                .setLinearHeadingInterpolation(farScore.getHeading(), lineUpPickUpPreload.getHeading())
+
+                .addPath(new BezierLine(lineUpPickUpPreload, pickUpPreloadAngled))
+                .setLinearHeadingInterpolation(lineUpPickUpPreload.getHeading(), pickUpPreloadAngled.getHeading())
+
+                .addPath(new BezierLine(pickUpPreloadAngled, lineUpToRam))
+                .setLinearHeadingInterpolation(pickUpPreloadAngled.getHeading(), lineUpToRam.getHeading())
+
+                .addPath(new BezierLine(lineUpToRam, ram))
+                .setLinearHeadingInterpolation(lineUpToRam.getHeading(), ram.getHeading())
+                .build();
+    }
+
+    public PathChain scorePickedUpPreload() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(ram, transitionScoreFromPickUpPreload))
+                .setLinearHeadingInterpolation(ram.getHeading(), transitionScoreFromPickUpPreload.getHeading())
+                .addPath(new BezierLine(transitionScoreFromPickUpPreload, farScore))
+                .setLinearHeadingInterpolation(transitionScoreFromPickUpPreload.getHeading(), farScore.getHeading())
+
+                .build();
     }
 
     public PathChain shootPreload() {
         return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                start,
-                                farScore
-                        )
-                )
+                .addPath(new BezierLine(start, farScore))
                 .setLinearHeadingInterpolation(start.getHeading(), farScore.getHeading())
                 .build();
     }
@@ -131,19 +164,27 @@ public class AutoFarPath {
                 .build();
     }
 
+//    public PathChain next() {
+//        switch (index++) {
+//            case 0: return shootPreload();
+//            case 1: return pickUp1();
+//            case 2: return score1();
+//            case 3: return pickUp2();
+//            case 4: return score2();
+//            case 5: return pickUp3();
+//            case 6: return score3();
+//            case 7: return outOfBox();
+//            default: return null;
+//        }
+//    }
+
     public PathChain next() {
         switch (index++) {
             case 0: return shootPreload();
-            case 1: return pickUp1();
-            case 2: return score1();
-            case 3: return pickUp2();
-            case 4: return score2();
-            case 5: return pickUp3();
-            case 6: return score3();
-            case 7: return outOfBox();
+            case 1: return pickUpPreload();
+            case 2: return scorePickedUpPreload();
+            case 3: return outOfBox();
             default: return null;
         }
     }
-
-
 }
