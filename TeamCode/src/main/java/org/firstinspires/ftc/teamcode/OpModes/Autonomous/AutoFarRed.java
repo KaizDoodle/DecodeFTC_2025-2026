@@ -41,7 +41,7 @@ public class AutoFarRed extends OpModeCommand {
         schedule(
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.7),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.69),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitCommand(3000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),

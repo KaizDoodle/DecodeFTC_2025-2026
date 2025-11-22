@@ -15,15 +15,16 @@ public class AutoFarPath {
     public Pose start = new Pose(57, 9, Math.toRadians(90));
 
     public Pose linePickUp3 = new Pose(50, 84, Math.toRadians(0));
-    public Pose pickUp3 = new Pose(18, 84, Math.toRadians(0));
+    public Pose transition3 = new Pose(58, 84, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(19, 84, Math.toRadians(0));
 
     public Pose linePickUp2 = new Pose(50, 60, Math.toRadians(0));
-    public Pose pickUp2 = new Pose(12, 60, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(13, 60, Math.toRadians(0));
 
     public Pose linePickUp1 = new Pose(50, 36, Math.toRadians(0));
-    public Pose pickUp1 = new Pose(12, 36, Math.toRadians(0));
+    public Pose pickUp1 = new Pose(14, 36, Math.toRadians(0));
 
-    public Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(90));
+    public Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(180));
 
     public Pose farScore = new Pose(58, 20, Math.toRadians(107));
     private int index = 0;
@@ -71,12 +72,7 @@ public class AutoFarPath {
 
     public PathChain score1() {
         return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                pickUp1,
-                                farScore
-                        )
-                )
+                .addPath(new BezierLine(pickUp1, farScore))
                 .setLinearHeadingInterpolation(pickUp1.getHeading(), farScore.getHeading())
                 .build();
     }
@@ -115,13 +111,11 @@ public class AutoFarPath {
 
     public PathChain score3() {
         return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                pickUp3,
-                                farScore
-                        )
-                )
-                .setLinearHeadingInterpolation(pickUp3.getHeading(), farScore.getHeading())
+                .addPath(new BezierLine(pickUp3, transition3))
+                .setLinearHeadingInterpolation(pickUp3.getHeading(), transition3.getHeading())
+
+                .addPath(new BezierLine(transition3, farScore))
+                .setLinearHeadingInterpolation(transition3.getHeading(), farScore.getHeading())
                 .build();
     }
 

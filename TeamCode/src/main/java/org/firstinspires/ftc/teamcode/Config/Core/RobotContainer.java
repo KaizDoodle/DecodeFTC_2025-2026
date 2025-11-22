@@ -115,19 +115,7 @@ public class RobotContainer {
 
 
     }
-    public void aPeriodic() {
-        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
-        telemetry.addData("state", getState());
 
-        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
-        telemetry.addData("", shooterSubsystem);
-
-        telemetry.addData("Distance", limeLightSubsystem.getDistance());
-        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-
-
-        telemetry.update();
-    }
 
     // ------------------------------- STATE MANAGER -------------------------------
 
@@ -141,6 +129,9 @@ public class RobotContainer {
                     break;
                 case LOADING:
                     shooterSubsystem.setShooterSpeed(-0.3);
+                    break;
+                case OUTAKING:
+                    intakeSubsystem.intakeSpeed(-1);
                     break;
                 case AIMING:
                     shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
@@ -158,10 +149,10 @@ public class RobotContainer {
             }
 
 
-        double yaw = limeLightSubsystem.getYawOffset();
+        double yawNormalized = limeLightSubsystem.getYawOffset() / 24;
 
         if (limeLightSubsystem.getAllianceAprilTag() != null) {
-            headingPower = Range.clip((yaw / 24) * 0.6, -0.7, 0.7);
+            headingPower = 0.25 * Math.pow(Math.abs(yawNormalized), 0.6 ) * Math.signum(yawNormalized);
         } else {
             headingPower = driverPad.getRightX() * 0.7;
         }
@@ -190,7 +181,7 @@ public class RobotContainer {
         follower.update();
 
         telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
-        telemetry.addData("roataton", rotation);
+        telemetry.addData("roataton", headingPower);
         telemetry.addData("state", getState());
 
         telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity1());
@@ -205,6 +196,22 @@ public class RobotContainer {
         }
         cs.run();
     }
+    public void aPeriodic() {
+        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
+        telemetry.addData("Distance", limeLightSubsystem.getDistance());
+
+        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
+
+
+        telemetry.addData("odom heading", follower.getHeading());
+
+        telemetry.addData("state", getState());
+
+
+
+        telemetry.update();
+    }
 
     public void tStart(){
         follower.update();
@@ -214,7 +221,8 @@ public class RobotContainer {
         robotState = RobotStates.NONE;
     }
 
-    public void teleOpControl(){
+    public void
+    teleOpControl(){
 
         // right bumber = shoot
         // left bumber = aim
@@ -253,9 +261,9 @@ public class RobotContainer {
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
         );
 
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-                new PatternLaunchCommand(shooterSubsystem, patternSubsystem.getNextColor())
-        );
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whileHeld(
+                new InstantCommand(() -> setState(RobotStates.OUTAKING))
+        ).whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
         driverPad.getGamepadButton(GamepadKeys.Button.A)
                 .whileHeld(
@@ -273,7 +281,7 @@ public class RobotContainer {
 
         //Right trigger hold, intake
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
-                .whenActive(
+                .whileActiveContinuous(
                         new ParallelCommandGroup(
                                 new InstantCommand(() -> setState(RobotStates.INTAKING)),
                                 new ManualCageControlCommand(shooterSubsystem, ShooterPosition.INTAKE)

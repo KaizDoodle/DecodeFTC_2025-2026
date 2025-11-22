@@ -40,7 +40,7 @@ public class AutoCloseBlue extends OpModeCommand {
 
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.55),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.53),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitCommand(3000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
@@ -55,7 +55,7 @@ public class AutoCloseBlue extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitCommand(500),
+                        new WaitCommand(1000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(500),
 
@@ -68,7 +68,7 @@ public class AutoCloseBlue extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitCommand(500),
+                        new WaitCommand(1000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(500),
 

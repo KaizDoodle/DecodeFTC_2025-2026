@@ -22,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // 10 .7
     // 11 .72
 
-    private final double MIN_POWER = 0.45;
+    private final double MIN_POWER = 0.48;
     private final double MAX_POWER = 0.7;
     private final double MAX_VELOCITY = 1500;
 
@@ -69,11 +69,11 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!isLauncherBusy(pos)) {
             setLauncherBusy(pos, true);
             switch (pos) {
-                case LEFT: cageLeft.setPosition(LAUNCH_POSE); break;
+                case LEFT: cageLeft.setPosition(0.21); break;
                 case MIDDLE: cageMiddle.setPosition(LAUNCH_POSE); break;
                 case RIGHT: cageRight.setPosition(LAUNCH_POSE); break;
                 case ALL:
-                    cageLeft.setPosition(LAUNCH_POSE);
+                    cageLeft.setPosition(0.21);
                     cageMiddle.setPosition(LAUNCH_POSE);
                     cageRight.setPosition(LAUNCH_POSE);
                     break;
@@ -87,18 +87,30 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void resetManual(ShooterPosition pos) {
         switch (pos) {
-            case LEFT: cageLeft.setPosition(0.075); break;
-            case MIDDLE: cageMiddle.setPosition(0.075); break;
-            case RIGHT: cageRight.setPosition(0.075); break;
+            case LEFT: cageLeft.setPosition(0.11); break;
+            case MIDDLE: cageMiddle.setPosition(0.1); break;
+            case RIGHT: cageRight.setPosition(0.1); break;
             case INTAKE:
             case ALL:
-                cageLeft.setPosition(0.075);
-                cageMiddle.setPosition(0.075);
-                cageRight.setPosition(0.075);
+                cageLeft.setPosition(0.11);
+                cageMiddle.setPosition(0.1);
+                cageRight.setPosition(0.1);
                 break;
 
         }
+
+        //idkf whats going on here we need to make it so it doesnt reutnr back to zero when only one of them is pushed if it was origlannly all pushed and hit another button to only reutrn one
+//        int count = 0;
+//        for (int i = 0; i < 3; i++) {
+//            if (launcherBusy[i]){
+//                count++;
+//            }
+//        }
+//        if (count > 2) {
+//            setLauncherBusy(pos, false);
+//        }
         setLauncherBusy(pos, false);
+
     }
 
     public void setShooterSpeed(double speed) {

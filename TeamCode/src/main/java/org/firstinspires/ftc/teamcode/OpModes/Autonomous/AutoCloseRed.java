@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -38,9 +39,12 @@ public class AutoCloseRed extends OpModeCommand {
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
         schedule(
+
+                new RunCommand(robotContainer :: aPeriodic),
+
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.55),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.53),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitCommand(3000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
@@ -55,7 +59,7 @@ public class AutoCloseRed extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitCommand(500),
+                        new WaitCommand(1000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(500),
 
@@ -68,7 +72,7 @@ public class AutoCloseRed extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitCommand(500),
+                        new WaitCommand(1000),
                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new WaitCommand(500),
 

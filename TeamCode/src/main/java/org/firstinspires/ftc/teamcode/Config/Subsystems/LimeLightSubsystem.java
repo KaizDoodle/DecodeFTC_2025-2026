@@ -13,6 +13,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     int allianceTagID = 0;
     double SCALE = 6.8;
     double YAW_OFFSET = 2;
+    Alliance alliance;
 //150 0.046
 //100 0.06
 //50 0.1395
@@ -21,6 +22,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     public LimeLightSubsystem(HardwareMap hardwareMap, Alliance alliance){
         limelight = hardwareMap.get(Limelight3A.class, "limeLight");
+        this.alliance = alliance;
 //        limelight.setPollRateHz(250);
         if (alliance == Alliance.BLUE)
             allianceTagID = 20;
@@ -36,8 +38,15 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
     public double getYawOffset(){
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
+
+
+        double degrees = 4.75;
+        if (getDistance() > 100)
+            degrees = 2;
+
         if (tag != null) {
-            return tag.getTargetXDegrees() -5.5;
+            return tag.getTargetXDegrees() -degrees;
+            // root of a number - distance
 
         }
 
@@ -69,11 +78,11 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
     public LLResultTypes.FiducialResult getAllianceAprilTag(){
 
-        LLResultTypes.FiducialResult result = getAprilTag();
-            if (result != null && result.getFiducialId() == allianceTagID)
+        for (LLResultTypes.FiducialResult result : limelight.getLatestResult().getFiducialResults()) {
+            if (result != null&& result.getFiducialId() == allianceTagID)
                 return result;
+        }
         return null;
-
     }
     public LLResultTypes.FiducialResult getAprilTag(){
 
