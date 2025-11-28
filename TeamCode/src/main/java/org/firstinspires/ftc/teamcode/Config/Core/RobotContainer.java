@@ -41,7 +41,7 @@ public class RobotContainer {
     public LMECSubsystem lmecSubsystem;
     public ShooterSubsystem shooterSubsystem;
     public IntakeSubsystem intakeSubsystem;
-//    public ColorSubsystem colorSubsystem;
+    //    public ColorSubsystem colorSubsystem;
     public Follower follower;
     public PatternSubsystem patternSubsystem;
 
@@ -122,31 +122,31 @@ public class RobotContainer {
     private void applyState() {
 
         // schedule commands only on state entry
-            switch (robotState) {
+        switch (robotState) {
 
-                case INTAKING:
-                    intakeSubsystem.intakeSpeed(1);
-                    break;
-                case LOADING:
-                    shooterSubsystem.setShooterSpeed(-0.3);
-                    break;
-                case OUTAKING:
-                    intakeSubsystem.intakeSpeed(-1);
-                    break;
-                case AIMING:
-                    shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-                    break;
-                case SHOOTING:
-                    shooterSubsystem.setShooterSpeed(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+            case INTAKING:
+                intakeSubsystem.intakeSpeed(1);
+                break;
+            case LOADING:
+                shooterSubsystem.setShooterSpeed(-0.3);
+                break;
+            case OUTAKING:
+                intakeSubsystem.intakeSpeed(-1);
+                break;
+            case AIMING:
+                shooterSubsystem.setShooterVelocity(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+                break;
+            case SHOOTING:
+                shooterSubsystem.setShooterVelocity(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
 //                    lmecSubsystem.lockMechanum();
-                    break;
-                case NONE:
-                    intakeSubsystem.stop();
-                    shooterSubsystem.setShooterSpeed(0);
-                    intakeSubsystem.intakeSpeed(0);
+                break;
+            case NONE:
+                intakeSubsystem.stop();
+                shooterSubsystem.setShooterSpeed(0);
+                intakeSubsystem.intakeSpeed(0);
 //                    lmecSubsystem.unlockMechanum();
-                    break;
-            }
+                break;
+        }
 
 
         double yawNormalized = limeLightSubsystem.getYawOffset() / 24;
@@ -190,6 +190,8 @@ public class RobotContainer {
 
         telemetry.addData("Distance", limeLightSubsystem.getDistance());
         telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+        telemetry.addData("Shooter velocity", 1500 *shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+
 
         if (opmode == TELEOP) {
             applyState();
@@ -239,7 +241,7 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
 //                new SequentialCommandGroup(
 //                        new InstantCommand(() -> setState(RobotStates.AIM)),
-                        new ManualCageControlCommand(shooterSubsystem, ShooterPosition.ALL)
+                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.ALL)
 //                )
         ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL));
 
@@ -291,7 +293,7 @@ public class RobotContainer {
                         new ParallelCommandGroup(
                                 new InstantCommand(() -> setState(RobotStates.NONE)),
                                 new ManualResetCommand(shooterSubsystem, ShooterPosition.INTAKE)
-                                )
+                        )
                 );
 
         //Left trigger hold, lock mecanum TODO make sure the when inactive doesnt interfere

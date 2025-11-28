@@ -34,7 +34,7 @@ public class ShooterControllerCommand extends InstantCommand {
 
     @Override
     public void execute() {
-        shooterSubsystem.setShooterSpeed(speed);
+        shooterSubsystem.setShooterVelocity(speed);
     }
 
 }

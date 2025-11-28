@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.WaitUntilLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.IntakeControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCommand;
@@ -26,6 +27,8 @@ public class AutoFarBlue extends OpModeCommand {
     RobotContainer robotContainer;
     AutoFarPath auto;
 
+    double shotVelocity = 0.74;
+
     @Override
     public void initialize() {
         robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, telemetry);
@@ -40,15 +43,11 @@ public class AutoFarBlue extends OpModeCommand {
         schedule(
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0.65),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitCommand(3000),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT),
-                        new WaitCommand(500),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE),
-                        new WaitCommand(500),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT),
-                        new WaitCommand(500),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT, shotVelocity),
 
                         // Drive to pick preloads + shoot
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
@@ -56,53 +55,10 @@ public class AutoFarBlue extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitCommand(1000),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT),
-                        new WaitCommand(500),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE),
-                        new WaitCommand(500),
-                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT),
-                        new WaitCommand(500),
-
-
-//                        // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
-//                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-//                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-//                        new FollowPathCommand(robotContainer.follower, auto.next()),
-//
-//                        // --- SCORE AGAIN ---
-//                        new FollowPathCommand(robotContainer.follower, auto.next()),
-//                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-//                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-//                        new WaitCommand(1000),
-//                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
-//                        new WaitCommand(500),
-//
-//                        // --- SECOND PICKUP (continuous line→pickup) ---
-//                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-//                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-//                        new FollowPathCommand(robotContainer.follower, auto.next()),
-//
-//                        // --- SCORE AGAIN X2 ---
-//                        new FollowPathCommand(robotContainer.follower, auto.next()),
-//                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-//                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-//                        new WaitCommand(1000),
-//                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
-//                        new WaitCommand(500),
-//
-//                        // --- THRID PICKUP (continuous line→pickup) ---
-//                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-//                        new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
-//                        new FollowPathCommand(robotContainer.follower, auto.next()),
-//
-//                        // --- SCORE AGAIN X3 ---
-//                        new FollowPathCommand(robotContainer.follower, auto.next()),
-//                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-//                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-//                        new WaitCommand(1000),
-//                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
-//                        new WaitCommand(500),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT, shotVelocity),
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),

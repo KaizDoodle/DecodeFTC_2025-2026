@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDFController;
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -24,7 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final double MIN_POWER = 0.55;
     private final double MAX_POWER = 0.7;
-    private final double MAX_VELOCITY = 1500;
+    private final double MAX_VELOCITY = 2500;
 
     private final double LAUNCH_POSE = 0.2;
     private final double LOAD_POS = 0.15;
@@ -45,10 +48,21 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterTwo = hardwareMap.get(DcMotorEx.class, "shooterTwo");
         shooterThree = hardwareMap.get(DcMotorEx.class, "shooterThree");
 
+
+        shooterOne.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20,0.05,4,13));
+        shooterTwo.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20,0.05,4,13));
+        shooterThree.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20,0.05,4,13));
+
         resetManual(ShooterPosition.ALL);
     }
 
+    public boolean atVelocity(double percent) {
+        double target = percent * MAX_VELOCITY;
 
+        return shooterOne.getVelocity() > target * 0.92 &&
+                shooterTwo.getVelocity() > target * 0.92 &&
+                shooterThree.getVelocity() > target * 0.92;
+    }
 
     public boolean isLauncherBusy(ShooterPosition pos) {
         if (pos == ShooterPosition.ALL || pos == ShooterPosition.INTAKE) {
@@ -69,11 +83,11 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!isLauncherBusy(pos)) {
             setLauncherBusy(pos, true);
             switch (pos) {
-                case LEFT: cageLeft.setPosition(0.215); break;
+                case LEFT: cageLeft.setPosition(LAUNCH_POSE); break;
                 case MIDDLE: cageMiddle.setPosition(LAUNCH_POSE); break;
                 case RIGHT: cageRight.setPosition(LAUNCH_POSE); break;
                 case ALL:
-                    cageLeft.setPosition(0.215);
+                    cageLeft.setPosition(LAUNCH_POSE);
                     cageMiddle.setPosition(LAUNCH_POSE);
                     cageRight.setPosition(LAUNCH_POSE);
                     break;
@@ -87,12 +101,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void resetManual(ShooterPosition pos) {
         switch (pos) {
-            case LEFT: cageLeft.setPosition(0.115); break;
+            case LEFT: cageLeft.setPosition(0.1); break;
             case MIDDLE: cageMiddle.setPosition(0.1); break;
             case RIGHT: cageRight.setPosition(0.1); break;
             case INTAKE:
             case ALL:
-                cageLeft.setPosition(0.115);
+                cageLeft.setPosition(0.1);
                 cageMiddle.setPosition(0.1);
                 cageRight.setPosition(0.1);
                 break;
@@ -120,7 +134,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public double getTargetVelocity(double power){
         return power * 1500;
-
+    }
+    public void setShooterVelocity(double speed) {
+        shooterOne.setVelocity(speed * MAX_VELOCITY);
+        shooterTwo.setVelocity(speed * MAX_VELOCITY);
+        shooterThree.setVelocity(speed* MAX_VELOCITY);
     }
 
     public double getLaunchVelocity1() {
