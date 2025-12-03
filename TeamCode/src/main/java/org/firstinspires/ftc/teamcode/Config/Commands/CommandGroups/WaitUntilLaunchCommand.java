@@ -18,9 +18,7 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
                 new WaitUntilCommand(() -> shooter.atVelocity(targetVelocity)),
 
                 // Fire the cage
-                new ManualCageControlCommand(shooter, pos),
-                new WaitCommand(250),
-                new ManualResetCommand(shooter, pos)
+                new MasterLaunchCommand(shooter, pos)
         );
     }
 }

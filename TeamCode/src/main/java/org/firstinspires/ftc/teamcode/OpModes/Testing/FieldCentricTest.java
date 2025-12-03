@@ -22,7 +22,7 @@ public class FieldCentricTest extends OpMode {
 
     @Override
     public void loop() {
-
+gamepad1.rumble(1000);
         robot.periodic();
     }
     @Override
