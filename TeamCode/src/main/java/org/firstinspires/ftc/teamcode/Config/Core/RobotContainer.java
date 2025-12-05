@@ -14,12 +14,14 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.PatternLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 //import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.StaggeredShotCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
@@ -27,6 +29,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
 import org.firstinspires.ftc.teamcode.Config.Core.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
+import org.firstinspires.ftc.teamcode.Config.Subsystems.ColorSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LMECSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
@@ -36,12 +39,12 @@ import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
 
 public class RobotContainer {
-
+    int count = 0;
     public LimeLightSubsystem limeLightSubsystem;
     public LMECSubsystem lmecSubsystem;
     public ShooterSubsystem shooterSubsystem;
     public IntakeSubsystem intakeSubsystem;
-    //    public ColorSubsystem colorSubsystem;
+    public ColorSubsystem colorSubsystem;
     public Follower follower;
     public PatternSubsystem patternSubsystem;
 
@@ -49,9 +52,14 @@ public class RobotContainer {
     protected GamepadEx operatorPad;
 
     Telemetry telemetry;
-    private double headingPower =0 ;
+    private double headingPower = 0;
     private double rotation;
     int tagID = 0;
+    Object l;
+    Object m;
+    Object r;
+
+    double speed;
 
     public Alliance alliance;
     private Opmode opmode;
@@ -70,7 +78,8 @@ public class RobotContainer {
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         patternSubsystem = new PatternSubsystem();
-//        lmecSubsystem = new LMECSubsystem(hardwareMap);
+        lmecSubsystem = new LMECSubsystem(hardwareMap);
+        colorSubsystem = new ColorSubsystem(hardwareMap);
 
         CommandScheduler.getInstance().registerSubsystem(
                 limeLightSubsystem,
@@ -97,8 +106,9 @@ public class RobotContainer {
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap, alliance);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
-//        colorSubsystem = new ColorSubsystem(hardwareMap);
+        colorSubsystem = new ColorSubsystem(hardwareMap);
         patternSubsystem = new PatternSubsystem();
+        lmecSubsystem = new LMECSubsystem(hardwareMap);
 
 
         follower.setStartingPose(new Pose(0,0,0));
@@ -120,10 +130,10 @@ public class RobotContainer {
     // ------------------------------- STATE MANAGER -------------------------------
 
     private void applyState() {
+        speed = shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance());
 
         // schedule commands only on state entry
         switch (robotState) {
-
             case INTAKING:
                 intakeSubsystem.intakeSpeed(1);
                 break;
@@ -134,20 +144,21 @@ public class RobotContainer {
                 intakeSubsystem.intakeSpeed(-1);
                 break;
             case AIMING:
-                shooterSubsystem.setShooterVelocity(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+                shooterSubsystem.setShooterVelocity(speed);
                 break;
             case SHOOTING:
-                shooterSubsystem.setShooterVelocity(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-//                    lmecSubsystem.lockMechanum();
+                shooterSubsystem.setShooterVelocity(speed);
+                lmecSubsystem.lockMechanum();
+                if (shooterSubsystem.atVelocity(speed))
+                    driverPad.gamepad.rumble(100);
                 break;
             case NONE:
                 intakeSubsystem.stop();
                 shooterSubsystem.setShooterSpeed(0);
                 intakeSubsystem.intakeSpeed(0);
-//                    lmecSubsystem.unlockMechanum();
+                lmecSubsystem.unlockMechanum();
                 break;
         }
-
 
         double yawNormalized = limeLightSubsystem.getYawOffset() / 24;
 
@@ -160,7 +171,6 @@ public class RobotContainer {
         // ---------------- Manual Drive Control ----------------
         double forward = driverPad.getLeftY();
         double strafe = -driverPad.getLeftX();
-
 
         switch (robotState) {
             case AIMING:
@@ -179,18 +189,37 @@ public class RobotContainer {
 
     public void periodic() {
         follower.update();
+//        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
 
-        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
-        telemetry.addData("roataton", headingPower);
+
+//        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
+//        telemetry.addData("roataton", headingPower);
         telemetry.addData("state", getState());
 
         telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity1());
-        telemetry.addData("shooter two", shooterSubsystem.getLaunchVelocity2());
-        telemetry.addData("shooter three", shooterSubsystem.getLaunchVelocity3());
+//        telemetry.addData("shooter two", shooterSubsystem.getLaunchVelocity2());
+//        telemetry.addData("shooter three", shooterSubsystem.getLaunchVelocity3());
 
         telemetry.addData("Distance", limeLightSubsystem.getDistance());
         telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
         telemetry.addData("Shooter velocity", 1500 *shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+
+//        telemetry.addData("Balls", colorSubsystem.getBallColors());
+
+        telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
+        telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
+        telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
+        telemetry.addData("next ball color", patternSubsystem.getNextColor());
+        telemetry.addData("next ball color", patternSubsystem.getShotCount());
+
+//        telemetry.addData("left", colorSubsystem.getBallColors()[0]);
+//        telemetry.addData("Middle", colorSubsystem.getBallColors()[1]);
+        telemetry.addData("Left", l);
+        telemetry.addData("Middle", m);
+        telemetry.addData("Right", r);
+
+        telemetry.addData("count", count);
+
 
 
         if (opmode == TELEOP) {
@@ -221,10 +250,14 @@ public class RobotContainer {
         limeLightSubsystem.limeLightStart();
         shooterSubsystem.resetManual(ShooterPosition.ALL);
         robotState = RobotStates.NONE;
+//        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
+
+        l = colorSubsystem.getBallColors()[0];
+        m = colorSubsystem.getBallColors()[1];
+        r = colorSubsystem.getBallColors()[2];
     }
 
-    public void
-    teleOpControl(){
+    public void teleOpControl(){
 
         // right bumber = shoot
         // left bumber = aim
@@ -239,20 +272,9 @@ public class RobotContainer {
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-//                new SequentialCommandGroup(
-//                        new InstantCommand(() -> setState(RobotStates.AIM)),
-                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.ALL)
-//                )
-        ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL));
-
-
-        //aim command limelight
-        // @TODO set states for the loading and MasterLaunchCommand
-
-        driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whileHeld(new InstantCommand(() -> setState(RobotStates.AIMING)))
-                .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
-
+                new StaggeredShotCommand(shooterSubsystem, ()-> (10* Math.pow(limeLightSubsystem.getDistance(), 1.3)))
+        ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL)
+        );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
         );
@@ -263,20 +285,29 @@ public class RobotContainer {
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
         );
 
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whileHeld(
-                new InstantCommand(() -> setState(RobotStates.OUTAKING))
-        ).whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
+        //aim command limelight
+        // @TODO set states for the loading and MasterLaunchCommand
+
+        driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whileHeld(new InstantCommand(() -> setState(RobotStates.AIMING)))
+                .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
+
+
+
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whileHeld(new InstantCommand(() -> setState(RobotStates.OUTAKING)))
+                .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
         driverPad.getGamepadButton(GamepadKeys.Button.A)
                 .whileHeld(
                         new ParallelCommandGroup(
-                                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.ALL),
+                                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL, true),
                                 new InstantCommand(() -> setState(RobotStates.LOADING))
                         )
                 )
                 .whenReleased(
                         new ParallelCommandGroup(
-                                new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL),
+                                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.ALL, false),
                                 new InstantCommand(() -> setState(RobotStates.NONE))
                         )
                 );
@@ -286,20 +317,15 @@ public class RobotContainer {
                 .whileActiveContinuous(
                         new ParallelCommandGroup(
                                 new InstantCommand(() -> setState(RobotStates.INTAKING)),
-                                new ManualCageControlCommand(shooterSubsystem, ShooterPosition.INTAKE)
+                                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.INTAKE, true)
                         )
                 )
                 .whenInactive(
                         new ParallelCommandGroup(
                                 new InstantCommand(() -> setState(RobotStates.NONE)),
-                                new ManualResetCommand(shooterSubsystem, ShooterPosition.INTAKE)
+                                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.INTAKE, false)
                         )
                 );
-
-        //Left trigger hold, lock mecanum TODO make sure the when inactive doesnt interfere
-//        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
-//                .whenActive(new InstantCommand(() -> setState(RobotStates.INTAKING)))
-//                .whenInactive(new InstantCommand(() -> setState(RobotStates.NONE)));
     }
     public RobotStates robotState = RobotStates.NONE;
 

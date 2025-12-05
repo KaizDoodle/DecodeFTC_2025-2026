@@ -26,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // 11 .72
 
     private final double MIN_POWER = 0.55;
-    private final double MAX_POWER = 0.7;
+    private final double MAX_POWER = 0.75;
     private final double MAX_VELOCITY = 2500;
 
     private final double LAUNCH_POSE = 0.2;
@@ -54,14 +54,13 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterThree.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20,0.05,4,13));
 
         resetManual(ShooterPosition.ALL);
+
     }
 
     public boolean atVelocity(double percent) {
         double target = percent * MAX_VELOCITY;
 
-        return shooterOne.getVelocity() > target * 0.92 &&
-                shooterTwo.getVelocity() > target * 0.92 &&
-                shooterThree.getVelocity() > target * 0.92;
+        return shooterOne.getVelocity() > target * 0.92;
     }
 
     public boolean isLauncherBusy(ShooterPosition pos) {
@@ -132,9 +131,6 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterTwo.setPower(speed);
         shooterThree.setPower(speed);
     }
-    public double getTargetVelocity(double power){
-        return power * 1500;
-    }
     public void setShooterVelocity(double speed) {
         shooterOne.setVelocity(speed * MAX_VELOCITY);
         shooterTwo.setVelocity(speed * MAX_VELOCITY);
@@ -153,7 +149,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double calculatePowerPercentage(double distancePercent) {
 
-        double i = 0.00229 * distancePercent +0.4176;
+        double i = 0.0024 * distancePercent +0.4176;
         return Range.clip(i, MIN_POWER, MAX_POWER);
     }
 }
