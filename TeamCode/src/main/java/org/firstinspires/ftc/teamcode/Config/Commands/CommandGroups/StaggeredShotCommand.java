@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.DynamicWaitCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
@@ -11,32 +12,45 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class StaggeredShotCommand extends SequentialCommandGroup {
-    public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time){
-
-
-
-
+    public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time) {
         addCommands(
-                new ManualCageControlCommand(shooter, ShooterPosition.LEFT),
-                new WaitCommand((long) time.getAsDouble()),
-                new ManualCageControlCommand(shooter, ShooterPosition.MIDDLE),
-                new WaitCommand((long) time.getAsDouble()),
-                new ManualCageControlCommand(shooter, ShooterPosition.RIGHT),
-                new WaitCommand((long) time.getAsDouble())
+                new ParallelCommandGroup(
+                        new SequentialCommandGroup(
+                                new MasterLaunchCommand(shooter, ShooterPosition.LEFT)
+                        ),
+                        new SequentialCommandGroup(
+                                new DynamicWaitCommand(time),
+                                new MasterLaunchCommand(shooter, ShooterPosition.MIDDLE)
+                        ),
+                        new SequentialCommandGroup(
+                                new DynamicWaitCommand(time),
+                                new DynamicWaitCommand(time),
+                                new MasterLaunchCommand(shooter, ShooterPosition.RIGHT
+                                )
+                        )
+                )
         );
-
     }
-    public StaggeredShotCommand(ShooterSubsystem shooter, LimeLightSubsystem limeLightSubsystem, ShooterPosition[] pattern){
-        long  wait = (long) (5 * limeLightSubsystem.getDistance());
 
+    public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time, Supplier<ShooterPosition[]> sequenceSupplier) {
         addCommands(
-                new MasterLaunchCommand(shooter, pattern[0]),
-                new WaitCommand(wait),
-                new MasterLaunchCommand(shooter, pattern[1]),
-                new WaitCommand(wait),
-                new MasterLaunchCommand(shooter, pattern[2])
+                new ParallelCommandGroup(
+                        new SequentialCommandGroup(
+                                new MasterLaunchCommand(shooter, sequenceSupplier.get()[0])
+                        ),
+                        new SequentialCommandGroup(
+                                new DynamicWaitCommand(time),
+                                new MasterLaunchCommand(shooter, sequenceSupplier.get()[1])
+                        ),
+                        new SequentialCommandGroup(
+                                new DynamicWaitCommand(time),
+                                new DynamicWaitCommand(time),
+                                new MasterLaunchCommand(shooter, sequenceSupplier.get()[2])
+                        )
+                )
         );
     }
 }
