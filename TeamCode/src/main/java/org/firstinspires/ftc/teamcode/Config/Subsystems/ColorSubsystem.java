@@ -33,7 +33,7 @@ public class ColorSubsystem extends SubsystemBase {
 
 
 
-//    return order left to right of colors
+    //    return order left to right of colors
     public Object[] getBallColors(){
         Object[] colors = new Object[3];
 
@@ -69,7 +69,7 @@ public class ColorSubsystem extends SubsystemBase {
         Object[] color = getBallColors();
         for (int i =0; i < color.length; i++){
             if (color[i] == "g")
-                 place = i;
+                place = i;
         }
         switch (place) {
             case 0: return ShooterPosition.LEFT;

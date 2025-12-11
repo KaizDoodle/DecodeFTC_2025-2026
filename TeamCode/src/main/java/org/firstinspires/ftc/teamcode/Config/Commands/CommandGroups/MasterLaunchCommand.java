@@ -12,12 +12,12 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 public class MasterLaunchCommand extends SequentialCommandGroup {
     public MasterLaunchCommand(ShooterSubsystem shooter,  ShooterPosition pos) {
 
-            addCommands(
-                    new ManualCageControlCommand(shooter, pos),
-                    new WaitCommand(500),
-                    new ManualResetCommand(shooter, pos)
-            );
-        }
+        addCommands(
+                new ManualCageControlCommand(shooter, pos),
+                new WaitCommand(500),
+                new ManualResetCommand(shooter, pos)
+        );
+    }
     public MasterLaunchCommand(ShooterSubsystem shooter,  ShooterPosition pos, boolean held) {
         if (held)
             addCommands(new ManualCageControlCommand(shooter, pos));

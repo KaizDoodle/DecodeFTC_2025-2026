@@ -52,12 +52,14 @@ public class RobotContainer {
     protected GamepadEx operatorPad;
 
     Telemetry telemetry;
-    private double headingPower =0 ;
+    private double headingPower = 0;
     private double rotation;
     int tagID = 0;
     Object l;
     Object m;
     Object r;
+
+    double speed;
 
     public Alliance alliance;
     private Opmode opmode;
@@ -76,7 +78,7 @@ public class RobotContainer {
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         patternSubsystem = new PatternSubsystem();
-//        lmecSubsystem = new LMECSubsystem(hardwareMap);
+        lmecSubsystem = new LMECSubsystem(hardwareMap);
         colorSubsystem = new ColorSubsystem(hardwareMap);
 
         CommandScheduler.getInstance().registerSubsystem(
@@ -106,6 +108,7 @@ public class RobotContainer {
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         colorSubsystem = new ColorSubsystem(hardwareMap);
         patternSubsystem = new PatternSubsystem();
+        lmecSubsystem = new LMECSubsystem(hardwareMap);
 
 
         follower.setStartingPose(new Pose(0,0,0));
@@ -127,10 +130,10 @@ public class RobotContainer {
     // ------------------------------- STATE MANAGER -------------------------------
 
     private void applyState() {
+        speed = shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance());
 
         // schedule commands only on state entry
         switch (robotState) {
-
             case INTAKING:
                 intakeSubsystem.intakeSpeed(1);
                 break;
@@ -141,21 +144,21 @@ public class RobotContainer {
                 intakeSubsystem.intakeSpeed(-1);
                 break;
             case AIMING:
-                shooterSubsystem.setShooterVelocity(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
+                shooterSubsystem.setShooterVelocity(speed);
                 break;
             case SHOOTING:
-                shooterSubsystem.setShooterVelocity(shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-//                    lmecSubsystem.lockMechanum();
+                shooterSubsystem.setShooterVelocity(speed);
+                lmecSubsystem.lockMechanum();
+                if (shooterSubsystem.atVelocity(speed))
+                    driverPad.gamepad.rumble(100);
                 break;
             case NONE:
                 intakeSubsystem.stop();
                 shooterSubsystem.setShooterSpeed(0);
                 intakeSubsystem.intakeSpeed(0);
-//                    lmecSubsystem.unlockMechanum();
+                lmecSubsystem.unlockMechanum();
                 break;
-
         }
-
 
         double yawNormalized = limeLightSubsystem.getYawOffset() / 24;
 
@@ -168,7 +171,6 @@ public class RobotContainer {
         // ---------------- Manual Drive Control ----------------
         double forward = driverPad.getLeftY();
         double strafe = -driverPad.getLeftX();
-
 
         switch (robotState) {
             case AIMING:
@@ -186,19 +188,9 @@ public class RobotContainer {
     }
 
     public void periodic() {
-
-
-        l = "g";
-        m = "p";
-        r = "p";
-
-
-
-
-        count++;
-
-
         follower.update();
+//        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
+
 
 //        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
 //        telemetry.addData("roataton", headingPower);
@@ -230,8 +222,6 @@ public class RobotContainer {
 
 
 
-
-
         if (opmode == TELEOP) {
             applyState();
         }
@@ -260,14 +250,14 @@ public class RobotContainer {
         limeLightSubsystem.limeLightStart();
         shooterSubsystem.resetManual(ShooterPosition.ALL);
         robotState = RobotStates.NONE;
-        patternSubsystem.setPattern(new Object[]{'p','g','p'});
-        Object l = colorSubsystem.getBallColors()[0];
-        Object m = colorSubsystem.getBallColors()[1];
-        Object r = colorSubsystem.getBallColors()[2];
+//        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
+
+        l = colorSubsystem.getBallColors()[0];
+        m = colorSubsystem.getBallColors()[1];
+        r = colorSubsystem.getBallColors()[2];
     }
 
-    public void
-    teleOpControl(){
+    public void teleOpControl(){
 
         // right bumber = shoot
         // left bumber = aim
@@ -282,18 +272,9 @@ public class RobotContainer {
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new StaggeredShotCommand(shooterSubsystem, limeLightSubsystem)
-//
-        ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL));
-
-
-        //aim command limelight
-        // @TODO set states for the loading and MasterLaunchCommand
-
-        driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whileHeld(new InstantCommand(() -> setState(RobotStates.AIMING)))
-                .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
-
+                new StaggeredShotCommand(shooterSubsystem, ()-> (10* Math.pow(limeLightSubsystem.getDistance(), 1.3)))
+        ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL)
+        );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
         );
@@ -303,6 +284,15 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
         );
+
+        //aim command limelight
+        // @TODO set states for the loading and MasterLaunchCommand
+
+        driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whileHeld(new InstantCommand(() -> setState(RobotStates.AIMING)))
+                .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
+
+
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whileHeld(new InstantCommand(() -> setState(RobotStates.OUTAKING)))

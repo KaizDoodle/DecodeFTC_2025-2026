@@ -11,11 +11,11 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 public class WaitUntilLaunchCommand extends SequentialCommandGroup {
 
-    public WaitUntilLaunchCommand(ShooterSubsystem shooter, ShooterPosition pos, double targetVelocity) {
+    public WaitUntilLaunchCommand(ShooterSubsystem shooter, ShooterPosition pos, double targetSpeed) {
 
         addCommands(
                 // Wait until shooter reaches target velocity
-                new WaitUntilCommand(() -> shooter.atVelocity(targetVelocity)),
+                new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),
 
                 // Fire the cage
                 new MasterLaunchCommand(shooter, pos)

@@ -38,30 +38,36 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
     public double getYawOffset(){
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
-
-
         double degrees = 4.75;
+
         if (getDistance() > 100)
-            degrees = 2;
+            degrees = 0.5;
 
         if (tag != null) {
             return tag.getTargetXDegrees() -degrees;
             // root of a number - distance
-
         }
-
         return -1;
     }
-    public String getPattern(){
-        String colors = "";
 
-        if (getAllianceAprilTag().getFiducialId() == 20 )
-            colors = "gpp";
-        if (getAllianceAprilTag().getFiducialId() == 21 )
-            colors = "pgp";
-        if (getAllianceAprilTag().getFiducialId() == 22 )
-            colors = "ppg";
+    public Object[] getPattern(){
+        Object[] colors = new Object[3];
 
+        if (getAllianceAprilTag().getFiducialId() == 21 ) {
+            colors[0] = "g";
+            colors[1] = "p";
+            colors[2] = "p";
+        }
+        if (getAllianceAprilTag().getFiducialId() == 22 ) {
+            colors[0] = "p";
+            colors[1] = "g";
+            colors[2] = "p";
+        }
+        if (getAllianceAprilTag().getFiducialId() == 23 ) {
+            colors[0] = "p";
+            colors[1] = "p";
+            colors[2] = "g";
+        }
         return colors;
     }
     public void limeLightStart(){
@@ -81,14 +87,6 @@ public class LimeLightSubsystem extends SubsystemBase {
         for (LLResultTypes.FiducialResult result : limelight.getLatestResult().getFiducialResults()) {
             if (result != null&& result.getFiducialId() == allianceTagID)
                 return result;
-        }
-        return null;
-    }
-    public LLResultTypes.FiducialResult getAprilTag(){
-
-        for (LLResultTypes.FiducialResult dr : limelight.getLatestResult().getFiducialResults()) {
-            if (dr != null)
-                return dr;
         }
         return null;
     }

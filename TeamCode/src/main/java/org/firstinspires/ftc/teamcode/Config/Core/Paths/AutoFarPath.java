@@ -33,7 +33,7 @@ public class AutoFarPath {
 
     public Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(180));
 
-    public Pose farScore = new Pose(58, 20, Math.toRadians(108));
+    public Pose farScore = new Pose(58, 20, Math.toRadians(111));
     private int index = 0;
 
 

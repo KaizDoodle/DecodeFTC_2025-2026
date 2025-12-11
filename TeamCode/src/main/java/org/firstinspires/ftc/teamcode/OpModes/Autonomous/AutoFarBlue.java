@@ -27,7 +27,7 @@ public class AutoFarBlue extends OpModeCommand {
     RobotContainer robotContainer;
     AutoFarPath auto;
 
-    double shotVelocity = 0.74;
+    double shotVelocity = 0.72;
 
     @Override
     public void initialize() {

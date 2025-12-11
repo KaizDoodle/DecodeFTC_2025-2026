@@ -131,9 +131,6 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterTwo.setPower(speed);
         shooterThree.setPower(speed);
     }
-    public double getTargetVelocity(double power){
-        return power * 1500;
-    }
     public void setShooterVelocity(double speed) {
         shooterOne.setVelocity(speed * MAX_VELOCITY);
         shooterTwo.setVelocity(speed * MAX_VELOCITY);

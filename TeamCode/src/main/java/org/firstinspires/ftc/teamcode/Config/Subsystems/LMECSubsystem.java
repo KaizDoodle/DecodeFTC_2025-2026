@@ -15,18 +15,18 @@ public class LMECSubsystem extends SubsystemBase {
 
     public LockState state = LockState.LOCKED;
     public LMECSubsystem(HardwareMap hardwareMap) {
-        LMECFront = hardwareMap.get(Servo.class, "LMECFront");
+//        LMECFront = hardwareMap.get(Servo.class, "LMECFront");
         LMECBack = hardwareMap.get(Servo.class, "LMECBack");
     }
 
     public void lockMechanum() {
-        LMECFront.setPosition(0.5);
+//        LMECFront.setPosition(0.5);
         LMECBack.setPosition(0.5);
         state = LockState.LOCKED;
     }
 
     public void unlockMechanum() {
-        LMECFront.setPosition(0);
+//        LMECFront.setPosition(0);
         LMECBack.setPosition(0);
         state = LockState.UNLOCKED;
     }
