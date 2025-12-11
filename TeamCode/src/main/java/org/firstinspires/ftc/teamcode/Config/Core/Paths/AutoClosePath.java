@@ -16,14 +16,19 @@ public class AutoClosePath {
     private final Alliance alliance;
 
     // robot lined up facing the goal, side to the crevice of the goal and the ramp
-    public Pose start = new Pose(19.5, 122, Math.toRadians(54));
+    public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
     public Pose linePickUp1 = new Pose(50, 84, Math.toRadians(0));
     public Pose transition1 = new Pose (40,90, Math.toRadians(120));
     public Pose pickUp1 = new Pose(18, 84, Math.toRadians(0));
 
+    public Pose lineUpGateDump = new Pose(25, 84, Math.toRadians(0));
+    public Pose slideOver = new Pose(25, 81, Math.toRadians(0));
+    public Pose dumpGate = new Pose(15.5, 78, Math.toRadians(0));
+
     public Pose linePickUp2 = new Pose(50, 60.5, Math.toRadians(0));
-    public Pose transition2 = new Pose (47,60.5, Math.toRadians(138));
+    public Pose backUp2 = new Pose (24,60.5, Math.toRadians(0));
+    public Pose transition2 = new Pose (40,90, Math.toRadians(120));
     public Pose pickUp2 = new Pose(13, 60.5, Math.toRadians(0));
 
     public Pose linePickUp3 = new Pose(50, 39.5, Math.toRadians(0));
@@ -54,6 +59,10 @@ public class AutoClosePath {
             transition1 = transition1.mirror();
             transition2 = transition2.mirror();
             transition3 = transition3.mirror();
+            lineUpGateDump = lineUpGateDump.mirror();
+            slideOver = slideOver.mirror();
+            dumpGate = dumpGate.mirror();
+            backUp2 = backUp2.mirror();
 
         }
     }
@@ -75,13 +84,27 @@ public class AutoClosePath {
 
                 .addPath(new BezierLine(linePickUp1, pickUp1))
                 .setLinearHeadingInterpolation(linePickUp1.getHeading(), pickUp1.getHeading())
+
+                .build();
+    }
+
+    public PathChain dumpGate() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(pickUp1, lineUpGateDump))
+                .setLinearHeadingInterpolation(pickUp1.getHeading(), lineUpGateDump.getHeading())
+
+                .addPath(new BezierLine(lineUpGateDump, slideOver))
+                .setLinearHeadingInterpolation(lineUpGateDump.getHeading(), slideOver.getHeading())
+
+                .addPath(new BezierLine(slideOver, dumpGate))
+                .setLinearHeadingInterpolation(slideOver.getHeading(), dumpGate.getHeading())
                 .build();
     }
 
     public PathChain score1() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(pickUp1, transition1))
-                .setLinearHeadingInterpolation(pickUp1.getHeading(), transition1.getHeading())
+                .addPath(new BezierLine(dumpGate, transition1))
+                .setLinearHeadingInterpolation(dumpGate.getHeading(), transition1.getHeading())
 
                 .addPath(new BezierLine(transition1, shortScore))
                 .setLinearHeadingInterpolation(transition1.getHeading(), shortScore.getHeading())
@@ -100,8 +123,11 @@ public class AutoClosePath {
 
     public PathChain score2() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(pickUp2, transition2))
-                .setLinearHeadingInterpolation(pickUp2.getHeading(), transition2.getHeading())
+                .addPath(new BezierLine(pickUp2, backUp2))
+                .setLinearHeadingInterpolation(pickUp2.getHeading(), backUp2.getHeading())
+
+                .addPath(new BezierLine(backUp2, transition2))
+                .setLinearHeadingInterpolation(backUp2.getHeading(), transition2.getHeading())
 
                 .addPath(new BezierLine(transition2, shortScore))
                 .setLinearHeadingInterpolation(transition2.getHeading(), shortScore.getHeading())
@@ -138,12 +164,13 @@ public class AutoClosePath {
         switch (index++) {
             case 0: return shootPreload();
             case 1: return pickUp1();
-            case 2: return score1();
-            case 3: return pickUp2();
-            case 4: return score2();
-            case 5: return pickUp3();
-            case 6: return score3();
-            case 7: return outOfBox();
+            case 2: return dumpGate();
+            case 3: return score1();
+            case 4: return pickUp2();
+            case 5: return score2();
+            case 6: return pickUp3();
+            case 7: return score3();
+            case 8: return outOfBox();
             default: return null;
         }
     }

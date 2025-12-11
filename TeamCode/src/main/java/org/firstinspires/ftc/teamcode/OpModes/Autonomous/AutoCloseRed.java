@@ -28,7 +28,7 @@ public class AutoCloseRed extends OpModeCommand {
     RobotContainer robotContainer;
     AutoClosePath auto;
 
-    double shotVelocity = 0.55;
+    double shotVelocity = 0.54;
 
     @Override
     public void initialize() {
@@ -54,6 +54,7 @@ public class AutoCloseRed extends OpModeCommand {
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.follower, auto.next()), // dump gate
 
                         // --- SCORE AGAIN ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
