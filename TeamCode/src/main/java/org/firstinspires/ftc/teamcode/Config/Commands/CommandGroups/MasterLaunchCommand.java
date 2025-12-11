@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
+import java.util.function.Supplier;
+
 public class MasterLaunchCommand extends SequentialCommandGroup {
     public MasterLaunchCommand(ShooterSubsystem shooter,  ShooterPosition pos) {
 
@@ -23,5 +25,13 @@ public class MasterLaunchCommand extends SequentialCommandGroup {
             addCommands(new ManualCageControlCommand(shooter, pos));
         else
             addCommands(new ManualResetCommand(shooter, pos));
+    }
+    public MasterLaunchCommand(ShooterSubsystem shooter, Supplier<ShooterPosition> posSupplier) {
+
+        addCommands(
+                new ManualCageControlCommand(shooter, posSupplier),
+                new WaitCommand(500),
+                new ManualResetCommand(shooter, posSupplier)
+        );
     }
 }

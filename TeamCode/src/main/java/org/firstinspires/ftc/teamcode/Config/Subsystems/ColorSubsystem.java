@@ -2,9 +2,10 @@ package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
 public class ColorSubsystem extends SubsystemBase {
@@ -18,15 +19,52 @@ public class ColorSubsystem extends SubsystemBase {
         sensorMiddle = hardwareMap.get(RevColorSensorV3.class, "colorMiddle");
         sensorRight = hardwareMap.get(RevColorSensorV3.class, "colorRight");
     }
-    private Object getColor(ColorSensor sensor) {
-        int red = sensor.red();
-        int green = sensor.green();
-        int blue = sensor.blue();
+    public double getDistance(){
+        return sensorLeft.getDistance(DistanceUnit.CM);
+    }
 
-        if ((red < 50 ) && (green > 48 && green < 55) && (blue > 50 && blue < 57 ))
-            return 'p';
-        else if ( (red < 50 ) && (green > 55 && green < 62 ) && (blue > 45 && blue < 52 ))
-            return 'g';
+    //    public double getRed(){
+//        NormalizedRGBA val = sensorLeft.getNormalizedColors();
+//
+//        return  val.red / Math.max(val.alpha, 1.0f);
+//
+//    }
+//    public double getGreen(){
+//        NormalizedRGBA val = sensorLeft.getNormalizedColors();
+//
+//        return  (val.green / Math.max(val.alpha, 1.0f))/getRed();
+//
+//    }
+    public boolean isMiddleFull(){
+        return sensorMiddle.getDistance(DistanceUnit.CM) < 6.1;
+    }
+    public boolean isRightFull(){
+        return sensorRight.getDistance(DistanceUnit.CM) < 9.2;
+
+    }
+    public boolean isLeftFull(){
+        return sensorLeft.getDistance(DistanceUnit.CM) < 4.45;
+    }
+
+
+    public boolean isFull(){
+        return isLeftFull() && isMiddleFull() && isRightFull();
+    }
+
+    private Object getColor(RevColorSensorV3 sensor, boolean ballDetected) {
+        NormalizedRGBA val = sensor.getNormalizedColors();
+
+        float r = val.red / Math.max(val.alpha, 1.0f);
+        float g = val.green / Math.max(val.alpha, 1.0f);
+        float b = val.blue / Math.max(val.alpha, 1.0f);
+
+
+
+        if (ballDetected)
+            if (g/r - b/r > 0.2)
+                return 'g';
+            else
+                return 'p';
         else return 'n';
         // or return G
     }
@@ -37,9 +75,13 @@ public class ColorSubsystem extends SubsystemBase {
     public Object[] getBallColors(){
         Object[] colors = new Object[3];
 
-        colors[0] = getColor(sensorLeft);
-        colors[1] = getColor(sensorMiddle);
-        colors[2] = getColor(sensorRight);
+//        colors[0] = getColor(sensorLeft, isLeftFull());
+//        colors[1] = getColor(sensorMiddle, isMiddleFull());
+//        colors[2] = getColor(sensorRight, isRightFull());
+
+        colors[0] = 'p';
+        colors[1] = 'p';
+        colors[2] = 'g';
 
         return colors;
     }
@@ -47,26 +89,11 @@ public class ColorSubsystem extends SubsystemBase {
     // ------------------------------------------- //
     // ----Get either green or purple location---- //
     // ------------------------------------------- //
-    public int getSupplyPurple(){
-        Object[] array = getBallColors();
-        int count = 0;
-        for (Object o : array) {
-            if (o == "p") count++;
-        }
-        return count;
-    }
-    public int getSupplyGreen(){
-        Object[] array = getBallColors();
-        int count = 0;
-        for (Object o : array) {
-            if (o == "g") count++;
-        }
-        return count;
-    }
 
-    public ShooterPosition getGreenLocation(){
+
+    public ShooterPosition getGreenLocation(Object[] colors){
         int place = 0;
-        Object[] color = getBallColors();
+        Object[] color = colors;
         for (int i =0; i < color.length; i++){
             if (color[i] == "g")
                 place = i;
@@ -78,9 +105,9 @@ public class ColorSubsystem extends SubsystemBase {
         }
         return null;
     }
-    public ShooterPosition getPurpleLocation(){
+    public ShooterPosition getPurpleLocation(Object[] colors){
         int place = 0;
-        Object[] color = getBallColors();
+        Object[] color = colors;
         for (int i =0; i < color.length; i++){
             if (color[i] == "p")
                 place = i;

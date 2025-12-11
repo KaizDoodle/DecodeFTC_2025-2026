@@ -10,20 +10,18 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.util.Timing;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.PatternLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 //import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.StaggeredShotCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCommand;
-import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
@@ -37,9 +35,11 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.PatternSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
 
 public class RobotContainer {
-    int count = 0;
     public LimeLightSubsystem limeLightSubsystem;
     public LMECSubsystem lmecSubsystem;
     public ShooterSubsystem shooterSubsystem;
@@ -54,16 +54,17 @@ public class RobotContainer {
     Telemetry telemetry;
     private double headingPower = 0;
     private double rotation;
-    int tagID = 0;
-    Object l;
-    Object m;
-    Object r;
-
+    Object[] ballColors;
+    ShooterPosition[] sequence = new ShooterPosition[3];
+    Object[] pattern;
+    Timing.Timer time;
     double speed;
 
     public Alliance alliance;
     private Opmode opmode;
+    private double distance;
     public CommandScheduler cs = CommandScheduler.getInstance();
+    private LLResultTypes.FiducialResult tag;
 
     //CONSTRUCTOR FOR AUTO TEST
     public RobotContainer(HardwareMap hardwareMap, Alliance alliance, Telemetry telemetry){
@@ -72,7 +73,6 @@ public class RobotContainer {
         this.telemetry = telemetry;
 
         follower = Constants.createFollower(hardwareMap);
-
 
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap, alliance);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
@@ -86,13 +86,6 @@ public class RobotContainer {
                 intakeSubsystem,
                 shooterSubsystem,
                 patternSubsystem);
-
-        if (alliance.equals( Alliance.BLUE))
-            tagID = 20;
-        if (alliance.equals( Alliance.RED))
-            tagID = 24;
-
-
     }
 
     public RobotContainer(HardwareMap hardwareMap, Gamepad driver, Gamepad operator, Alliance alliance, Telemetry telemetry){
@@ -117,20 +110,12 @@ public class RobotContainer {
                 intakeSubsystem,
                 shooterSubsystem,
                 patternSubsystem);
-
-        if (alliance.equals( Alliance.BLUE))
-            tagID = 20;
-        if (alliance.equals( Alliance.RED))
-            tagID = 24;
-
-
     }
 
 
     // ------------------------------- STATE MANAGER -------------------------------
 
     private void applyState() {
-        speed = shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance());
 
         // schedule commands only on state entry
         switch (robotState) {
@@ -139,30 +124,32 @@ public class RobotContainer {
                 break;
             case LOADING:
                 shooterSubsystem.setShooterSpeed(-0.3);
+                intakeSubsystem.stop();
                 break;
             case OUTAKING:
                 intakeSubsystem.intakeSpeed(-1);
                 break;
             case AIMING:
                 shooterSubsystem.setShooterVelocity(speed);
+                intakeSubsystem.stop();
                 break;
             case SHOOTING:
                 shooterSubsystem.setShooterVelocity(speed);
-                lmecSubsystem.lockMechanum();
+                intakeSubsystem.stop();
                 if (shooterSubsystem.atVelocity(speed))
                     driverPad.gamepad.rumble(100);
                 break;
             case NONE:
-                intakeSubsystem.stop();
                 shooterSubsystem.setShooterSpeed(0);
-                intakeSubsystem.intakeSpeed(0);
-                lmecSubsystem.unlockMechanum();
+//                intakeSubsystem.intakeSpeed(-0.5);
+                intakeSubsystem.stop();
+//                lmecSubsystem.unlockMechanum();
                 break;
         }
 
-        double yawNormalized = limeLightSubsystem.getYawOffset() / 24;
+        double yawNormalized = limeLightSubsystem.getYawOffset(tag) / 24;
 
-        if (limeLightSubsystem.getAllianceAprilTag() != null) {
+        if (tag != null) {
             headingPower = 0.25 * Math.pow(Math.abs(yawNormalized), 0.6 ) * Math.signum(yawNormalized);
         } else {
             headingPower = driverPad.getRightX() * 0.7;
@@ -170,7 +157,6 @@ public class RobotContainer {
 
         // ---------------- Manual Drive Control ----------------
         double forward = driverPad.getLeftY();
-        double strafe = -driverPad.getLeftX();
 
         switch (robotState) {
             case AIMING:
@@ -184,64 +170,50 @@ public class RobotContainer {
                 break;
         }
 
-        follower.setTeleOpDrive(forward, strafe, rotation, false);
+        if (lmecSubsystem.state != LMECSubsystem.LockState.LOCKED)
+            follower.setTeleOpDrive(forward, -driverPad.getLeftX(), rotation, false);
+        else
+            follower.setTeleOpDrive(forward, 0, rotation, true);
+
+
     }
 
     public void periodic() {
+        tag = limeLightSubsystem.getAllianceAprilTag();
+        distance = limeLightSubsystem.getDistance(tag);
+        speed = shooterSubsystem.calculatePowerPercentage(distance);
+
+        ballColors = colorSubsystem.getBallColors();
+
+        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
+
+//
+        pattern = patternSubsystem.getPattern();
+//
+
+        if (pattern[0]!= null) {
+            for (int i = 0; i < 3; i++) {
+                if (pattern[i].equals('g')) {
+                    sequence[i] = colorSubsystem.getGreenLocation(ballColors);
+                } else if (pattern[i].equals('p')) {
+                    sequence[i] = colorSubsystem.getPurpleLocation(ballColors);
+                }
+            }
+        }
+
+
         follower.update();
-//        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
-
-
-//        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
-//        telemetry.addData("roataton", headingPower);
-        telemetry.addData("state", getState());
-
-        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity1());
-//        telemetry.addData("shooter two", shooterSubsystem.getLaunchVelocity2());
-//        telemetry.addData("shooter three", shooterSubsystem.getLaunchVelocity3());
-
-        telemetry.addData("Distance", limeLightSubsystem.getDistance());
-        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-        telemetry.addData("Shooter velocity", 1500 *shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-
-//        telemetry.addData("Balls", colorSubsystem.getBallColors());
-
-        telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
-        telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
-        telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
-        telemetry.addData("next ball color", patternSubsystem.getNextColor());
-        telemetry.addData("next ball color", patternSubsystem.getShotCount());
-
-//        telemetry.addData("left", colorSubsystem.getBallColors()[0]);
-//        telemetry.addData("Middle", colorSubsystem.getBallColors()[1]);
-        telemetry.addData("Left", l);
-        telemetry.addData("Middle", m);
-        telemetry.addData("Right", r);
-
-        telemetry.addData("count", count);
-
+        tTel();
 
 
         if (opmode == TELEOP) {
             applyState();
         }
+
         cs.run();
     }
     public void aPeriodic() {
-        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
-        telemetry.addData("Distance", limeLightSubsystem.getDistance());
-
-        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(limeLightSubsystem.getDistance()));
-        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
-
-
-        telemetry.addData("odom heading", follower.getHeading());
-
-        telemetry.addData("state", getState());
-
-
-
-        telemetry.update();
+        aTel();
     }
 
     public void tStart(){
@@ -250,11 +222,10 @@ public class RobotContainer {
         limeLightSubsystem.limeLightStart();
         shooterSubsystem.resetManual(ShooterPosition.ALL);
         robotState = RobotStates.NONE;
-//        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
+        ballColors = colorSubsystem.getBallColors();
+//        patternSubsystem.setPattern(limeLightSubsystem.getPattern(tag));
+        time = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
 
-        l = colorSubsystem.getBallColors()[0];
-        m = colorSubsystem.getBallColors()[1];
-        r = colorSubsystem.getBallColors()[2];
     }
 
     public void teleOpControl(){
@@ -269,11 +240,20 @@ public class RobotContainer {
 //                        new ResetIMUCommand();
 //        );
 
+        Supplier<ShooterPosition[]> object = () -> new ShooterPosition[] {ShooterPosition.MIDDLE,ShooterPosition.LEFT  ,ShooterPosition.RIGHT};
+
+        //TODO leo look this here it should work if you uncommnet out this line of code it just doesnt properly build sequnce for some reason
+//                Supplier<ShooterPosition[]> object = () -> sequence;
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new StaggeredShotCommand(shooterSubsystem, ()-> (10* Math.pow(limeLightSubsystem.getDistance(), 1.3)))
-        ).whenReleased(new ManualResetCommand(shooterSubsystem, ShooterPosition.ALL)
+                new StaggeredShotCommand(shooterSubsystem, ()-> (1.3* Math.pow(Range.clip(distance, 50, 100), 1.3)),object)
+        );
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
+                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
+        );
+        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
+                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
@@ -284,6 +264,8 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
         );
+
+
 
         //aim command limelight
         // @TODO set states for the loading and MasterLaunchCommand
@@ -326,6 +308,15 @@ public class RobotContainer {
                                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.INTAKE, false)
                         )
                 );
+
+        new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
+                .whileActiveContinuous(
+                        new InstantCommand(() -> lmecSubsystem.lockMechanum())
+                )
+                .whenInactive(
+                        new InstantCommand(() -> lmecSubsystem.unlockMechanum())
+
+                );
     }
     public RobotStates robotState = RobotStates.NONE;
 
@@ -345,8 +336,14 @@ public class RobotContainer {
 
     public void setState(RobotStates state) {
         // TARGET LOCK CHECK AIM → SHOOT
-        if (state == RobotStates.AIMING && limeLightSubsystem.isLocked())
+        if (state == RobotStates.AIMING && limeLightSubsystem.isLocked(tag))
             state  = RobotStates.SHOOTING;
+        if (state == RobotStates.INTAKING  && colorSubsystem.isFull())
+            state = RobotStates.NONE;
+        if (robotState == RobotStates.INTAKING && state != RobotStates.INTAKING) {
+            time = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
+            time.start();
+        }
         robotState = state;
     }
 
@@ -358,4 +355,66 @@ public class RobotContainer {
         follower.setStartingPose(startingPose);
 
     }
+
+    public void aTel() {
+        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset(tag));
+        telemetry.addData("Distance", distance);
+
+        telemetry.addData("Shooter %", distance);
+        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
+        telemetry.addData("odom heading", follower.getHeading());
+
+        telemetry.addData("state", getState());
+
+        telemetry.update();
+    }
+    public void tTel() {
+
+        telemetry.addData("state", getState());
+//        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
+
+//        telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
+
+        telemetry.addData("Distance", distance);
+//        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(distance));
+//        telemetry.addData("Shooter velocity", 1500 * shooterSubsystem.calculatePowerPercentage(distance));
+
+//        telemetry.addData("Balls", colorSubsystem.getBallColors());
+
+        telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
+        telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
+        telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
+
+        telemetry.addData("next ball color", patternSubsystem.getNextColor());
+//        telemetry.addData("shot stagger", 2* Math.pow(distance, 1.3));
+
+        telemetry.addData("next ball color", limeLightSubsystem.getPattern()[0]);
+
+        telemetry.addData("Left", ballColors[0]);
+        telemetry.addData("Middle", ballColors[1]);
+        telemetry.addData("Right", ballColors[2]);
+        telemetry.addData("purple location", colorSubsystem.getPurpleLocation(ballColors));
+        telemetry.addData("green location", colorSubsystem.getGreenLocation(ballColors));
+
+//        telemetry.addData("time", time.elapsedTime());
+//        telemetry.addData("time", time.remainingTime());
+
+//        telemetry.addData("left" , colorSubsystem.getLeft());
+//        telemetry.addData("middle" , colorSubsystem.getMiddle());
+//        telemetry.addData("right" , colorSubsystem.getRight());
+
+
+        telemetry.addData("sequence", sequence[0] );
+        telemetry.addData("sequence", sequence[1] );
+        telemetry.addData("sequence", sequence[2] );
+        telemetry.addData("pattern", pattern[0] );
+        telemetry.addData("pattern", pattern[1] );
+        telemetry.addData("pattern", pattern[2] );
+
+
+
+
+//        telemetry.addData("total", colorSubsystem.getTotal());
+    }
+
 }

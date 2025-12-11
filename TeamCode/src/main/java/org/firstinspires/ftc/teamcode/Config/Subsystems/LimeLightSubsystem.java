@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -14,6 +13,10 @@ public class LimeLightSubsystem extends SubsystemBase {
     double SCALE = 6.8;
     double YAW_OFFSET = 2;
     Alliance alliance;
+    Object[] colors = new Object[3];
+
+
+
 //150 0.046
 //100 0.06
 //50 0.1395
@@ -36,6 +39,12 @@ public class LimeLightSubsystem extends SubsystemBase {
         else return -1;
 
     }
+    public double getDistance(LLResultTypes.FiducialResult tag) {
+        if (tag != null)
+            return (SCALE/ Math.sqrt(tag.getTargetArea()));
+        else return -1;
+
+    }
     public double getYawOffset(){
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
         double degrees = 4.75;
@@ -49,24 +58,45 @@ public class LimeLightSubsystem extends SubsystemBase {
         }
         return -1;
     }
+    public double getYawOffset(LLResultTypes.FiducialResult tag){
+        double degrees = 4.75;
+
+        if (tag != null) {
+            return tag.getTargetXDegrees() -degrees;
+            // root of a number - distance
+        }
+        return -1;
+    }
 
     public Object[] getPattern(){
-        Object[] colors = new Object[3];
+        LLResultTypes.FiducialResult tag = getAprilTag();
+        boolean tagSet = false;
 
-        if (getAllianceAprilTag().getFiducialId() == 21 ) {
-            colors[0] = "g";
-            colors[1] = "p";
-            colors[2] = "p";
-        }
-        if (getAllianceAprilTag().getFiducialId() == 22 ) {
-            colors[0] = "p";
-            colors[1] = "g";
-            colors[2] = "p";
-        }
-        if (getAllianceAprilTag().getFiducialId() == 23 ) {
-            colors[0] = "p";
-            colors[1] = "p";
-            colors[2] = "g";
+        //if tag detected
+        if (tag != null) {
+            if (tag.getFiducialId() == 21) {
+                colors[0] = "g";
+                colors[1] = "p";
+                colors[2] = "p";
+                tagSet = true;
+            } else if (tag.getFiducialId() == 22) {
+                colors[0] = "p";
+                colors[1] = "g";
+                colors[2] = "p";
+                tagSet = true;
+            } else if (tag.getFiducialId() == 23){
+                colors[0] = "p";
+                colors[1] = "p";
+                colors[2] = "g";
+                tagSet = true;
+            }
+        } else {
+            if (!tagSet){
+                colors[0] = "p";
+                colors[1] = "p";
+                colors[2] = "g";
+            }
+
         }
         return colors;
     }
@@ -82,10 +112,22 @@ public class LimeLightSubsystem extends SubsystemBase {
             return Math.abs(getYawOffset()) < 2;
         else return false;
     }
+    public boolean isLocked(LLResultTypes.FiducialResult tag){
+        if (getYawOffset(tag) != -1)
+            return Math.abs(getYawOffset(tag)) < 2;
+        else return false;
+    }
     public LLResultTypes.FiducialResult getAllianceAprilTag(){
 
         for (LLResultTypes.FiducialResult result : limelight.getLatestResult().getFiducialResults()) {
             if (result != null&& result.getFiducialId() == allianceTagID)
+                return result;
+        }
+        return null;
+    }    public LLResultTypes.FiducialResult getAprilTag(){
+
+        for (LLResultTypes.FiducialResult result : limelight.getLatestResult().getFiducialResults()) {
+            if (result != null)
                 return result;
         }
         return null;

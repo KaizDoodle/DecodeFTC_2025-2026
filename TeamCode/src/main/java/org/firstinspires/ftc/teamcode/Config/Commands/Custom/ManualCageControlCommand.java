@@ -5,45 +5,44 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
+import java.util.function.Supplier;
+
 public class ManualCageControlCommand extends InstantCommand {
 
-    ShooterPosition shooter;
-    int i;
-    ShooterSubsystem shooterSubsystem;
+    private ShooterPosition staticPos;
+    private Supplier<ShooterPosition> dynamicPos;
 
+    private final ShooterSubsystem shooterSubsystem;
+
+    // STATIC version (old behavior)
     public ManualCageControlCommand(ShooterSubsystem shooterSubsystem, ShooterPosition shooter) {
-        this.shooter = shooter;
+        this.staticPos = shooter;
         this.shooterSubsystem = shooterSubsystem;
-//        addRequirements(shooterSubsystem);
-
     }
+
+    // DYNAMIC version (new behavior) — updates live
+    public ManualCageControlCommand(ShooterSubsystem shooterSubsystem, Supplier<ShooterPosition> posSupplier) {
+        this.dynamicPos = posSupplier;
+        this.shooterSubsystem = shooterSubsystem;
+    }
+
+    // int version — unchanged
     public ManualCageControlCommand(ShooterSubsystem shooterSubsystem, int i) {
-        this.i = i;
         this.shooterSubsystem = shooterSubsystem;
 
         switch (i) {
-            case 0: // Left
-                shooter = ShooterPosition.LEFT;
-                break;
-            case 1: // Middle
-                shooter = ShooterPosition.MIDDLE;
-                break;
-            case 2: // Right
-                shooter = ShooterPosition.RIGHT;
-                break;
+            case 0: staticPos = ShooterPosition.LEFT; break;
+            case 1: staticPos = ShooterPosition.MIDDLE; break;
+            case 2: staticPos = ShooterPosition.RIGHT; break;
         }
-//        addRequirements(shooterSubsystem);
     }
 
     @Override
     public void initialize() {
+        ShooterPosition pos = (dynamicPos != null)
+                ? dynamicPos.get()
+                : staticPos;
 
-        shooterSubsystem.loadManual(shooter);
-
-
-
-
-
+        shooterSubsystem.loadManual(pos);
     }
-
 }

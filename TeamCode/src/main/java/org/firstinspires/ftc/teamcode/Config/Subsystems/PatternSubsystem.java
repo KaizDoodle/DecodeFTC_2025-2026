@@ -19,7 +19,7 @@ public class PatternSubsystem extends SubsystemBase {
     public Object getNextColor() {
         if (pattern == null ) return '0';
         int index = shotCounter.get() % pattern.length;
-        shotCounter.incrementAndGet();
+//        shotCounter.incrementAndGet();
 
         return pattern[index];
     }
@@ -37,7 +37,7 @@ public class PatternSubsystem extends SubsystemBase {
     // set the target pattern gotten from april tags
     public void setPattern(Object[] newPattern) {
         this.pattern = newPattern;
-        resetCounter();
+//        resetCounter();
     }
 
     public Object[] getPattern() {
