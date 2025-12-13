@@ -1,50 +1,73 @@
 package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import java.util.concurrent.atomic.AtomicInteger;
+import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
 public class PatternSubsystem extends SubsystemBase {
 
-    private final AtomicInteger shotCounter;
-    private Object[] pattern;
+    private Object[] pattern = new Object[3];  // 'g', 'p', or 'n'
 
-    public PatternSubsystem() {
-        this.pattern = new Object[3]; // default empty until set
-        this.shotCounter = new AtomicInteger(0);
+    public PatternSubsystem() {}
+
+    public ShooterPosition[] buildSequence(Object[] ballColors) {
+        boolean[] used = new boolean[3];
+        ShooterPosition[] result = new ShooterPosition[3];
+
+            for (int i = 0; i < 3; i++) {
+                // cast Object to Character safely
+                char desired = 'n';
+                if (pattern[i] != null && pattern[i] instanceof Character) {
+                    desired = (Character) pattern[i];
+                }
+
+                ShooterPosition chosen;
+                switch (desired) {
+                    case 'g':
+                        chosen = tryConsumeColor('g', ballColors, used);
+                        if (chosen == null) chosen = consumeAny(used);
+                        break;
+                    case 'p':
+                        chosen = tryConsumeColor('p', ballColors, used);
+                        if (chosen == null) chosen = consumeAny(used);
+                        break;
+                    default:  // 'n' or any other
+                        chosen = consumeAny(used);
+                        break;
+                }
+
+                result[i] = chosen;
+            }
+
+
+        return result;
     }
 
-
-
-    // Returns the next color we need to shoot based on current pattern
-    public Object getNextColor() {
-        if (pattern == null ) return '0';
-        int index = shotCounter.get() % pattern.length;
-//        shotCounter.incrementAndGet();
-
-        return pattern[index];
+    private ShooterPosition tryConsumeColor(Object color, Object[] ballColors, boolean[] used) {
+        for (int i = 0; i < 3; i++) {
+            if (!used[i] && ballColors[i].equals(color)) {
+                used[i] = true;
+                return ShooterPosition.fromIndex(i);
+            }
+        }
+        return null; // desired color not available
     }
 
-    // Records that a shot happened (so next call moves on)
-    public void recordShot() {
-        shotCounter.incrementAndGet();
+    private ShooterPosition consumeAny( boolean[] used) {
+        for (int i = 0; i < 3; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                return ShooterPosition.fromIndex(i);
+            }
+        }
+        // This should never happen if you always have 3 balls
+        return ShooterPosition.NONE;
     }
 
-    // Reset to start over
-    public void resetCounter() {
-        shotCounter.set(0);
-    }
-
-    // set the target pattern gotten from april tags
     public void setPattern(Object[] newPattern) {
         this.pattern = newPattern;
-//        resetCounter();
     }
 
     public Object[] getPattern() {
         return pattern;
-    }
-
-    public int getShotCount() {
-        return shotCounter.get();
     }
 }

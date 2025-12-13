@@ -94,7 +94,9 @@ public class ShooterSubsystem extends SubsystemBase {
                     cageLeft.setPosition(0);
                     cageMiddle.setPosition(0);
                     cageRight.setPosition(0);
+                case NONE: break;
             }
+
         }
     }
 
@@ -109,7 +111,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 cageMiddle.setPosition(0.1);
                 cageRight.setPosition(0.1);
                 break;
-
+            case NONE: break;
         }
 
         //idkf whats going on here we need to make it so it doesnt reutnr back to zero when only one of them is pushed if it was origlannly all pushed and hit another button to only reutrn one

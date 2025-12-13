@@ -12,6 +12,8 @@ public class LimeLightSubsystem extends SubsystemBase {
     int allianceTagID = 0;
     double SCALE = 6.8;
     double YAW_OFFSET = 2;
+    private Integer lastSeenTagId = null; // remembers the last valid tag seen
+
     Alliance alliance;
     Object[] colors = new Object[3];
 
@@ -68,36 +70,45 @@ public class LimeLightSubsystem extends SubsystemBase {
         return -1;
     }
 
-    public Object[] getPattern(){
+    public Object[] getPattern() {
         LLResultTypes.FiducialResult tag = getAprilTag();
-        boolean tagSet = false;
 
-        //if tag detected
+        // Update lastSeenTagId only if one of the three target tags is seen
         if (tag != null) {
-            if (tag.getFiducialId() == 21) {
-                colors[0] = "g";
-                colors[1] = "p";
-                colors[2] = "p";
-                tagSet = true;
-            } else if (tag.getFiducialId() == 22) {
-                colors[0] = "p";
-                colors[1] = "g";
-                colors[2] = "p";
-                tagSet = true;
-            } else if (tag.getFiducialId() == 23){
-                colors[0] = "p";
-                colors[1] = "p";
-                colors[2] = "g";
-                tagSet = true;
+            int id = tag.getFiducialId();
+            if (id == 21 || id == 22 || id == 23) {
+                lastSeenTagId = id;
             }
-        } else {
-            if (!tagSet){
-                colors[0] = "p";
-                colors[1] = "p";
-                colors[2] = "g";
-            }
-
         }
+
+        // Determine which tag to use: last seen or default if none detected yet
+        int tagToUse = (lastSeenTagId != null) ? lastSeenTagId : -1;
+
+        // Set colors based on tagToUse
+        switch (tagToUse) {
+            case 21:
+                colors[0] = 'g';
+                colors[1] = 'p';
+                colors[2] = 'p';
+                break;
+            case 22:
+                colors[0] = 'p';
+                colors[1] = 'g';
+                colors[2] = 'p';
+                break;
+            case 23:
+                colors[0] = 'p';
+                colors[1] = 'p';
+                colors[2] = 'g';
+                break;
+            default:
+                // Default pattern until one of the three tags is detected
+                colors[0] = 'p';
+                colors[1] = 'p';
+                colors[2] = 'g';
+                break;
+        }
+
         return colors;
     }
     public void limeLightStart(){
@@ -120,7 +131,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     public LLResultTypes.FiducialResult getAllianceAprilTag(){
 
         for (LLResultTypes.FiducialResult result : limelight.getLatestResult().getFiducialResults()) {
-            if (result != null&& result.getFiducialId() == allianceTagID)
+            if (result != null && result.getFiducialId() == allianceTagID)
                 return result;
         }
         return null;

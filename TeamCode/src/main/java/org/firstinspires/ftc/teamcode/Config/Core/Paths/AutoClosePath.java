@@ -38,6 +38,9 @@ public class AutoClosePath {
     public Pose driveOutOfBox = new Pose(30, 72, Math.toRadians(180));
 
     public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
+    public Pose readTag = new Pose(48, 100, Math.toRadians(90));
+
+
     private int index = 0;
 
 
@@ -63,6 +66,7 @@ public class AutoClosePath {
             slideOver = slideOver.mirror();
             dumpGate = dumpGate.mirror();
             backUp2 = backUp2.mirror();
+            readTag= readTag.mirror();
 
         }
     }
@@ -76,11 +80,17 @@ public class AutoClosePath {
                 .setLinearHeadingInterpolation(start.getHeading(), shortScore.getHeading())
                 .build();
     }
+    public PathChain readTag() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(shortScore, readTag))
+                .setLinearHeadingInterpolation(shortScore.getHeading(), readTag.getHeading())
+                .build();
+    }
 
     public PathChain pickUp1() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(shortScore, linePickUp1))
-                .setLinearHeadingInterpolation(shortScore.getHeading(), linePickUp1.getHeading())
+                .addPath(new BezierLine(readTag, linePickUp1))
+                .setLinearHeadingInterpolation(readTag.getHeading(), linePickUp1.getHeading())
 
                 .addPath(new BezierLine(linePickUp1, pickUp1))
                 .setLinearHeadingInterpolation(linePickUp1.getHeading(), pickUp1.getHeading())
@@ -163,14 +173,15 @@ public class AutoClosePath {
     public PathChain next() {
         switch (index++) {
             case 0: return shootPreload();
-            case 1: return pickUp1();
-            case 2: return dumpGate();
-            case 3: return score1();
-            case 4: return pickUp2();
-            case 5: return score2();
-            case 6: return pickUp3();
-            case 7: return score3();
-            case 8: return outOfBox();
+            case 1: return readTag();
+            case 2: return pickUp1();
+            case 3: return dumpGate();
+            case 4: return score1();
+            case 5: return pickUp2();
+            case 6: return score2();
+            case 7: return pickUp3();
+            case 8: return score3();
+            case 9: return outOfBox();
             default: return null;
         }
     }

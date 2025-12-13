@@ -15,42 +15,43 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class StaggeredShotCommand extends SequentialCommandGroup {
-    public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time) {
+    ShooterPosition[] shooterPosition;
+
+
+    public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time , Supplier<ShooterPosition[]> seqSupplier) {
+
+        ShooterPosition[] shooterPosition = seqSupplier.get();   // <-- NOW updated every time the command starts
+
+        // Build the staggered sequence at runtime
         addCommands(
                 new ParallelCommandGroup(
                         new SequentialCommandGroup(
-                                new MasterLaunchCommand(shooter, ShooterPosition.LEFT)
+                                new MasterLaunchCommand(shooter, () -> indexClosure(seqSupplier,0).get())
                         ),
                         new SequentialCommandGroup(
                                 new DynamicWaitCommand(time),
-                                new MasterLaunchCommand(shooter, ShooterPosition.MIDDLE)
+                                new MasterLaunchCommand(shooter, () -> indexClosure(seqSupplier,1 ).get())
                         ),
                         new SequentialCommandGroup(
-                                new DynamicWaitCommand(time),
-                                new DynamicWaitCommand(time),
-                                new MasterLaunchCommand(shooter, ShooterPosition.RIGHT
-                                )
+                                new DynamicWaitCommand(time, 2),
+                                new MasterLaunchCommand(shooter,() ->   indexClosure(seqSupplier,2).get())
                         )
                 )
         );
+
+//        super.initialize();
     }
 
-    public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time, Supplier<ShooterPosition[]> sequenceSupplier) {
-        addCommands(
-                new ParallelCommandGroup(
-                        new SequentialCommandGroup(
-                                new MasterLaunchCommand(shooter, sequenceSupplier.get()[0])
-                        ),
-                        new SequentialCommandGroup(
-                                new DynamicWaitCommand(time),
-                                new MasterLaunchCommand(shooter, sequenceSupplier.get()[1])
-                        ),
-                        new SequentialCommandGroup(
-                                new DynamicWaitCommand(time),
-                                new DynamicWaitCommand(time),
-                                new MasterLaunchCommand(shooter, sequenceSupplier.get()[2])
-                        )
-                )
-        );
+    public Supplier<ShooterPosition> indexClosure(Supplier<ShooterPosition[]> shooterPositions, int index){
+        return () -> shooterPositions.get()[index];
     }
+
+    public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time) {
+        this(shooter,time, ()-> new ShooterPosition[]{ShooterPosition.LEFT,ShooterPosition.MIDDLE,ShooterPosition.RIGHT});
+    }
+
+
+
+
+
 }

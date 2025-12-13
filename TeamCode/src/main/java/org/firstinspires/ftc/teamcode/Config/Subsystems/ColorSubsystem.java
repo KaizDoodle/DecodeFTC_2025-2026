@@ -19,9 +19,17 @@ public class ColorSubsystem extends SubsystemBase {
         sensorMiddle = hardwareMap.get(RevColorSensorV3.class, "colorMiddle");
         sensorRight = hardwareMap.get(RevColorSensorV3.class, "colorRight");
     }
-    public double getDistance(){
+    public double getDistanceLeft(){
         return sensorLeft.getDistance(DistanceUnit.CM);
     }
+    public double getDistanceMiddle(){
+        return sensorMiddle.getDistance(DistanceUnit.CM);
+    }
+    public double getDistanceRight(){
+        return sensorRight.getDistance(DistanceUnit.CM);
+    }
+
+
 
     //    public double getRed(){
 //        NormalizedRGBA val = sensorLeft.getNormalizedColors();
@@ -43,7 +51,7 @@ public class ColorSubsystem extends SubsystemBase {
 
     }
     public boolean isLeftFull(){
-        return sensorLeft.getDistance(DistanceUnit.CM) < 4.45;
+        return sensorLeft.getDistance(DistanceUnit.CM) < 4.4;
     }
 
 
@@ -75,13 +83,13 @@ public class ColorSubsystem extends SubsystemBase {
     public Object[] getBallColors(){
         Object[] colors = new Object[3];
 
-//        colors[0] = getColor(sensorLeft, isLeftFull());
-//        colors[1] = getColor(sensorMiddle, isMiddleFull());
-//        colors[2] = getColor(sensorRight, isRightFull());
+        colors[0] = getColor(sensorLeft, isLeftFull());
+        colors[1] = getColor(sensorMiddle, isMiddleFull());
+        colors[2] = getColor(sensorRight, isRightFull());
 
-        colors[0] = 'p';
-        colors[1] = 'p';
-        colors[2] = 'g';
+//        colors[0] = 'p';
+//        colors[1] = 'p';
+//        colors[2] = 'g';
 
         return colors;
     }
@@ -92,30 +100,32 @@ public class ColorSubsystem extends SubsystemBase {
 
 
     public ShooterPosition getGreenLocation(Object[] colors){
-        int place = 0;
-        Object[] color = colors;
-        for (int i =0; i < color.length; i++){
-            if (color[i] == "g")
-                place = i;
-        }
-        switch (place) {
-            case 0: return ShooterPosition.LEFT;
-            case 1: return ShooterPosition.MIDDLE;
-            case 2: return ShooterPosition.RIGHT;
+        for (int i = 0; i < colors.length; i++){
+            if (colors[i].equals('g')) {
+                switch (i) {
+                    case 0:
+                        return ShooterPosition.LEFT;
+                    case 1:
+                        return ShooterPosition.MIDDLE;
+                    case 2:
+                        return ShooterPosition.RIGHT;
+                }
+            }
         }
         return null;
     }
     public ShooterPosition getPurpleLocation(Object[] colors){
-        int place = 0;
-        Object[] color = colors;
-        for (int i =0; i < color.length; i++){
-            if (color[i] == "p")
-                place = i;
-        }
-        switch (place) {
-            case 0: return ShooterPosition.LEFT;
-            case 1: return ShooterPosition.MIDDLE;
-            case 2: return ShooterPosition.RIGHT;
+        for (int i = 0; i < colors.length; i++){
+            if (colors[i].equals('p')) {
+                switch (i) {
+                    case 0:
+                        return ShooterPosition.LEFT;
+                    case 1:
+                        return ShooterPosition.MIDDLE;
+                    case 2:
+                        return ShooterPosition.RIGHT;
+                }
+            }
         }
         return null;
     }

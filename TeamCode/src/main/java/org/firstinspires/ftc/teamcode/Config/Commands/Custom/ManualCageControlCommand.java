@@ -34,6 +34,7 @@ public class ManualCageControlCommand extends InstantCommand {
             case 0: staticPos = ShooterPosition.LEFT; break;
             case 1: staticPos = ShooterPosition.MIDDLE; break;
             case 2: staticPos = ShooterPosition.RIGHT; break;
+
         }
     }
 

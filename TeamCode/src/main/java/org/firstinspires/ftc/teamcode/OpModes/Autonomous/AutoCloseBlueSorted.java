@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.WaitUntilLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.FollowPathCommand;
@@ -18,13 +18,10 @@ import org.firstinspires.ftc.teamcode.Config.Core.Paths.AutoClosePath;
 import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
-import org.firstinspires.ftc.teamcode.Config.Core.Paths.TestPathAuto;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
-import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 @Autonomous
-public class AutoCloseBlue extends OpModeCommand {
+public class AutoCloseBlueSorted extends OpModeCommand {
 
     RobotContainer robotContainer;
     AutoClosePath auto;
@@ -47,10 +44,14 @@ public class AutoCloseBlue extends OpModeCommand {
                         // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand( robotContainer.shooterSubsystem, shotVelocity),
+//                        new InstantCommand( () ->telemetry.addData("step1", "step")),
 
                         // --- READ TAG ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new WaitCommand(400),
+
+
 
                         // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -62,7 +63,8 @@ public class AutoCloseBlue extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, robotContainer.getSequence(), shotVelocity),
+
 
                         // --- SECOND PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -73,7 +75,8 @@ public class AutoCloseBlue extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, robotContainer.getSequence(), shotVelocity),
+
 
                         // --- THRID PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -84,7 +87,8 @@ public class AutoCloseBlue extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, robotContainer.getSequence(), shotVelocity),
+
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),

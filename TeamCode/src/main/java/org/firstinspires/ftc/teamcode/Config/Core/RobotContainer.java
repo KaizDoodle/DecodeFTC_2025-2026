@@ -10,7 +10,6 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.util.Timing;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -20,7 +19,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
-//import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.StaggeredShotCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
@@ -35,7 +33,6 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.PatternSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.Config.pedroPathing.Constants;
 
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 
@@ -52,16 +49,15 @@ public class RobotContainer {
     protected GamepadEx operatorPad;
 
     Telemetry telemetry;
-    private double headingPower = 0;
-    private double rotation;
     Object[] ballColors;
     ShooterPosition[] sequence = new ShooterPosition[3];
     Object[] pattern;
-    Timing.Timer time;
     double speed;
 
     public Alliance alliance;
     private Opmode opmode;
+
+    boolean hasRunOnce = false;
     private double distance;
     public CommandScheduler cs = CommandScheduler.getInstance();
     private LLResultTypes.FiducialResult tag;
@@ -149,6 +145,7 @@ public class RobotContainer {
 
         double yawNormalized = limeLightSubsystem.getYawOffset(tag) / 24;
 
+        double headingPower = 0;
         if (tag != null) {
             headingPower = 0.25 * Math.pow(Math.abs(yawNormalized), 0.6 ) * Math.signum(yawNormalized);
         } else {
@@ -158,6 +155,7 @@ public class RobotContainer {
         // ---------------- Manual Drive Control ----------------
         double forward = driverPad.getLeftY();
 
+        double rotation;
         switch (robotState) {
             case AIMING:
                 rotation = -headingPower; // heading lock
@@ -183,24 +181,21 @@ public class RobotContainer {
         distance = limeLightSubsystem.getDistance(tag);
         speed = shooterSubsystem.calculatePowerPercentage(distance);
 
-        ballColors = colorSubsystem.getBallColors();
-
         patternSubsystem.setPattern(limeLightSubsystem.getPattern());
 
-//
-        pattern = patternSubsystem.getPattern();
-//
 
-        if (pattern[0]!= null) {
-            for (int i = 0; i < 3; i++) {
-                if (pattern[i].equals('g')) {
-                    sequence[i] = colorSubsystem.getGreenLocation(ballColors);
-                } else if (pattern[i].equals('p')) {
-                    sequence[i] = colorSubsystem.getPurpleLocation(ballColors);
-                }
-            }
+        if (!hasRunOnce) {
+            // gets the color of the balls in the intake in order of left middle right and puts into a object array
+            ballColors = colorSubsystem.getBallColors();
+            hasRunOnce = true;
         }
+        sequence = patternSubsystem.buildSequence(ballColors );
 
+
+        //gets the pattern from the obelisk
+        // Update pattern each loop
+
+        // Build decoded motif firing sequence
 
         follower.update();
         tTel();
@@ -213,6 +208,7 @@ public class RobotContainer {
         cs.run();
     }
     public void aPeriodic() {
+        limeLightSubsystem.getPattern();
         aTel();
     }
 
@@ -224,7 +220,6 @@ public class RobotContainer {
         robotState = RobotStates.NONE;
         ballColors = colorSubsystem.getBallColors();
 //        patternSubsystem.setPattern(limeLightSubsystem.getPattern(tag));
-        time = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
 
     }
 
@@ -236,24 +231,18 @@ public class RobotContainer {
         // left trigger = LMEC
         // A = outtake
 
-        //        driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
-//                        new ResetIMUCommand();
-//        );
+        driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
+                        new InstantCommand(() -> follower.setPose(follower.getPose().withHeading(0)))
+        );
 
-        Supplier<ShooterPosition[]> object = () -> new ShooterPosition[] {ShooterPosition.MIDDLE,ShooterPosition.LEFT  ,ShooterPosition.RIGHT};
+        Supplier<ShooterPosition[]> object = () -> sequence;
 
         //TODO leo look this here it should work if you uncommnet out this line of code it just doesnt properly build sequnce for some reason
 //                Supplier<ShooterPosition[]> object = () -> sequence;
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new StaggeredShotCommand(shooterSubsystem, ()-> (1.3* Math.pow(Range.clip(distance, 50, 100), 1.3)),object)
-        );
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
-        );
-        driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
+                new StaggeredShotCommand(shooterSubsystem, ()-> (1.3* Math.pow(Range.clip(distance, 50, 100), 1.3)), getSequence())
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
@@ -334,17 +323,15 @@ public class RobotContainer {
         return alliance;
     }
 
-    public void setState(RobotStates state) {
+    public void setState(RobotStates nextState) {
         // TARGET LOCK CHECK AIM → SHOOT
-        if (state == RobotStates.AIMING && limeLightSubsystem.isLocked(tag))
-            state  = RobotStates.SHOOTING;
-        if (state == RobotStates.INTAKING  && colorSubsystem.isFull())
-            state = RobotStates.NONE;
-        if (robotState == RobotStates.INTAKING && state != RobotStates.INTAKING) {
-            time = new Timing.Timer(1000, TimeUnit.MILLISECONDS);
-            time.start();
+        if (nextState == RobotStates.AIMING && limeLightSubsystem.isLocked(tag))
+            nextState  = RobotStates.SHOOTING;
+        if (robotState == RobotStates.INTAKING && nextState != RobotStates.INTAKING) {
+            ballColors = colorSubsystem.getBallColors();
         }
-        robotState = state;
+
+        robotState = nextState;
     }
 
     public RobotStates getState() {
@@ -354,6 +341,16 @@ public class RobotContainer {
     public void setStartingPose(Pose startingPose){
         follower.setStartingPose(startingPose);
 
+    }
+    public Supplier<ShooterPosition[]> getSequence(){
+        return () -> sequence;
+    }
+    public void refreshShootingData() {
+        // This is the only place we call the intensive I2C color sensor method
+        ballColors = colorSubsystem.getBallColors();
+
+        // Use the newly read colors to calculate the sorted sequence
+        sequence = patternSubsystem.buildSequence(ballColors);
     }
 
     public void aTel() {
@@ -366,51 +363,67 @@ public class RobotContainer {
 
         telemetry.addData("state", getState());
 
+        telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
+        telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
+        telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
+//
+//        telemetry.addData("Left", ballColors[0]);
+//        telemetry.addData("Middle", ballColors[1]);
+//        telemetry.addData("Right", ballColors[2]);
+//
+//        telemetry.addData("sequence", sequence[0].toString() );
+//        telemetry.addData("sequence", sequence[1].toString() );
+//        telemetry.addData("sequence", sequence[2].toString() );
+//
+
         telemetry.update();
     }
     public void tTel() {
 
         telemetry.addData("state", getState());
-//        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
+        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
 
-//        telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
+        telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
 
         telemetry.addData("Distance", distance);
-//        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(distance));
-//        telemetry.addData("Shooter velocity", 1500 * shooterSubsystem.calculatePowerPercentage(distance));
+        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(distance));
+        telemetry.addData("Shooter velocity", 1500 * shooterSubsystem.calculatePowerPercentage(distance));
 
-//        telemetry.addData("Balls", colorSubsystem.getBallColors());
 
         telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
 
-        telemetry.addData("next ball color", patternSubsystem.getNextColor());
 //        telemetry.addData("shot stagger", 2* Math.pow(distance, 1.3));
 
-        telemetry.addData("next ball color", limeLightSubsystem.getPattern()[0]);
+
 
         telemetry.addData("Left", ballColors[0]);
         telemetry.addData("Middle", ballColors[1]);
         telemetry.addData("Right", ballColors[2]);
-        telemetry.addData("purple location", colorSubsystem.getPurpleLocation(ballColors));
-        telemetry.addData("green location", colorSubsystem.getGreenLocation(ballColors));
+//        telemetry.addData("purple location", colorSubsystem.getPurpleLocation(ballColors));
+//        telemetry.addData("green location", colorSubsystem.getGreenLocation(ballColors));
 
-//        telemetry.addData("time", time.elapsedTime());
-//        telemetry.addData("time", time.remainingTime());
 
 //        telemetry.addData("left" , colorSubsystem.getLeft());
 //        telemetry.addData("middle" , colorSubsystem.getMiddle());
 //        telemetry.addData("right" , colorSubsystem.getRight());
 
 
-        telemetry.addData("sequence", sequence[0] );
-        telemetry.addData("sequence", sequence[1] );
-        telemetry.addData("sequence", sequence[2] );
-        telemetry.addData("pattern", pattern[0] );
-        telemetry.addData("pattern", pattern[1] );
-        telemetry.addData("pattern", pattern[2] );
+        telemetry.addData("sequence", sequence[0].toString() );
+        telemetry.addData("sequence", sequence[1].toString() );
+        telemetry.addData("sequence", sequence[2].toString() );
 
+//        telemetry.addData("pattern", pattern[0] );
+//        telemetry.addData("pattern", pattern[1] );
+//        telemetry.addData("pattern", pattern[2] );
+
+//        telemetry.addData("distance left", colorSubsystem.getDistanceLeft());
+//        telemetry.addData("Distance middle ", colorSubsystem.getDistanceMiddle());
+//        telemetry.addData("Distance right", colorSubsystem.getDistanceRight());
+
+//        telemetry.addData("Left", ballColors[0]);
+//        telemetry.addData("Left", ballColors[0]);
 
 
 

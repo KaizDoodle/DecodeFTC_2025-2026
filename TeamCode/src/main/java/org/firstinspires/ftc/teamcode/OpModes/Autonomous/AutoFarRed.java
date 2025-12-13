@@ -45,9 +45,7 @@ public class AutoFarRed extends OpModeCommand {
                         // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT, shotVelocity),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE, shotVelocity),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
                         // Drive to pick preloads + shoot
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
@@ -60,9 +58,7 @@ public class AutoFarRed extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.LEFT, shotVelocity),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.MIDDLE, shotVelocity),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.RIGHT, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),
