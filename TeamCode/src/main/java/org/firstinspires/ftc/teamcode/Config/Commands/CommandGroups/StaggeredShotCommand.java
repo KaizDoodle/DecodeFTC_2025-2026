@@ -33,7 +33,7 @@ public class StaggeredShotCommand extends SequentialCommandGroup {
                                 new MasterLaunchCommand(shooter, () -> indexClosure(seqSupplier,1 ).get())
                         ),
                         new SequentialCommandGroup(
-                                new DynamicWaitCommand(time, 2),
+                                new DynamicWaitCommand(time, 2.3),
                                 new MasterLaunchCommand(shooter,() ->   indexClosure(seqSupplier,2).get())
                         )
                 )

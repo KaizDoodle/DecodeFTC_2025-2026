@@ -36,7 +36,7 @@ public class AutoFarBlue extends OpModeCommand {
 
         auto = new AutoFarPath(robotContainer.follower, Alliance.BLUE);
 
-        robotContainer.setStartingPose(auto.start);
+        robotContainer.aStart(auto.start);
 
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 

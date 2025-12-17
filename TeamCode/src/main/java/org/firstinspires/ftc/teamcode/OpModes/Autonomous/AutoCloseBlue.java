@@ -37,8 +37,7 @@ public class AutoCloseBlue extends OpModeCommand {
         robotContainer.limeLightSubsystem.limeLightStart();
 
         auto = new AutoClosePath(robotContainer.follower, Alliance.BLUE);
-        robotContainer.setStartingPose(auto.start);
-        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
+        robotContainer.aStart(auto.start);
 
         schedule(
                 new RunCommand(robotContainer :: aPeriodic),
@@ -49,20 +48,20 @@ public class AutoCloseBlue extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
-                        // --- READ TAG ---
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-
                         // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new FollowPathCommand(robotContainer.follower, auto.next()), // dump gate
 
+
                         // --- SCORE AGAIN ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
+
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+
 
                         // --- SECOND PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -71,8 +70,8 @@ public class AutoCloseBlue extends OpModeCommand {
 
                         // --- SCORE AGAIN X2 ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
                         // --- THRID PICKUP (continuous line→pickup) ---
@@ -82,8 +81,9 @@ public class AutoCloseBlue extends OpModeCommand {
 
                         // --- SCORE AGAIN X3 ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
+
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
                         // 0 Everything + Drive out box

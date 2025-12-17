@@ -16,14 +16,14 @@ import java.util.function.Supplier;
 
 public class WaitUntilLaunchCommand extends SequentialCommandGroup {
 
-    public WaitUntilLaunchCommand(RobotContainer robot, ShooterSubsystem shooter, Supplier<ShooterPosition[]> pos, double targetSpeed) {
+    public WaitUntilLaunchCommand(RobotContainer robot, ShooterSubsystem shooter, double targetSpeed) {
 
         addCommands(
                 new InstantCommand(robot::refreshShootingData),
                 // Wait until shooter reaches target velocity
                 new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),
                 // Fire the cage
-                new StaggeredShotCommand(shooter, () -> 300 ,  pos)
+                new StaggeredShotCommand(shooter, () -> 300 ,  robot.getSequence())
         );
     }
     public WaitUntilLaunchCommand(ShooterSubsystem shooter,  double targetSpeed) {

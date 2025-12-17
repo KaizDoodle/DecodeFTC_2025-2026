@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCo
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Paths.AutoClosePath;
+import org.firstinspires.ftc.teamcode.Config.Core.Paths.AutoClosePathSorted;
 import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 public class AutoCloseBlueSorted extends OpModeCommand {
 
     RobotContainer robotContainer;
-    AutoClosePath auto;
+    AutoClosePathSorted auto;
 
     double shotVelocity = 0.54;
 
@@ -33,8 +34,8 @@ public class AutoCloseBlueSorted extends OpModeCommand {
         robotContainer = new RobotContainer(hardwareMap, Alliance.BLUE, telemetry);
         robotContainer.limeLightSubsystem.limeLightStart();
 
-        auto = new AutoClosePath(robotContainer.follower, Alliance.BLUE);
-        robotContainer.setStartingPose(auto.start);
+        auto = new AutoClosePathSorted(robotContainer.follower, Alliance.BLUE);
+        robotContainer.aStart(auto.start);
         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
         schedule(
@@ -45,13 +46,10 @@ public class AutoCloseBlueSorted extends OpModeCommand {
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitUntilLaunchCommand( robotContainer.shooterSubsystem, shotVelocity),
-//                        new InstantCommand( () ->telemetry.addData("step1", "step")),
 
-                        // --- READ TAG ---
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitCommand(400),
-
-
+//                        // --- READ TAG ---
+//                        new FollowPathCommand(robotContainer.follower, auto.next()),
+//                        new WaitCommand(400),
 
                         // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -62,9 +60,8 @@ public class AutoCloseBlueSorted extends OpModeCommand {
                         // --- SCORE AGAIN ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, robotContainer.getSequence(), shotVelocity),
-
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
 
                         // --- SECOND PICKUP (continuous line→pickup) ---
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -74,8 +71,8 @@ public class AutoCloseBlueSorted extends OpModeCommand {
                         // --- SCORE AGAIN X2 ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, robotContainer.getSequence(), shotVelocity),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
 
 
                         // --- THRID PICKUP (continuous line→pickup) ---
@@ -86,8 +83,8 @@ public class AutoCloseBlueSorted extends OpModeCommand {
                         // --- SCORE AGAIN X3 ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
-                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, robotContainer.getSequence(), shotVelocity),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
 
 
                         // 0 Everything + Drive out box

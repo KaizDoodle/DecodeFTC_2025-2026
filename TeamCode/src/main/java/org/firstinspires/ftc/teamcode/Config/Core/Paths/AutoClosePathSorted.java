@@ -1,50 +1,48 @@
 package org.firstinspires.ftc.teamcode.Config.Core.Paths;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 
 
-public class AutoClosePath {
+public class AutoClosePathSorted {
     private final Follower follower;
     private final Alliance alliance;
 
     // robot lined up facing the goal, side to the crevice of the goal and the ramp
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
-    public Pose linePickUp1 = new Pose(50, 84, Math.toRadians(0));
+    public Pose linePickUp1 = new Pose(50, 86, Math.toRadians(0));
     public Pose transition1 = new Pose (40,90, Math.toRadians(120));
-    public Pose pickUp1 = new Pose(18, 84, Math.toRadians(0));
+    public Pose pickUp1 = new Pose(18, 86, Math.toRadians(0));
 
-    public Pose lineUpGateDump = new Pose(25, 84, Math.toRadians(0));
-    public Pose slideOver = new Pose(25, 81, Math.toRadians(0));
-    public Pose dumpGate = new Pose(20, 78, Math.toRadians(0));
+    public Pose lineUpGateDump = new Pose(25, 86, Math.toRadians(0));
+    public Pose slideOver = new Pose(25, 79, Math.toRadians(0));
+    public Pose dumpGate = new Pose(20.5, 77, Math.toRadians(0));
 
-    public Pose linePickUp2 = new Pose(50, 62, Math.toRadians(0));
-    public Pose backUp2 = new Pose (24,60.5, Math.toRadians(0));
+    public Pose linePickUp2 = new Pose(50, 63, Math.toRadians(0));
+    public Pose backUp2 = new Pose (24,62, Math.toRadians(0));
     public Pose transition2 = new Pose (40,90, Math.toRadians(120));
-    public Pose pickUp2 = new Pose(13, 60.5, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(13, 62, Math.toRadians(0));
 
-    public Pose linePickUp3 = new Pose(50, 42, Math.toRadians(0));
+    public Pose linePickUp3 = new Pose(50, 43, Math.toRadians(0));
     public Pose transition3 = new Pose (40,90, Math.toRadians(120));
-    public Pose pickUp3 = new Pose(13, 39.5, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(13, 43, Math.toRadians(0));
 
     public Pose driveOutOfBox = new Pose(30, 72, Math.toRadians(180));
 
     public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
+    public Pose readTag = new Pose(48, 100, Math.toRadians(90));
 
 
     private int index = 0;
 
 
 
-    public AutoClosePath(Follower follower, Alliance alliance) {
+    public AutoClosePathSorted(Follower follower, Alliance alliance) {
         this.follower = follower;
         this.alliance = alliance;
 
@@ -65,6 +63,7 @@ public class AutoClosePath {
             slideOver = slideOver.mirror();
             dumpGate = dumpGate.mirror();
             backUp2 = backUp2.mirror();
+            readTag= readTag.mirror();
 
         }
     }
@@ -78,12 +77,17 @@ public class AutoClosePath {
                 .setLinearHeadingInterpolation(start.getHeading(), shortScore.getHeading())
                 .build();
     }
-
+    public PathChain readTag() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(shortScore, readTag))
+                .setLinearHeadingInterpolation(shortScore.getHeading(), readTag.getHeading())
+                .build();
+    }
 
     public PathChain pickUp1() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(shortScore, linePickUp1))
-                .setLinearHeadingInterpolation(shortScore.getHeading(), linePickUp1.getHeading())
+                .addPath(new BezierLine(readTag, linePickUp1))
+                .setLinearHeadingInterpolation(readTag.getHeading(), linePickUp1.getHeading())
 
                 .addPath(new BezierLine(linePickUp1, pickUp1))
                 .setLinearHeadingInterpolation(linePickUp1.getHeading(), pickUp1.getHeading())
@@ -166,6 +170,7 @@ public class AutoClosePath {
     public PathChain next() {
         switch (index++) {
             case 0: return shootPreload();
+//            case 1: return readTag();
             case 1: return pickUp1();
             case 2: return dumpGate();
             case 3: return score1();

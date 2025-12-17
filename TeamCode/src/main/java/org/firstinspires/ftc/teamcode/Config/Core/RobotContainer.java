@@ -137,8 +137,7 @@ public class RobotContainer {
                 break;
             case NONE:
                 shooterSubsystem.setShooterSpeed(0);
-//                intakeSubsystem.intakeSpeed(-0.5);
-                intakeSubsystem.stop();
+                intakeSubsystem.intakeSpeed(-0.5);
 //                lmecSubsystem.unlockMechanum();
                 break;
         }
@@ -216,11 +215,19 @@ public class RobotContainer {
         follower.update();
         follower.startTeleopDrive();
         limeLightSubsystem.limeLightStart();
-        shooterSubsystem.resetManual(ShooterPosition.ALL);
+//        shooterSubsystem.resetManual(ShooterPosition.ALL);
         robotState = RobotStates.NONE;
         ballColors = colorSubsystem.getBallColors();
 //        patternSubsystem.setPattern(limeLightSubsystem.getPattern(tag));
-
+    }
+    public void aStart(Pose startingPose){
+        follower.setStartingPose(startingPose);
+        limeLightSubsystem.limeLightStart();
+        shooterSubsystem.resetManual(ShooterPosition.ALL);
+        robotState = RobotStates.NONE;
+        ballColors = colorSubsystem.getBallColors();
+        patternSubsystem.setPattern(limeLightSubsystem.getPattern());
+        sequence = patternSubsystem.buildSequence(ballColors);
     }
 
     public void teleOpControl(){
@@ -330,6 +337,9 @@ public class RobotContainer {
         if (robotState == RobotStates.INTAKING && nextState != RobotStates.INTAKING) {
             ballColors = colorSubsystem.getBallColors();
         }
+        if(colorSubsystem.isFull() && robotState == RobotStates.INTAKING){
+            driverPad.gamepad.rumble(100);
+        }
 
         robotState = nextState;
     }
@@ -338,17 +348,12 @@ public class RobotContainer {
         return robotState;
     }
 
-    public void setStartingPose(Pose startingPose){
-        follower.setStartingPose(startingPose);
-
-    }
     public Supplier<ShooterPosition[]> getSequence(){
         return () -> sequence;
     }
     public void refreshShootingData() {
         // This is the only place we call the intensive I2C color sensor method
         ballColors = colorSubsystem.getBallColors();
-
         // Use the newly read colors to calculate the sorted sequence
         sequence = patternSubsystem.buildSequence(ballColors);
     }
@@ -367,14 +372,14 @@ public class RobotContainer {
         telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
 //
-//        telemetry.addData("Left", ballColors[0]);
-//        telemetry.addData("Middle", ballColors[1]);
-//        telemetry.addData("Right", ballColors[2]);
-//
-//        telemetry.addData("sequence", sequence[0].toString() );
-//        telemetry.addData("sequence", sequence[1].toString() );
-//        telemetry.addData("sequence", sequence[2].toString() );
-//
+        telemetry.addData("Left", ballColors[0]);
+        telemetry.addData("Middle", ballColors[1]);
+        telemetry.addData("Right", ballColors[2]);
+
+        telemetry.addData("sequence", sequence[0].toString() );
+        telemetry.addData("sequence", sequence[1].toString() );
+        telemetry.addData("sequence", sequence[2].toString() );
+
 
         telemetry.update();
     }
