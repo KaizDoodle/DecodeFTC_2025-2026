@@ -26,7 +26,7 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
                 new StaggeredShotCommand(shooter, () -> 300 ,  robot.getSequence())
         );
     }
-    public WaitUntilLaunchCommand(ShooterSubsystem shooter,  double targetSpeed) {
+    public WaitUntilLaunchCommand(ShooterSubsystem shooter,  double targetSpeed) { // change for unsorted??
 
 
         addCommands(

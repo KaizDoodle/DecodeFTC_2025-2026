@@ -988,6 +988,74 @@ class Line extends OpMode {
     }
 }
 
+class LineSideToSide extends OpMode {
+    public static double DISTANCE = 40;
+    private boolean right = true;
+
+    private Path rightPath;
+    private Path leftPath;
+
+    @Override
+    public void init() {}
+
+    /** Initializes the Follower and creates the left and right Paths. */
+    @Override
+    public void init_loop() {
+        telemetryM.debug("This will activate all the PIDF(s)");
+        telemetryM.debug("The robot will go left and right continuously while correcting.");
+        telemetryM.debug("Use this to tune strafing PIDF(s).");
+        telemetryM.update(telemetry);
+
+        follower.update();
+        drawCurrent();
+    }
+
+    @Override
+    public void start() {
+        follower.activateAllPIDFs();
+
+        // Move right (positive Y)
+        rightPath = new Path(
+                new BezierLine(
+                        new Pose(0, 0),
+                        new Pose(0, DISTANCE)
+                )
+        );
+        rightPath.setConstantHeadingInterpolation(0);
+
+        // Move left (negative Y / back to start)
+        leftPath = new Path(
+                new BezierLine(
+                        new Pose(0, DISTANCE),
+                        new Pose(0, 0)
+                )
+        );
+        leftPath.setConstantHeadingInterpolation(0);
+
+        follower.followPath(rightPath);
+    }
+
+    /** Runs the OpMode */
+    @Override
+    public void loop() {
+        follower.update();
+        drawCurrentAndHistory();
+
+        if (!follower.isBusy()) {
+            if (right) {
+                right = false;
+                follower.followPath(leftPath);
+            } else {
+                right = true;
+                follower.followPath(rightPath);
+            }
+        }
+
+        telemetryM.debug("Strafing Right?: " + right);
+        telemetryM.update(telemetry);
+    }
+}
+
 /**
  * This is the Centripetal Tuner OpMode. It runs the robot in a specified distance
  * forward and to the left. On reaching the end of the forward Path, the robot runs the backward
