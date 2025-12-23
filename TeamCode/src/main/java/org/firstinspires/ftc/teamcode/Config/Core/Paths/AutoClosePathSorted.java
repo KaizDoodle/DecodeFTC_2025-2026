@@ -15,22 +15,22 @@ public class AutoClosePathSorted {
     // robot lined up facing the goal, side to the crevice of the goal and the ramp
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
-    public Pose linePickUp1 = new Pose(50, 86, Math.toRadians(0));
+    public Pose linePickUp1 = new Pose(50, 85, Math.toRadians(0));
     public Pose transition1 = new Pose (40,90, Math.toRadians(120));
-    public Pose pickUp1 = new Pose(18, 86, Math.toRadians(0));
+    public Pose pickUp1 = new Pose(18, 85, Math.toRadians(0));
 
-    public Pose lineUpGateDump = new Pose(25, 86, Math.toRadians(0));
+    public Pose lineUpGateDump = new Pose(25, 85, Math.toRadians(0));
     public Pose slideOver = new Pose(25, 79, Math.toRadians(0));
     public Pose dumpGate = new Pose(20.5, 77, Math.toRadians(0));
 
-    public Pose linePickUp2 = new Pose(50, 63, Math.toRadians(0));
-    public Pose backUp2 = new Pose (24,62, Math.toRadians(0));
+    public Pose linePickUp2 = new Pose(50, 61, Math.toRadians(0)); // ik they arent matching, but it somehow only works this way
+    public Pose backUp2 = new Pose (24,60, Math.toRadians(0));
     public Pose transition2 = new Pose (40,90, Math.toRadians(120));
-    public Pose pickUp2 = new Pose(13, 62, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(14, 62, Math.toRadians(0));
 
-    public Pose linePickUp3 = new Pose(50, 43, Math.toRadians(0));
+    public Pose linePickUp3 = new Pose(50, 38, Math.toRadians(0));
     public Pose transition3 = new Pose (40,90, Math.toRadians(120));
-    public Pose pickUp3 = new Pose(13, 43, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(14, 38, Math.toRadians(0));
 
     public Pose driveOutOfBox = new Pose(30, 72, Math.toRadians(180));
 

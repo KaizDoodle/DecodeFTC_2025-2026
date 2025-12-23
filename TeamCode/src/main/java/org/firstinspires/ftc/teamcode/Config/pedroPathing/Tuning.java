@@ -68,6 +68,7 @@ public class Tuning extends SelectableOpMode {
                 p.add("Centripetal Tuner", CentripetalTuner::new);
             });
             s.folder("Tests", p -> {
+                p.add("Line Side To Side", LineSideToSide::new);
                 p.add("Line", Line::new);
                 p.add("Triangle", Triangle::new);
                 p.add("Circle", Circle::new);

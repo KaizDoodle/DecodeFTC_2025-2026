@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.MasterLaunchCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.StaggeredShotCommand;
+import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ResetIMUCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode;
 
@@ -270,7 +271,8 @@ public class RobotContainer {
                 .whileHeld(new InstantCommand(() -> setState(RobotStates.AIMING)))
                 .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
-
+        driverPad.getGamepadButton(GamepadKeys.Button.BACK)
+                .whenPressed(new ResetIMUCommand(follower));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whileHeld(new InstantCommand(() -> setState(RobotStates.OUTAKING)))

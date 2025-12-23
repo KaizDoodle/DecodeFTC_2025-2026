@@ -63,7 +63,7 @@ public class AutoCloseRed extends OpModeCommand {
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitCommand(1000),
+                        new WaitCommand(2000),
 
                         // --- SCORE AGAIN X2 ---
                         new FollowPathCommand(robotContainer.follower, auto.next()),

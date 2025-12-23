@@ -23,7 +23,7 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
                 // Wait until shooter reaches target velocity
                 new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),
                 // Fire the cage
-                new StaggeredShotCommand(shooter, () -> 300 ,  robot.getSequence())
+                new StaggeredShotCommand(shooter, () -> 500 ,  robot.getSequence())
         );
     }
     public WaitUntilLaunchCommand(ShooterSubsystem shooter,  double targetSpeed) { // change for unsorted??
@@ -34,7 +34,7 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
                 new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),
 
                 // Fire the cage
-                new StaggeredShotCommand(shooter, () -> 300  )
+                new StaggeredShotCommand(shooter, () -> 200  )
         );
     }
 }
