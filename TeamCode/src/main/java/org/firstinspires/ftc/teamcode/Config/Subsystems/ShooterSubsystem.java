@@ -60,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean atVelocity(double percent) {
         double target = percent * MAX_VELOCITY;
 
-        return shooterOne.getVelocity() > target * 0.92;
+        return shooterOne.getVelocity() > target * 0.97;
     }
 
     public boolean isLauncherBusy(ShooterPosition pos) {
