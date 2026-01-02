@@ -72,7 +72,7 @@ public class AutoCloseBlue extends OpModeCommand {
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitCommand(2000),
+                        new WaitCommand(1500),
 
                         // --- SCORE AGAIN X2 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),

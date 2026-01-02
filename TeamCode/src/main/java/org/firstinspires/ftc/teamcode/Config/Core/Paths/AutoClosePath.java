@@ -8,7 +8,7 @@ import com.pedropathing.paths.PathChain;
 
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 
-
+// USED FOR ALL 15 BALL AUTOS
 public class AutoClosePath {
     private final Follower follower;
     private final Alliance alliance;
@@ -17,22 +17,23 @@ public class AutoClosePath {
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
     public Pose linePickUp1 = new Pose(50, 85, Math.toRadians(0));
-    public Pose pickUp1 = new Pose(18, 85, Math.toRadians(0));
+    public Pose pickUp1 = new Pose(19, 85, Math.toRadians(0));
 
     public Pose linePickUp2 = new Pose(38, 60.5, Math.toRadians(0));
-    public Pose pickUp2 = new Pose(13, 60.5, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(14, 60.5, Math.toRadians(0));
 
     public Pose linePickUp3 = new Pose(38, 38, Math.toRadians(0));
-    public Pose pickUp3 = new Pose(13, 38, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(16, 38, Math.toRadians(0));
 
     public Pose transition = new Pose (40,90, Math.toRadians(120));
 
-    public Pose pickUpGate = new Pose(12, 60, Math.toRadians(-30));
+    public Pose pickUpGate = new Pose(13, 62, Math.toRadians(-30));
 
-    public Pose driveOutOfBox = new Pose(39, 83, Math.toRadians(180));
+    public Pose driveOutOfBox = new Pose(39, 83, Math.toRadians(164));
 
     public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
-    public Pose shortScore2 = new Pose(47, 98, Math.toRadians(132));
+    public Pose shortScore2 = new Pose(47, 98, Math.toRadians(127));
+    public Pose shortScore3 = new Pose(47, 98, Math.toRadians(123));
 
 
     public Pose ctrlPickUp1 = new Pose(66, 70);
@@ -57,6 +58,7 @@ public class AutoClosePath {
             pickUp3 = pickUp3.mirror();
             shortScore = shortScore.mirror();
             shortScore2 = shortScore2.mirror();
+            shortScore3 = shortScore3.mirror();
             driveOutOfBox = driveOutOfBox.mirror();
             transition = transition.mirror();
             pickUpGate = pickUpGate.mirror();
@@ -100,8 +102,8 @@ public class AutoClosePath {
 
     public PathChain pickUpGate() {
         return follower.pathBuilder()
-                .addPath(new BezierCurve(shortScore, ctrlScore1, pickUpGate))
-                .setLinearHeadingInterpolation(shortScore.getHeading(), pickUpGate.getHeading())
+                .addPath(new BezierCurve(shortScore2, ctrlScore1, pickUpGate))
+                .setLinearHeadingInterpolation(shortScore2.getHeading(), pickUpGate.getHeading())
                 .build();
     }
 
@@ -114,8 +116,8 @@ public class AutoClosePath {
 
     public PathChain pickUp2() {
         return follower.pathBuilder()
-                .addPath(new BezierCurve(shortScore, ctrlPickUp2, linePickUp1))
-                .setLinearHeadingInterpolation(shortScore.getHeading(), linePickUp1.getHeading())
+                .addPath(new BezierCurve(shortScore2, ctrlPickUp2, linePickUp1))
+                .setLinearHeadingInterpolation(shortScore2.getHeading(), linePickUp1.getHeading())
 
                 .addPath(new BezierLine(linePickUp1, pickUp1))
                 .setLinearHeadingInterpolation(linePickUp1.getHeading(), pickUp1.getHeading())
@@ -124,15 +126,15 @@ public class AutoClosePath {
 
     public PathChain score2() {
         return follower.pathBuilder()
-                .addPath(new BezierCurve(pickUp1, ctrlScore2, shortScore2))
-                .setLinearHeadingInterpolation(pickUp1.getHeading(), shortScore2.getHeading())
+                .addPath(new BezierCurve(pickUp1, ctrlScore2, shortScore3))
+                .setLinearHeadingInterpolation(pickUp1.getHeading(), shortScore3.getHeading())
                 .build();
     }
 
     public PathChain pickUp3() {
         return follower.pathBuilder()
-                .addPath(new BezierCurve(shortScore, ctrlPickUp3, linePickUp3))
-                .setLinearHeadingInterpolation(shortScore.getHeading(), linePickUp3.getHeading())
+                .addPath(new BezierCurve(shortScore3, ctrlPickUp3, linePickUp3))
+                .setLinearHeadingInterpolation(shortScore3.getHeading(), linePickUp3.getHeading())
 
                 .addPath(new BezierLine(linePickUp3, pickUp3))
                 .setLinearHeadingInterpolation(linePickUp3.getHeading(), pickUp3.getHeading())
@@ -141,16 +143,16 @@ public class AutoClosePath {
 
     public PathChain score3() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(pickUp3, shortScore))
-                .setLinearHeadingInterpolation(pickUp3.getHeading(), shortScore.getHeading())
+                .addPath(new BezierLine(pickUp3, shortScore2))
+                .setLinearHeadingInterpolation(pickUp3.getHeading(), shortScore2.getHeading())
                 .build();
     }
 
 
     public PathChain outOfBox() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(shortScore, driveOutOfBox))
-                .setLinearHeadingInterpolation(shortScore.getHeading(), driveOutOfBox.getHeading())
+                .addPath(new BezierLine(shortScore2, driveOutOfBox))
+                .setLinearHeadingInterpolation(shortScore2.getHeading(), driveOutOfBox.getHeading())
                 .build();
     }
     public PathChain next() {

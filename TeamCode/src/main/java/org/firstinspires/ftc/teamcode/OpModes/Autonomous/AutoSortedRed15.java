@@ -25,12 +25,12 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.LimeLightSubsystem;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 @Autonomous
-public class AutoCloseRed extends OpModeCommand {
+public class AutoSortedRed15 extends OpModeCommand {
 
     RobotContainer robotContainer;
     AutoClosePath auto;
 
-    double shotVelocity = 0.55;
+    double shotVelocity = 0.54;
 
     @Override
     public void initialize() {
@@ -79,7 +79,7 @@ public class AutoCloseRed extends OpModeCommand {
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- THRID PICKUP
@@ -97,7 +97,7 @@ public class AutoCloseRed extends OpModeCommand {
                                 )
                         ),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- FOURTH PICKUP
@@ -115,7 +115,7 @@ public class AutoCloseRed extends OpModeCommand {
                                 )
                         ),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // 0 Everything + Drive out box

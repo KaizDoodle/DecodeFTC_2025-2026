@@ -21,9 +21,9 @@ public class Constants {
             .forwardZeroPowerAcceleration(-30)
             .lateralZeroPowerAcceleration(-60)
 
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.15,0,0.01,0)) // TODO: CHECK THIS TOO
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.15,0,0.01,0))
             .headingPIDFCoefficients(new PIDFCoefficients(2.5,0,0.1,0))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01,0,0.0001,0.6,0))  // TODO: NAHHHH LIL BRO WE NEEDA CHANGE THIS
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.05,0,0.001,0.6,0))
 
             .centripetalScaling(0.00025);
 

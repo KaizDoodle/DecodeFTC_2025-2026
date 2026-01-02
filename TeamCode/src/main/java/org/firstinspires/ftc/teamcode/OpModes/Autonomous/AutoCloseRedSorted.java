@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.WaitUntilLaunchCommand;
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
-
+@Disabled
 @Autonomous
 public class AutoCloseRedSorted extends OpModeCommand {
 
