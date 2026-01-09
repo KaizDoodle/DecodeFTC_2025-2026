@@ -18,7 +18,7 @@ public class StopShooterCommand extends InstantCommand {
     @Override
     public void initialize() {
 
-        shooterSubsystem.setShooterSpeed(0);
+        shooterSubsystem.setShooterVelocity(0);
 
 
     }

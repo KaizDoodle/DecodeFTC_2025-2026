@@ -120,7 +120,7 @@ public class RobotContainer {
                 intakeSubsystem.intakeSpeed(1);
                 break;
             case LOADING:
-                shooterSubsystem.setShooterSpeed(-0.3);
+                shooterSubsystem.setShooterVelocity(-0.3);
                 intakeSubsystem.stop();
                 break;
             case OUTAKING:
@@ -137,7 +137,7 @@ public class RobotContainer {
                     driverPad.gamepad.rumble(100);
                 break;
             case NONE:
-                shooterSubsystem.setShooterSpeed(0);
+                shooterSubsystem.setShooterVelocity(0);
                 intakeSubsystem.intakeSpeed(-0.5);
 //                lmecSubsystem.unlockMechanum();
                 break;
@@ -243,14 +243,14 @@ public class RobotContainer {
                         new InstantCommand(() -> follower.setPose(follower.getPose().withHeading(0)))
         );
 
-        Supplier<ShooterPosition[]> object = () -> sequence;
+
 
         //TODO leo look this here it should work if you uncommnet out this line of code it just doesnt properly build sequnce for some reason
 //                Supplier<ShooterPosition[]> object = () -> sequence;
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new StaggeredShotCommand(shooterSubsystem, ()-> (1.3* Math.pow(Range.clip(distance, 50, 100), 1.3)), getSequence())
+                new StaggeredShotCommand(shooterSubsystem, ()-> (0.5* Math.pow(Range.clip(distance, 50, 100), 1.25)), getSequence())
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
@@ -361,7 +361,7 @@ public class RobotContainer {
     }
 
     public void aTel() {
-        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset(tag));
+        telemetry.addData("tagDetected", tag != null);
         telemetry.addData("Distance", distance);
 
         telemetry.addData("Shooter %", distance);
@@ -374,20 +374,22 @@ public class RobotContainer {
         telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
 //
-        telemetry.addData("Left", ballColors[0]);
-        telemetry.addData("Middle", ballColors[1]);
-        telemetry.addData("Right", ballColors[2]);
-
-        telemetry.addData("sequence", sequence[0].toString() );
-        telemetry.addData("sequence", sequence[1].toString() );
-        telemetry.addData("sequence", sequence[2].toString() );
-
+//        telemetry.addData("Left", ballColors[0]);
+//        telemetry.addData("Middle", ballColors[1]);
+//        telemetry.addData("Right", ballColors[2]);
+//
+//        telemetry.addData("sequence", sequence[0].toString() );
+//        telemetry.addData("sequence", sequence[1].toString() );
+//        telemetry.addData("sequence", sequence[2].toString() );
+//
 
         telemetry.update();
     }
     public void tTel() {
 
         telemetry.addData("state", getState());
+        telemetry.addData("tagDetected", tag != null);
+
         telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
 
         telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
@@ -420,6 +422,8 @@ public class RobotContainer {
         telemetry.addData("sequence", sequence[0].toString() );
         telemetry.addData("sequence", sequence[1].toString() );
         telemetry.addData("sequence", sequence[2].toString() );
+
+
 
 //        telemetry.addData("pattern", pattern[0] );
 //        telemetry.addData("pattern", pattern[1] );

@@ -15,27 +15,17 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class StaggeredShotCommand extends SequentialCommandGroup {
-    ShooterPosition[] shooterPosition;
-
-
     public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time , Supplier<ShooterPosition[]> seqSupplier) {
 
-        ShooterPosition[] shooterPosition = seqSupplier.get();   // <-- NOW updated every time the command starts
 
         // Build the staggered sequence at runtime
         addCommands(
-                new ParallelCommandGroup(
-                        new SequentialCommandGroup(
-                                new MasterLaunchCommand(shooter, () -> indexClosure(seqSupplier,0).get())
-                        ),
-                        new SequentialCommandGroup(
-                                new DynamicWaitCommand(time),
-                                new MasterLaunchCommand(shooter, () -> indexClosure(seqSupplier,1 ).get())
-                        ),
-                        new SequentialCommandGroup(
-                                new DynamicWaitCommand(time, 2.3),
-                                new MasterLaunchCommand(shooter,() ->   indexClosure(seqSupplier,2).get())
-                        )
+                new SequentialCommandGroup(
+                        new MasterLaunchCommand(shooter, () -> indexClosure(seqSupplier,0).get()),
+                        new DynamicWaitCommand(time),
+                        new MasterLaunchCommand(shooter, () -> indexClosure(seqSupplier,1).get()),
+                        new DynamicWaitCommand(time),
+                        new MasterLaunchCommand(shooter,() ->   indexClosure(seqSupplier,2).get())
                 )
         );
 
@@ -49,9 +39,5 @@ public class StaggeredShotCommand extends SequentialCommandGroup {
     public StaggeredShotCommand(ShooterSubsystem shooter, DoubleSupplier time) {
         this(shooter,time, ()-> new ShooterPosition[]{ShooterPosition.LEFT,ShooterPosition.MIDDLE,ShooterPosition.RIGHT});
     }
-
-
-
-
 
 }

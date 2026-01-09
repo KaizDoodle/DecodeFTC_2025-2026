@@ -23,6 +23,8 @@ public class DynamicWaitCommand extends CommandBase {
     public void initialize() {
         startTime = System.currentTimeMillis();
         waitTime = (long) (timeSupplier.getAsDouble() * multiplier); // ✔ updated each time it runs
+        if (waitTime < 100)
+            waitTime = 100;
 
     }
 

@@ -44,10 +44,21 @@ public class RPMtest extends LinearOpMode {
             telemetry.update();
 
 
-            shooterOne.setVelocity(1200);
-            shooterTwo.setVelocity(1200);
-            shooterThree.setVelocity(1200);
-
+            if (gamepad1.a) {
+                shooterOne.setVelocity(500);
+                shooterTwo.setVelocity(500);
+                shooterThree.setVelocity(500);
+            }
+            if (gamepad1.b) {
+                shooterOne.setVelocity(1200);
+                shooterTwo.setVelocity(1200);
+                shooterThree.setVelocity(1200);
+            }
+            if (gamepad1.y) {
+                shooterOne.setVelocity(1700);
+                shooterTwo.setVelocity(1700);
+                shooterThree.setVelocity(1700);
+            }
 
         }
     }

@@ -18,6 +18,7 @@ public class ManualCageControlCommand extends InstantCommand {
     public ManualCageControlCommand(ShooterSubsystem shooterSubsystem, ShooterPosition shooter) {
         this.staticPos = shooter;
         this.shooterSubsystem = shooterSubsystem;
+
     }
 
     // DYNAMIC version (new behavior) — updates live
