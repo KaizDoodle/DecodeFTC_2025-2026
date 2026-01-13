@@ -32,9 +32,8 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
         addCommands(
                 // Wait until shooter reaches target velocity
                 new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),
-
                 // Fire the cage
-                new StaggeredShotCommand(shooter, () -> 200  )
+                new StaggeredShotCommand(shooter, () -> 250  )
         );
     }
 }

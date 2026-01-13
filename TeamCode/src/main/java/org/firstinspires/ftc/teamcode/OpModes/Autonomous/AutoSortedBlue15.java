@@ -45,7 +45,7 @@ public class AutoSortedBlue15 extends OpModeCommand {
 
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
@@ -56,14 +56,14 @@ public class AutoSortedBlue15 extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
 
                         // --- SCORE AGAIN ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
-                        new ParallelCommandGroup(
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+//                        new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.follower, auto.next()),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(900),
-                                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
-                                )
-                        ),
+//                                new SequentialCommandGroup(
+//                                        new WaitCommand(900),
+//                                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
+//                                )
+//                        ),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
@@ -75,7 +75,7 @@ public class AutoSortedBlue15 extends OpModeCommand {
                         new WaitCommand(1500),
 
                         // --- SCORE AGAIN X2 ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -88,7 +88,7 @@ public class AutoSortedBlue15 extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
 
                         // --- SCORE AGAIN X3 ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.follower, auto.next()),
                                 new SequentialCommandGroup(
@@ -106,7 +106,7 @@ public class AutoSortedBlue15 extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
 
                         // --- SCORE AGAIN X4 ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+//                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.follower, auto.next()),
                                 new SequentialCommandGroup(

@@ -365,7 +365,10 @@ public class RobotContainer {
         telemetry.addData("Distance", distance);
 
         telemetry.addData("Shooter %", distance);
-        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
+        telemetry.addData("shooter vel1", shooterSubsystem.getLaunchVelocity1());
+        telemetry.addData("shooter vel2", shooterSubsystem.getLaunchVelocity2());
+        telemetry.addData("shooter vel3", shooterSubsystem.getLaunchVelocity3());
+
         telemetry.addData("odom heading", follower.getHeading());
 
         telemetry.addData("state", getState());
@@ -392,19 +395,19 @@ public class RobotContainer {
 
         telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
 
-        telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
+        telemetry.addData("shooter vel1", shooterSubsystem.getLaunchVelocity1());
+        telemetry.addData("shooter vel2", shooterSubsystem.getLaunchVelocity2());
+        telemetry.addData("shooter vel3", shooterSubsystem.getLaunchVelocity3());
 
         telemetry.addData("Distance", distance);
         telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(distance));
         telemetry.addData("Shooter velocity", 1500 * shooterSubsystem.calculatePowerPercentage(distance));
-
 
         telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
 
 //        telemetry.addData("shot stagger", 2* Math.pow(distance, 1.3));
-
 
 
         telemetry.addData("Left", ballColors[0]);
