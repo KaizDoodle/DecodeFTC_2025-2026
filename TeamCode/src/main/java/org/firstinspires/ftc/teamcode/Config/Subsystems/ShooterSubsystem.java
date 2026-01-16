@@ -128,11 +128,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void setShooterSpeed(double speed) {
-        shooterOne.setPower(speed);
-        shooterTwo.setPower(speed);
-        shooterThree.setPower(speed);
-    }
+
     public void setShooterVelocity(double speed) {
         shooterOne.setVelocity(speed * MAX_VELOCITY);
         shooterTwo.setVelocity(speed * MAX_VELOCITY);

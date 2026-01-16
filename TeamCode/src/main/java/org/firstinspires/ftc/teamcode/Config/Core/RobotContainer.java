@@ -52,7 +52,6 @@ public class RobotContainer {
     Telemetry telemetry;
     Object[] ballColors;
     ShooterPosition[] sequence = new ShooterPosition[3];
-    Object[] pattern;
     double speed;
 
     public Alliance alliance;
@@ -91,6 +90,7 @@ public class RobotContainer {
         this.driverPad = new GamepadEx(driver);
         this.operatorPad = new GamepadEx(operator);
         this.telemetry = telemetry;
+
         follower = Constants.createFollower(hardwareMap);
 
         limeLightSubsystem = new LimeLightSubsystem(hardwareMap, alliance);
@@ -108,19 +108,15 @@ public class RobotContainer {
                 shooterSubsystem,
                 patternSubsystem);
     }
-
-
     // ------------------------------- STATE MANAGER -------------------------------
-
     private void applyState() {
-
         // schedule commands only on state entry
         switch (robotState) {
             case INTAKING:
                 intakeSubsystem.intakeSpeed(1);
                 break;
             case LOADING:
-                shooterSubsystem.setShooterSpeed(-0.3);
+                shooterSubsystem.setShooterVelocity(-0.3);
                 intakeSubsystem.stop();
                 break;
             case OUTAKING:
@@ -137,7 +133,7 @@ public class RobotContainer {
                     driverPad.gamepad.rumble(100);
                 break;
             case NONE:
-                shooterSubsystem.setShooterSpeed(0);
+                shooterSubsystem.setShooterVelocity(0);
                 intakeSubsystem.intakeSpeed(-0.5);
 //                lmecSubsystem.unlockMechanum();
                 break;
@@ -153,8 +149,8 @@ public class RobotContainer {
         }
 
         // ---------------- Manual Drive Control ----------------
-        double forward = driverPad.getLeftY();
 
+        double forward = driverPad.getLeftY();
         double rotation;
         switch (robotState) {
             case AIMING:
@@ -172,8 +168,6 @@ public class RobotContainer {
             follower.setTeleOpDrive(forward, -driverPad.getLeftX(), rotation, false);
         else
             follower.setTeleOpDrive(forward, 0, rotation, true);
-
-
     }
 
     public void periodic() {
@@ -189,14 +183,8 @@ public class RobotContainer {
             ballColors = colorSubsystem.getBallColors();
             hasRunOnce = true;
         }
+
         sequence = patternSubsystem.buildSequence(ballColors );
-
-
-        //gets the pattern from the obelisk
-        // Update pattern each loop
-
-        // Build decoded motif firing sequence
-
         follower.update();
         tTel();
 
@@ -207,6 +195,7 @@ public class RobotContainer {
 
         cs.run();
     }
+
     public void aPeriodic() {
         limeLightSubsystem.getPattern();
         aTel();
@@ -242,15 +231,11 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
                         new InstantCommand(() -> follower.setPose(follower.getPose().withHeading(0)))
         );
-
         Supplier<ShooterPosition[]> object = () -> sequence;
-
-        //TODO leo look this here it should work if you uncommnet out this line of code it just doesnt properly build sequnce for some reason
-//                Supplier<ShooterPosition[]> object = () -> sequence;
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new StaggeredShotCommand(shooterSubsystem, ()-> (1.3* Math.pow(Range.clip(distance, 50, 100), 1.3)), getSequence())
+                new StaggeredShotCommand(shooterSubsystem, ()-> (0.7* Math.pow(Range.clip(distance, 50, 100), 1.3)), getSequence())
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
@@ -261,11 +246,6 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.RIGHT)
         );
-
-
-
-        //aim command limelight
-        // @TODO set states for the loading and MasterLaunchCommand
 
         driverPad.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(() -> setState(RobotStates.AIMING)))
@@ -331,6 +311,9 @@ public class RobotContainer {
     public Alliance getAlliance(){
         return alliance;
     }
+    public Telemetry getTelemetry(){
+        return telemetry;
+    }
 
     public void setState(RobotStates nextState) {
         // TARGET LOCK CHECK AIM → SHOOT
@@ -353,34 +336,35 @@ public class RobotContainer {
     public Supplier<ShooterPosition[]> getSequence(){
         return () -> sequence;
     }
+
     public void refreshShootingData() {
-        // This is the only place we call the intensive I2C color sensor method
+        // This is the only place we call the I2C color sensor method
         ballColors = colorSubsystem.getBallColors();
         // Use the newly read colors to calculate the sorted sequence
         sequence = patternSubsystem.buildSequence(ballColors);
     }
 
     public void aTel() {
-        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset(tag));
-        telemetry.addData("Distance", distance);
-
-        telemetry.addData("Shooter %", distance);
-        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
-        telemetry.addData("odom heading", follower.getHeading());
-
-        telemetry.addData("state", getState());
-
-        telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
-        telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
-        telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
+//        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset(tag));
+//        telemetry.addData("Distance", distance);
 //
-        telemetry.addData("Left", ballColors[0]);
-        telemetry.addData("Middle", ballColors[1]);
-        telemetry.addData("Right", ballColors[2]);
-
-        telemetry.addData("sequence", sequence[0].toString() );
-        telemetry.addData("sequence", sequence[1].toString() );
-        telemetry.addData("sequence", sequence[2].toString() );
+//        telemetry.addData("Shooter %", distance);
+//        telemetry.addData("shooter one", shooterSubsystem.getLaunchVelocity2());
+//        telemetry.addData("odom heading", follower.getHeading());
+//
+//        telemetry.addData("state", getState());
+//
+//        telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
+//        telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
+//        telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
+////
+//        telemetry.addData("Left", ballColors[0]);
+//        telemetry.addData("Middle", ballColors[1]);
+//        telemetry.addData("Right", ballColors[2]);
+//
+//        telemetry.addData("sequence", sequence[0].toString() );
+//        telemetry.addData("sequence", sequence[1].toString() );
+//        telemetry.addData("sequence", sequence[2].toString() );
 
 
         telemetry.update();
@@ -388,7 +372,8 @@ public class RobotContainer {
     public void tTel() {
 
         telemetry.addData("state", getState());
-        telemetry.addData("Yaw", limeLightSubsystem.getYawOffset());
+        telemetry.addData(" limeilght Yaw", limeLightSubsystem.getYawOffset());
+        telemetry.addData("Yaw", follower.getHeading());
 
         telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
 

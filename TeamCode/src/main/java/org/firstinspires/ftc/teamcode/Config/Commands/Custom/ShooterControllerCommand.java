@@ -13,11 +13,6 @@ public class ShooterControllerCommand extends InstantCommand {
     double distance;
     double speed;
 
-//    public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, double distance) {
-//        this.shooterSubsystem = shooterSubsystem;
-//        this.distance = distance;
-//        addRequirements(shooterSubsystem);
-//    }
 
     public ShooterControllerCommand(ShooterSubsystem shooterSubsystem, double speed) {
         this.shooterSubsystem = shooterSubsystem;

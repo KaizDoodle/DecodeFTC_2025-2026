@@ -47,7 +47,7 @@ public class AutoCloseRed extends OpModeCommand {
                         // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity, robotContainer.getTelemetry()),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- DRIVE TO FIRST PICKUP
@@ -65,21 +65,21 @@ public class AutoCloseRed extends OpModeCommand {
                                 )
                         ),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity, robotContainer.getTelemetry()),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- SECOND PICKUP GATE
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitCommand(1500),
+                        new WaitCommand(750),
 
                         // --- SCORE AGAIN X2 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity, robotContainer.getTelemetry()),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- THRID PICKUP
@@ -97,7 +97,7 @@ public class AutoCloseRed extends OpModeCommand {
                                 )
                         ),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity, robotContainer.getTelemetry()),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- FOURTH PICKUP
@@ -115,7 +115,7 @@ public class AutoCloseRed extends OpModeCommand {
                                 )
                         ),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity, robotContainer.getTelemetry()),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // 0 Everything + Drive out box

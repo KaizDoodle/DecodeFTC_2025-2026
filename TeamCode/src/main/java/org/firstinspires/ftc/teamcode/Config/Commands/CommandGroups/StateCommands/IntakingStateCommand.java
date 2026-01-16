@@ -10,7 +10,7 @@ public class IntakingStateCommand extends ParallelCommandGroup {
 
     public IntakingStateCommand(IntakeSubsystem intake, ShooterSubsystem shooter, LMECSubsystem lmec) {
 
-            shooter.setShooterSpeed(0);
+            shooter.setShooterVelocity(0);
             lmec.unlockMechanum();
 //            intake.intakeOn();
     }
