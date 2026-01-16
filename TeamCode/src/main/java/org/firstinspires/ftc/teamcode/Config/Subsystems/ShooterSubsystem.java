@@ -49,9 +49,9 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterThree = hardwareMap.get(DcMotorEx.class, "shooterThree");
 
 
-        shooterOne.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20,0.05,4,13));
-        shooterTwo.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20,0.05,4,13));
-        shooterThree.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(20,0.05,4,13));
+        shooterOne.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(80,0,12,13.5));
+        shooterTwo.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(80,0,12,13.5));
+        shooterThree.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(80,0,12,13.5));
 
         resetManual(ShooterPosition.ALL);
 

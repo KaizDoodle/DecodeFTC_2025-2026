@@ -30,7 +30,7 @@ public class AutoSortedBlue15 extends OpModeCommand {
     RobotContainer robotContainer;
     AutoClosePath auto;
 
-    double shotVelocity = 0.54;
+    double shotVelocity = 0.53;
 
     @Override
     public void initialize() {

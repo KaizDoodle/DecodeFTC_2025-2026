@@ -16,31 +16,32 @@ public class AutoClosePath {
     // robot lined up facing the goal, side to the crevice of the goal and the ramp
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
-    public Pose linePickUp1 = new Pose(50, 85, Math.toRadians(0));
+    public Pose linePickUp1 = new Pose(39, 85, Math .toRadians(0)); // 50?? for x???
     public Pose pickUp1 = new Pose(19, 85, Math.toRadians(0));
 
-    public Pose linePickUp2 = new Pose(38, 60.5, Math.toRadians(0));
-    public Pose pickUp2 = new Pose(14, 60.5, Math.toRadians(0));
+    public Pose linePickUp2 = new Pose(39, 60.5, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(16, 60.5, Math.toRadians(0));
 
-    public Pose linePickUp3 = new Pose(38, 38, Math.toRadians(0));
-    public Pose pickUp3 = new Pose(16, 38, Math.toRadians(0));
+    public Pose linePickUp3 = new Pose(39, 38, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(18, 38, Math.toRadians(0));
 
     public Pose transition = new Pose (40,90, Math.toRadians(120));
 
     public Pose pickUpGate = new Pose(13, 62, Math.toRadians(-30));
 
-    public Pose driveOutOfBox = new Pose(39, 83, Math.toRadians(164));
+    public Pose driveOutOfBox = new Pose(39, 83, Math.toRadians(175));
 
     public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
-    public Pose shortScore2 = new Pose(47, 98, Math.toRadians(127));
+    public Pose shortScore2 = new Pose(47, 98, Math.toRadians(123));
     public Pose shortScore3 = new Pose(47, 98, Math.toRadians(123));
+    public Pose shortScore4 = new Pose(47, 98, Math.toRadians(135));
 
 
-    public Pose ctrlPickUp1 = new Pose(66, 70);
+    public Pose ctrlPickUp1 = new Pose(60, 72);
     public Pose ctrlScore1  = new Pose(54, 63); // used for a lot of paths
     public Pose ctrlPickUp2 = new Pose(51, 92);
     public Pose ctrlScore2  = new Pose(45, 85);
-    public Pose ctrlPickUp3 = new Pose(63, 58);
+    public Pose ctrlPickUp3 = new Pose(67, 58);
 
     private int index = 0;
 
@@ -59,6 +60,7 @@ public class AutoClosePath {
             shortScore = shortScore.mirror();
             shortScore2 = shortScore2.mirror();
             shortScore3 = shortScore3.mirror();
+            shortScore4 = shortScore4.mirror();
             driveOutOfBox = driveOutOfBox.mirror();
             transition = transition.mirror();
             pickUpGate = pickUpGate.mirror();
@@ -143,16 +145,16 @@ public class AutoClosePath {
 
     public PathChain score3() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(pickUp3, shortScore2))
-                .setLinearHeadingInterpolation(pickUp3.getHeading(), shortScore2.getHeading())
+                .addPath(new BezierLine(pickUp3, shortScore4))
+                .setLinearHeadingInterpolation(pickUp3.getHeading(), shortScore4.getHeading())
                 .build();
     }
 
 
     public PathChain outOfBox() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(shortScore2, driveOutOfBox))
-                .setLinearHeadingInterpolation(shortScore2.getHeading(), driveOutOfBox.getHeading())
+                .addPath(new BezierLine(shortScore4, driveOutOfBox))
+                .setLinearHeadingInterpolation(shortScore4.getHeading(), driveOutOfBox.getHeading())
                 .build();
     }
     public PathChain next() {

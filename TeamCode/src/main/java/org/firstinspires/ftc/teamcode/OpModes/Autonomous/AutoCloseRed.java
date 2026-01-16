@@ -30,7 +30,7 @@ public class AutoCloseRed extends OpModeCommand {
     RobotContainer robotContainer;
     AutoClosePath auto;
 
-    double shotVelocity = 0.55;
+    double shotVelocity = 0.54;
 
     @Override
     public void initialize() {
