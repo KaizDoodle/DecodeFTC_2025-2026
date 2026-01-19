@@ -63,12 +63,12 @@ public class MasterLaunchCommand extends SequentialCommandGroup {
 
         if (posSupplier != null) {
             new SequentialCommandGroup(
-                    new WaitCommand(500),
+                    new WaitCommand(400),
                     new ManualResetCommand(shooter, posSupplier)
             ).schedule();
         } else if (pos != null) {
             new SequentialCommandGroup(
-                    new WaitCommand(500),
+                    new WaitCommand(400),
                     new ManualResetCommand(shooter, pos)
             ).schedule();
 

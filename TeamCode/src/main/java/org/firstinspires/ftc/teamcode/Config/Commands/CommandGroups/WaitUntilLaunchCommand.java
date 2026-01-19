@@ -17,19 +17,17 @@ import java.util.function.Supplier;
 
 public class WaitUntilLaunchCommand extends SequentialCommandGroup {
 
-    public WaitUntilLaunchCommand(RobotContainer robot, ShooterSubsystem shooter, double targetSpeed, Telemetry telemetry) {
+    public WaitUntilLaunchCommand(RobotContainer robot, ShooterSubsystem shooter, double targetSpeed) {
 
         addCommands(
                 new InstantCommand(robot::refreshShootingData),
                 // Wait until shooter reaches target velocity
-                new InstantCommand( ()-> telemetry.addData("is it reaching", "not yet passed")),
                 new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),
                 // Fire the cage
-                new StaggeredShotCommand(shooter, () -> 500 ,  robot.getSequence()),
-                new InstantCommand( ()-> telemetry.addData("is it reaching", "passed already"))
+                new StaggeredShotCommand(shooter, () -> 500 ,  robot.getSequence())
         );
     }
-    public WaitUntilLaunchCommand(ShooterSubsystem shooter,  double targetSpeed , Telemetry telemetry) { // change for unsorted??
+    public WaitUntilLaunchCommand(ShooterSubsystem shooter,  double targetSpeed) { // change for unsorted??
 
 
         addCommands(
@@ -40,4 +38,5 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
                 new StaggeredShotCommand(shooter, () -> 250  )
         );
     }
+
 }

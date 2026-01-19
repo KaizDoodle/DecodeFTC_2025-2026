@@ -130,11 +130,11 @@ public class RobotContainer {
                 shooterSubsystem.setShooterVelocity(speed);
                 intakeSubsystem.stop();
                 if (shooterSubsystem.atVelocity(speed))
-                    driverPad.gamepad.rumble(100);
+                    driverPad.gamepad.rumble(10);
                 break;
             case NONE:
                 shooterSubsystem.setShooterVelocity(0);
-                intakeSubsystem.intakeSpeed(-0.5);
+                intakeSubsystem.intakeSpeed(0);
 //                lmecSubsystem.unlockMechanum();
                 break;
         }
@@ -209,6 +209,7 @@ public class RobotContainer {
         robotState = RobotStates.NONE;
         ballColors = colorSubsystem.getBallColors();
 //        patternSubsystem.setPattern(limeLightSubsystem.getPattern(tag));
+
     }
     public void aStart(Pose startingPose){
         follower.setStartingPose(startingPose);
@@ -378,8 +379,8 @@ public class RobotContainer {
         telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
 
         telemetry.addData("Distance", distance);
-        telemetry.addData("Shooter %", shooterSubsystem.calculatePowerPercentage(distance));
-        telemetry.addData("Shooter velocity", 1500 * shooterSubsystem.calculatePowerPercentage(distance));
+        telemetry.addData("Shooter %", speed);
+        telemetry.addData("Shooter velocity", 2200 * shooterSubsystem.calculatePowerPercentage(distance));
 
 
         telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
