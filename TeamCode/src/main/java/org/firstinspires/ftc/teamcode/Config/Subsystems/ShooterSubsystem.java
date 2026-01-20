@@ -25,8 +25,8 @@ public class ShooterSubsystem extends SubsystemBase {
     // 10 .7
     // 11 .72
 
-    private final double MIN_POWER = 0.55;
-    private final double MAX_POWER = 0.85;
+    private final double MIN_POWER = 0.6;
+    private final double MAX_POWER = 0.875;
     private final double MAX_VELOCITY = 2200;
 
     private final double LAUNCH_POSE = 0.2;
@@ -147,7 +147,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double calculatePowerPercentage(double distancePercent) {
 
-        double i = 0.0035 * distancePercent +0.45;
+        double i = 0.003 * distancePercent +0.5;
         return Range.clip(i, MIN_POWER, MAX_POWER);
     }
 }

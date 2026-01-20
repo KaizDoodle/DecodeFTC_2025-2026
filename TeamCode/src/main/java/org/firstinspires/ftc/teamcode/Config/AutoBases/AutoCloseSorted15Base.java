@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.WaitUntilLaunchCommand;
@@ -19,14 +18,14 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
-@Autonomous
-public abstract class AutoSorted15Base extends OpModeCommand {
+
+public abstract class AutoCloseSorted15Base extends OpModeCommand {
 
     RobotContainer robotContainer;
     AutoClosePath auto;
     public abstract Alliance getAlliance();
+    double shotVelocity = 0.59;
 
-    double shotVelocity = 0.53;
 
     @Override
     public void initialize() {
@@ -34,7 +33,6 @@ public abstract class AutoSorted15Base extends OpModeCommand {
         Alliance alliance = getAlliance();
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
-        robotContainer.limeLightSubsystem.limeLightStart();
 
         auto = new AutoClosePath(robotContainer.follower, alliance);
         robotContainer.aStart(auto.start);
@@ -44,7 +42,7 @@ public abstract class AutoSorted15Base extends OpModeCommand {
 
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity + 0.03),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
@@ -55,15 +53,16 @@ public abstract class AutoSorted15Base extends OpModeCommand {
                         new FollowPathCommand(robotContainer.follower, auto.next()),
 
                         // --- SCORE AGAIN ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity + 0.03),
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.follower, auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(900),
+                                        new WaitCommand(600),
+                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                                        new WaitCommand(300),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
                                 )
                         ),
-                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
@@ -71,13 +70,13 @@ public abstract class AutoSorted15Base extends OpModeCommand {
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new WaitCommand(750),
+                        new WaitCommand(1000),
 
                         // --- SCORE AGAIN X2 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
+                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
@@ -91,7 +90,9 @@ public abstract class AutoSorted15Base extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.follower, auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(900),
+                                        new WaitCommand(600),
+                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                                        new WaitCommand(300),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
                                 )
                         ),
@@ -109,7 +110,9 @@ public abstract class AutoSorted15Base extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.follower, auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(500),
+                                        new WaitCommand(600),
+                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                                        new WaitCommand(300),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
                                 )
                         ),

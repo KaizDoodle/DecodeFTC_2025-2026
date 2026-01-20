@@ -22,7 +22,7 @@ public abstract class AutoFarBase extends OpModeCommand {
     AutoFarPath auto;
     public abstract Alliance getAlliance();
 
-    double shotVelocity = 0.72;
+    double shotVelocity = 0.85;
 
     @Override
     public void initialize() {
@@ -30,13 +30,9 @@ public abstract class AutoFarBase extends OpModeCommand {
         Alliance alliance = getAlliance();
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
-        robotContainer.limeLightSubsystem.limeLightStart();
 
         auto = new AutoFarPath(robotContainer.follower, alliance);
-
         robotContainer.aStart(auto.start);
-
-        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
         schedule(
                 new SequentialCommandGroup(

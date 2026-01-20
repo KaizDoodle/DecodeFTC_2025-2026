@@ -23,19 +23,16 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
     AutoClosePathSorted auto;
     public abstract Alliance getAlliance();
 
-    double shotVelocity = 0.54;
-
+    double shotVelocity = 0.59;
     @Override
     public void initialize() {
         reset();
         Alliance alliance = getAlliance();
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
-        robotContainer.limeLightSubsystem.limeLightStart();
 
         auto = new AutoClosePathSorted(robotContainer.follower, alliance);
         robotContainer.aStart(auto.start);
-        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL);
 
         schedule(
                 new RunCommand(robotContainer :: aPeriodic),
@@ -51,7 +48,6 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
 //                        new WaitCommand(400),
 
                         // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
-                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new FollowPathCommand(robotContainer.follower, auto.next()), // dump gate
@@ -63,7 +59,6 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
                         new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
 
                         // --- SECOND PICKUP (continuous line→pickup) ---
-                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
 
@@ -75,7 +70,6 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
 
 
                         // --- THRID PICKUP (continuous line→pickup) ---
-                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
 

@@ -129,15 +129,17 @@ public class RobotContainer {
             case SHOOTING:
                 shooterSubsystem.setShooterVelocity(speed);
                 intakeSubsystem.stop();
-                if (shooterSubsystem.atVelocity(speed))
-                    driverPad.gamepad.rumble(10);
-                break;
             case NONE:
                 shooterSubsystem.setShooterVelocity(0);
                 intakeSubsystem.intakeSpeed(0);
 //                lmecSubsystem.unlockMechanum();
                 break;
         }
+
+        //rumble when up to speed
+        if (shooterSubsystem.atVelocity(speed))
+            driverPad.gamepad.rumble(100);
+
 
         double yawNormalized = limeLightSubsystem.getYawOffset(tag) / 24;
 
@@ -164,10 +166,10 @@ public class RobotContainer {
                 break;
         }
 
-        if (lmecSubsystem.state != LMECSubsystem.LockState.LOCKED)
+//        if (lmecSubsystem.state != LMECSubsystem.LockState.LOCKED)
             follower.setTeleOpDrive(forward, -driverPad.getLeftX(), rotation, false);
-        else
-            follower.setTeleOpDrive(forward, 0, rotation, true);
+//        else
+//            follower.setTeleOpDrive(forward, 0, rotation, true);
     }
 
     public void periodic() {
@@ -236,7 +238,7 @@ public class RobotContainer {
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new StaggeredShotCommand(shooterSubsystem, ()-> (0.7* Math.pow(Range.clip(distance, 50, 100), 1.3)), getSequence())
+                new StaggeredShotCommand(shooterSubsystem, ()-> (0.7* Math.pow(Range.clip(distance, 50, 100), 1.3)), getSequence(), false)
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
