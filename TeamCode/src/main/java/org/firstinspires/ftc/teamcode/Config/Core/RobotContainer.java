@@ -129,8 +129,10 @@ public class RobotContainer {
             case SHOOTING:
                 shooterSubsystem.setShooterVelocity(speed);
                 intakeSubsystem.stop();
+                break;
             case NONE:
                 shooterSubsystem.setShooterVelocity(0);
+                telemetry.update();
                 intakeSubsystem.intakeSpeed(0);
 //                lmecSubsystem.unlockMechanum();
                 break;
@@ -234,7 +236,6 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
                         new InstantCommand(() -> follower.setPose(follower.getPose().withHeading(0)))
         );
-        Supplier<ShooterPosition[]> object = () -> sequence;
 
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
