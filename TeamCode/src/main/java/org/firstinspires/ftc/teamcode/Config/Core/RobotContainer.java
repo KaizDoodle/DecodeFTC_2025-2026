@@ -133,7 +133,7 @@ public class RobotContainer {
             case NONE:
                 shooterSubsystem.setShooterVelocity(0);
                 telemetry.update();
-                intakeSubsystem.intakeSpeed(0);
+                intakeSubsystem.intakeSpeed(-0.75);
 //                lmecSubsystem.unlockMechanum();
                 break;
         }
