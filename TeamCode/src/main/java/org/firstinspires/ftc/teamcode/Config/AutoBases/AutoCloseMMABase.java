@@ -13,16 +13,17 @@ import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualCageControlCo
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ManualResetCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.Custom.ShooterControllerCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Paths.AutoClosePath;
+import org.firstinspires.ftc.teamcode.Config.Core.Paths.AutoClosePathMMA;
 import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
 
-public abstract class AutoCloseBase extends OpModeCommand {
+public abstract class AutoCloseMMABase extends OpModeCommand {
 
     RobotContainer robotContainer;
-    AutoClosePath auto;
+    AutoClosePathMMA auto;
     public abstract Alliance getAlliance();
     double shotVelocity = 0.6;
     @Override
@@ -32,7 +33,7 @@ public abstract class AutoCloseBase extends OpModeCommand {
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
 
-        auto = new AutoClosePath(robotContainer.follower, alliance);
+        auto = new AutoClosePathMMA(robotContainer.follower, alliance);
         robotContainer.aStart(auto.start);
 
 
@@ -64,7 +65,7 @@ public abstract class AutoCloseBase extends OpModeCommand {
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
-                        // --- SECOND PICKUP GATE
+                        // ---  PICKUP GATE
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitCommand(1250),
@@ -77,21 +78,16 @@ public abstract class AutoCloseBase extends OpModeCommand {
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
-                        // --- THRID PICKUP
+                        // ---  SECOND PICKUP GATE
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new WaitCommand(1250),
 
                         // --- SCORE AGAIN X3 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
-                        new ParallelCommandGroup(
-                                new FollowPathCommand(robotContainer.follower, auto.next()),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(600),
-                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                                        new WaitCommand(300),
-                                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
-                                )
-                        ),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
+                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new FollowPathCommand(robotContainer.follower, auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
