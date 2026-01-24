@@ -27,7 +27,7 @@ public class AutoClosePath {
 
     public Pose transition = new Pose (40,90, Math.toRadians(120));
 
-    public Pose pickUpGate = new Pose(12.5, 64, Math.toRadians(-35));
+    public Pose pickUpGate = new Pose(13, 62, Math.toRadians(-30));
 
     public Pose driveOutOfBox = new Pose(39, 83, Math.toRadians(175));
 

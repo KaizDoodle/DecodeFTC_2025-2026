@@ -16,9 +16,6 @@ public class AutoClosePathMMA {
     // robot lined up facing the goal, side to the crevice of the goal and the ramp
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
-    public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
-
-
     public Pose linePickUp1 = new Pose(39, 85, Math .toRadians(0)); // 50?? for x???
     public Pose pickUp1 = new Pose(22, 85, Math.toRadians(0));
 
@@ -30,10 +27,11 @@ public class AutoClosePathMMA {
 
     public Pose transition = new Pose (40,90, Math.toRadians(120));
 
-    public Pose pickUpGate = new Pose(12.5, 64, Math.toRadians(-35));
+    public Pose pickUpGate = new Pose(13, 62, Math.toRadians(-30));
 
     public Pose driveOutOfBox = new Pose(39, 83, Math.toRadians(175));
 
+    public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
     public Pose shortScore2 = new Pose(47, 98, Math.toRadians(123));
     public Pose shortScore3 = new Pose(47, 98, Math.toRadians(123));
     public Pose shortScore4 = new Pose(47, 98, Math.toRadians(135));

@@ -52,7 +52,10 @@ public class RobotContainer {
     Telemetry telemetry;
     Object[] ballColors;
     ShooterPosition[] sequence = new ShooterPosition[3];
+    boolean sortingMode = false;
     double speed;
+    double shootingStagger;
+
 
     public Alliance alliance;
     private Opmode opmode;
@@ -110,6 +113,11 @@ public class RobotContainer {
     }
     // ------------------------------- STATE MANAGER -------------------------------
     private void applyState() {
+        if (sortingMode)
+            shootingStagger = 2.5* Math.pow(Range.clip(distance, 50, 150), 1.2);
+        else
+            shootingStagger = 0.7* Math.pow(Range.clip(distance, 50, 150), 1.3);
+
         // schedule commands only on state entry
         switch (robotState) {
             case INTAKING:
@@ -175,6 +183,7 @@ public class RobotContainer {
     }
 
     public void periodic() {
+
         tag = limeLightSubsystem.getAllianceAprilTag();
         distance = limeLightSubsystem.getDistance(tag);
         speed = shooterSubsystem.calculatePowerPercentage(distance);
@@ -227,6 +236,8 @@ public class RobotContainer {
 
     public void teleOpControl(){
 
+
+
         // right bumber = shoot
         // left bumber = aim
         // Dpad down = shoot all
@@ -236,10 +247,9 @@ public class RobotContainer {
         driverPad.getGamepadButton(GamepadKeys.Button.BACK).whenPressed(
                         new InstantCommand(() -> follower.setPose(follower.getPose().withHeading(0)))
         );
-
         // shoot auto
         driverPad.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new StaggeredShotCommand(shooterSubsystem, ()-> (0.7* Math.pow(Range.clip(distance, 50, 100), 1.3)), getSequence(), false)
+                new StaggeredShotCommand(shooterSubsystem, ()-> (shootingStagger), getSequence(), false)
         );
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
                 new MasterLaunchCommand(shooterSubsystem, ShooterPosition.LEFT)
@@ -257,6 +267,11 @@ public class RobotContainer {
 
         driverPad.getGamepadButton(GamepadKeys.Button.BACK)
                 .whenPressed(new ResetIMUCommand(follower));
+
+        driverPad.getGamepadButton(GamepadKeys.Button.Y)
+                        .toggleWhenActive(
+                                new InstantCommand(() -> setSorting(true )),
+                                new InstantCommand(() -> setSorting(false)));
 
         driverPad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whileHeld(new InstantCommand(() -> setState(RobotStates.OUTAKING)))
@@ -341,6 +356,10 @@ public class RobotContainer {
         return () -> sequence;
     }
 
+    public void setSorting( boolean sortingMode){
+        this.sortingMode = sortingMode;
+    }
+
     public void refreshShootingData() {
         // This is the only place we call the I2C color sensor method
         ballColors = colorSubsystem.getBallColors();
@@ -376,27 +395,27 @@ public class RobotContainer {
     public void tTel() {
 
         telemetry.addData("state", getState());
+        telemetry.addData("sorting mode", sortingMode);
         telemetry.addData(" limeilght Yaw", limeLightSubsystem.getYawOffset());
-        telemetry.addData("Yaw", follower.getHeading());
 
         telemetry.addData("shooter vel", shooterSubsystem.getLaunchVelocity1());
 
         telemetry.addData("Distance", distance);
         telemetry.addData("Shooter %", speed);
-        telemetry.addData("Shooter velocity", 2200 * shooterSubsystem.calculatePowerPercentage(distance));
+        telemetry.addData("Shooter target velocity", 2200 * shooterSubsystem.calculatePowerPercentage(distance));
 
 
         telemetry.addData("pattern", patternSubsystem.getPattern()[0] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[1] );
         telemetry.addData("pattern", patternSubsystem.getPattern()[2] );
 
-//        telemetry.addData("shot stagger", 2* Math.pow(distance, 1.3));
+        telemetry.addData("shot stagger", shootingStagger);
 
 
 
-        telemetry.addData("Left", ballColors[0]);
-        telemetry.addData("Middle", ballColors[1]);
-        telemetry.addData("Right", ballColors[2]);
+//        telemetry.addData("Left", ballColors[0]);
+//        telemetry.addData("Middle", ballColors[1]);
+//        telemetry.addData("Right", ballColors[2]);
 //        telemetry.addData("purple location", colorSubsystem.getPurpleLocation(ballColors));
 //        telemetry.addData("green location", colorSubsystem.getGreenLocation(ballColors));
 
