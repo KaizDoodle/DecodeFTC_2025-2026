@@ -17,6 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
     }
 
+    //TODO intake disabled because broken uncomment when fixed
     public void intakeSpeed(double power){
 //        intakeMotor.setPower(power);
     }
