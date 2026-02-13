@@ -103,14 +103,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void resetManual(ShooterPosition pos) {
         switch (pos) {
-            case LEFT: cageLeft.setPosition(0.1); break;
-            case MIDDLE: cageMiddle.setPosition(0.1); break;
-            case RIGHT: cageRight.setPosition(0.1); break;
+            case LEFT: cageLeft.setPosition(0.12); break;
+            case MIDDLE: cageMiddle.setPosition(0.12); break;
+            case RIGHT: cageRight.setPosition(0.12); break;
             case INTAKE:
             case ALL:
-                cageLeft.setPosition(0.1);
-                cageMiddle.setPosition(0.1);
-                cageRight.setPosition(0.1);
+                cageLeft.setPosition(0.12);
+                cageMiddle.setPosition(0.12);
+                cageRight.setPosition(0.12);
                 break;
             case NONE: break;
         }

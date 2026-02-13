@@ -31,32 +31,32 @@ public abstract class AutoFarBase extends OpModeCommand {
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
 
-        auto = new AutoFarPath(robotContainer.follower, alliance);
-        robotContainer.aStart(auto.start);
+        auto = new AutoFarPath(robotContainer.driveSubsystem.getFollower(), alliance);
+        robotContainer.startAuto(auto.start);
 
         schedule(
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
                         // Drive to pick preloads + shoot
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),
-                        new FollowPathCommand(robotContainer.follower, auto.next())
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next())
 
                 )
         );

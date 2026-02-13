@@ -13,7 +13,7 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
     public WaitUntilLaunchCommand(RobotContainer robot, ShooterSubsystem shooter, double targetSpeed) {
         addCommands(
                 // 1. Get the latest color/sequence data right before shooting
-                new InstantCommand(robot::refreshShootingData),
+                new InstantCommand(robot::refreshColorData),
 
                 // 2. Wait until wheels are up to speed
                 new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),

@@ -26,6 +26,6 @@ public class FieldCentricRed extends OpMode {
     }
     @Override
     public void start(){
-        robot.tStart();
+        robot.startTeleOp();
     }
 }

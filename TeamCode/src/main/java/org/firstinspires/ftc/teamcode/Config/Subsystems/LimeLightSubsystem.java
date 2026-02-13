@@ -125,7 +125,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
     public boolean isLocked(LLResultTypes.FiducialResult tag){
         if (getYawOffset(tag) != -1)
-            return Math.abs(getYawOffset(tag)) < 2;
+            return Math.abs(getYawOffset(tag)) < 3;
         else return false;
     }
     public LLResultTypes.FiducialResult getAllianceAprilTag(){

@@ -23,7 +23,7 @@ public class FieldCentricTest extends OpModeCommand {
 
     @Override
     public void start(){
-        robot.tStart();
+        robot.startTeleOp();
     }
 
     @Override

@@ -19,11 +19,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     //TODO intake disabled because broken uncomment when fixed
     public void intakeSpeed(double power){
-//        intakeMotor.setPower(power);
+        intakeMotor.setPower(power);
     }
 
     public void stop(){
-//        intakeMotor.setPower(0);
+        intakeMotor.setPower(0);
     }
 
 }

@@ -31,8 +31,8 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
 
-        auto = new AutoClosePathSorted(robotContainer.follower, alliance);
-        robotContainer.aStart(auto.start);
+        auto = new AutoClosePathSorted(robotContainer.driveSubsystem.getFollower(), alliance);
+        robotContainer.startAuto(auto.start);
 
         schedule(
                 new RunCommand(robotContainer :: aPeriodic),
@@ -40,7 +40,7 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitUntilLaunchCommand( robotContainer.shooterSubsystem, shotVelocity),
 
 //                        // --- READ TAG ---
@@ -49,21 +49,21 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
 
                         // --- DRIVE TO FIRST PICKUP (continuous line→pickup) ---
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
-                        new FollowPathCommand(robotContainer.follower, auto.next()), // dump gate
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()), // dump gate
 
                         // --- SCORE AGAIN ---
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
                         new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
 
                         // --- SECOND PICKUP (continuous line→pickup) ---
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN X2 ---
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
                         new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
@@ -71,10 +71,10 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
 
                         // --- THRID PICKUP (continuous line→pickup) ---
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN X3 ---
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -0.5),
                         new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
@@ -82,7 +82,7 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),
-                        new FollowPathCommand(robotContainer.follower, auto.next())
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next())
 
                 )
         );

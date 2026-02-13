@@ -32,8 +32,8 @@ public abstract class AutoCloseBase extends OpModeCommand {
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
 
-        auto = new AutoClosePath(robotContainer.follower, alliance);
-        robotContainer.aStart(auto.start);
+        auto = new AutoClosePath(robotContainer.driveSubsystem.getFollower(), alliance);
+        robotContainer.startAuto(auto.start);
 
 
         schedule(
@@ -42,18 +42,18 @@ public abstract class AutoCloseBase extends OpModeCommand {
                         // --- SHOOT PRELOAD ---
 
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- DRIVE TO FIRST PICKUP
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ParallelCommandGroup(
-                                new FollowPathCommand(robotContainer.follower, auto.next()),
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
                                         new WaitCommand(600),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -66,25 +66,25 @@ public abstract class AutoCloseBase extends OpModeCommand {
 
                         // --- SECOND PICKUP GATE
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitCommand(1250),
 
                         // --- SCORE AGAIN X2 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- THRID PICKUP
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN X3 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ParallelCommandGroup(
-                                new FollowPathCommand(robotContainer.follower, auto.next()),
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
                                         new WaitCommand(600),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -97,12 +97,12 @@ public abstract class AutoCloseBase extends OpModeCommand {
 
                         // --- FOURTH PICKUP
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN X4 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ParallelCommandGroup(
-                                new FollowPathCommand(robotContainer.follower, auto.next()),
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
                                         new WaitCommand(600),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -116,7 +116,7 @@ public abstract class AutoCloseBase extends OpModeCommand {
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
-                        new FollowPathCommand(robotContainer.follower, auto.next())
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next())
 
                 )
         );

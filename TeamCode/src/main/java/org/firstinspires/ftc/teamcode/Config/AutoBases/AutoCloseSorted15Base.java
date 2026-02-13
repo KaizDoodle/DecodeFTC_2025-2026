@@ -34,8 +34,8 @@ public abstract class AutoCloseSorted15Base extends OpModeCommand {
 
         robotContainer = new RobotContainer(hardwareMap, alliance, telemetry);
 
-        auto = new AutoClosePath(robotContainer.follower, alliance);
-        robotContainer.aStart(auto.start);
+        auto = new AutoClosePath(robotContainer.driveSubsystem.getFollower(), alliance);
+        robotContainer.startAuto(auto.start);
 
         schedule(
                 new RunCommand(robotContainer :: aPeriodic),
@@ -43,19 +43,19 @@ public abstract class AutoCloseSorted15Base extends OpModeCommand {
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity + 0.03),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- DRIVE TO FIRST PICKUP
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity + 0.03),
                         new ParallelCommandGroup(
-                                new FollowPathCommand(robotContainer.follower, auto.next()),
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
                                         new WaitCommand(600),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -69,26 +69,26 @@ public abstract class AutoCloseSorted15Base extends OpModeCommand {
                         // --- SECOND PICKUP GATE
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitCommand(1000),
 
                         // --- SCORE AGAIN X2 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // --- THRID PICKUP
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN X3 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ParallelCommandGroup(
-                                new FollowPathCommand(robotContainer.follower, auto.next()),
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
                                         new WaitCommand(600),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -103,12 +103,12 @@ public abstract class AutoCloseSorted15Base extends OpModeCommand {
                         // --- FOURTH PICKUP
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.follower, auto.next()),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN X4 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ParallelCommandGroup(
-                                new FollowPathCommand(robotContainer.follower, auto.next()),
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
                                         new WaitCommand(600),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
@@ -123,7 +123,7 @@ public abstract class AutoCloseSorted15Base extends OpModeCommand {
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
-                        new FollowPathCommand(robotContainer.follower, auto.next())
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next())
 
                 )
         );
