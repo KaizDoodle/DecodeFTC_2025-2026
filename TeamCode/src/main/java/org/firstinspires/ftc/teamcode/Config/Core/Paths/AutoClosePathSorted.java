@@ -8,6 +8,7 @@ import com.pedropathing.paths.PathChain;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 
 // ONLY USED FOR 12 BALL SORTED
+@Deprecated
 public class AutoClosePathSorted {
     private final Follower follower;
     private final Alliance alliance;

@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
 import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
+import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.ShooterSubsystem;
 
 public class WaitUntilLaunchCommand extends SequentialCommandGroup {
@@ -30,6 +31,14 @@ public class WaitUntilLaunchCommand extends SequentialCommandGroup {
 
                 // Fire with a tighter delay and stay in firing position (false)
                 new StaggeredShotCommand(shooter, () -> 250)
+        );
+    }
+    public void WaitUntilLaunchCommandAll(ShooterSubsystem shooter, double targetSpeed) {
+        addCommands(
+                new WaitUntilCommand(() -> shooter.atVelocity(targetSpeed)),
+
+                // Fire with a tighter delay and stay in firing position (false)
+                new MasterLaunchCommand(shooter, ShooterPosition.ALL)
         );
     }
 }

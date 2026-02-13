@@ -234,6 +234,7 @@ public class RobotContainer {
                 )
                 .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
+
         // SORTING TOGGLE (Y)
         driverPad.getGamepadButton(GamepadKeys.Button.Y)
                 .toggleWhenActive(
@@ -287,6 +288,7 @@ public class RobotContainer {
         if (this.robotState == RobotStates.INTAKING && nextState != RobotStates.INTAKING) {
             refreshColorData();
         }
+
 
         // Logic: Full warning
         if (colorSubsystem.isFull() && this.robotState == RobotStates.INTAKING) {

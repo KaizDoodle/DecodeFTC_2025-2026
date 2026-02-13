@@ -51,8 +51,8 @@ public class LimeLightSubsystem extends SubsystemBase {
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
         double degrees = 4.75;
 
-        if (getDistance() > 100)
-            degrees = 0.5;
+        if (getDistance(tag) > 100)
+            degrees = 2.5;
 
         if (tag != null) {
             return tag.getTargetXDegrees() -degrees;
