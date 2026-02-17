@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.Config.Core.Util.Opmode.TELEOP;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -63,6 +64,7 @@ public class RobotContainer {
     private LLResultTypes.FiducialResult currentTag;
 
     private boolean sortingMode = false;
+    private boolean holdPose = false;
     private boolean hasInitializedColors = false;
     private double targetShooterSpeed;
     private double distanceFromTag;
@@ -192,7 +194,7 @@ public class RobotContainer {
             case NONE:
             default:
                 shooterSubsystem.setShooterVelocity(0);
-                intakeSubsystem.intakeSpeed(-0.75); // Idle outtake speed
+                intakeSubsystem.intakeSpeed(0); // Idle outtake speed
                 break;
         }
     }
@@ -230,7 +232,7 @@ public class RobotContainer {
                                 () -> driverPad.getLeftY(),      // Forward
                                 () -> -driverPad.getLeftX(),     // Strafe
                                 () -> -driverPad.getRightX()     // Manual Turn Fallback
-                        ).alongWith(new InstantCommand(() -> setState(RobotStates.AIMING)))
+                        ).alongWith(new RunCommand(() -> setState(RobotStates.AIMING)))
                 )
                 .whenReleased(new InstantCommand(() -> setState(RobotStates.NONE)));
 
@@ -267,11 +269,23 @@ public class RobotContainer {
                         new InstantCommand(() -> setState(RobotStates.NONE)),
                         new MasterLaunchCommand(shooterSubsystem, ShooterPosition.INTAKE, false)
                 ));
+        driveSubsystem.holdPosition(); // Hold exact current spot
 
-        // LMEC LOCK (Left Trigger)
+        // LMEC LOCK (Left Trigger) TODO commented out cause borken
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
-                .whileActiveContinuous(new InstantCommand(() -> lmecSubsystem.lockMechanum()))
-                .whenInactive(new InstantCommand(() -> lmecSubsystem.unlockMechanum()));
+                .whenActive(
+//                        new ParallelCommandGroup(
+//                            new InstantCommand(() -> lmecSubsystem.lockMechanum()),
+                            new InstantCommand(() -> driveSubsystem.holdPosition())
+//                        )
+                )
+                .whenInactive(
+//                        new ParallelCommandGroup(
+//                            new InstantCommand(() -> lmecSubsystem.unlockMechanum()),
+                            new InstantCommand(() -> driveSubsystem.startTeleopDrive())
+//                        )
+                );
+
     }
 
     // =========================================================================
@@ -279,16 +293,19 @@ public class RobotContainer {
     // =========================================================================
 
     public void setState(RobotStates nextState) {
-        // Logic: If aiming and we have a lock, auto-transition to SHOOTING
         if (nextState == RobotStates.AIMING && limeLightSubsystem.isLocked(currentTag)) {
             nextState = RobotStates.SHOOTING;
         }
 
-        // Logic: On falling edge of INTAKING (when we stop intaking), refresh colors
+        // 2. Logic: Handle Falling Edges (Exiting States)
         if (this.robotState == RobotStates.INTAKING && nextState != RobotStates.INTAKING) {
             refreshColorData();
         }
+        if (this.robotState == RobotStates.SHOOTING && nextState == RobotStates.AIMING){
+            nextState = RobotStates.SHOOTING;
+        }
 
+        // -------------------------------
 
         // Logic: Full warning
         if (colorSubsystem.isFull() && this.robotState == RobotStates.INTAKING) {
@@ -361,7 +378,13 @@ public class RobotContainer {
             telemetry.addData("State", robotState);
             telemetry.addData("Sorting Mode", sortingMode);
             telemetry.addData("Limelight Yaw", limeLightSubsystem.getYawOffset(currentTag));
-//            telemetry.addData("tag locked ", limeLightSubsystem.isLocked(currentTag));
+            telemetry.addData("tag locked ", limeLightSubsystem.isLocked(currentTag));
+
+            telemetry.addLine();
+            telemetry.addData("Balls full", "%.2f, %.2f, %.2f",
+                    colorSubsystem.getDistanceLeft(),
+                    colorSubsystem.getDistanceMiddle(),
+                    colorSubsystem.getDistanceRight());
 
             telemetry.addLine();
             telemetry.addData("Distance", "%.2f", distanceFromTag);

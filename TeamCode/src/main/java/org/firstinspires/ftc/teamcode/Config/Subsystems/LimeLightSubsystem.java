@@ -49,10 +49,10 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
     public double getYawOffset(){
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
-        double degrees = 4.75;
+        double degrees = 5;
 
         if (getDistance(tag) > 100)
-            degrees = 2.5;
+            degrees = 3;
 
         if (tag != null) {
             return tag.getTargetXDegrees() -degrees;
@@ -61,7 +61,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         return -1;
     }
     public double getYawOffset(LLResultTypes.FiducialResult tag){
-        double degrees = 4.75;
+        double degrees = 5;
 
         if (tag != null) {
             return tag.getTargetXDegrees() -degrees;

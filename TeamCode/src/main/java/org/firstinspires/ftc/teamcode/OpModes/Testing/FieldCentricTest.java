@@ -12,6 +12,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class FieldCentricTest extends OpModeCommand {
 
+    public static double testF = 13;
+    public static double testP = 20 ;
+    public static double testI = 0.05 ;
+    public static double testD = 4 ;
     RobotContainer robot;
 
     @Override

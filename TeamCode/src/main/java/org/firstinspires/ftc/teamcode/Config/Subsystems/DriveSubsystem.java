@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -14,10 +15,11 @@ public class DriveSubsystem extends SubsystemBase {
         follower = Constants.createFollower(hardwareMap);
     }
     public void holdPosition(){
-//        follower.holdPoint(follower.getPose());
+        follower.breakFollowing();
+        follower.holdPoint( new BezierPoint(follower.getPose()), follower.getHeading(), false);
     }
     public void breakPoint(){
-//        follower.breakFollowing();
+        follower.breakFollowing();
     }
     public void setTeleOpDrive(double forward, double strafe, double rot, boolean fieldCentric) {
         follower.setTeleOpDrive(forward, strafe, rot, fieldCentric);
@@ -36,6 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
         return follower;
     }
     public void startTeleopDrive(){
+        follower.breakFollowing();
         follower.startTeleOpDrive();
     }
 

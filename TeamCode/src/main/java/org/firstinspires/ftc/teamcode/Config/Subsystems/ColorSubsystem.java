@@ -44,10 +44,10 @@ public class ColorSubsystem extends SubsystemBase {
 //
 //    }
     public boolean isMiddleFull(){
-        return sensorMiddle.getDistance(DistanceUnit.CM) < 6.1;
+        return sensorMiddle.getDistance(DistanceUnit.CM) < 5.5;
     }
     public boolean isRightFull(){
-        return sensorRight.getDistance(DistanceUnit.CM) < 9.2;
+        return sensorRight.getDistance(DistanceUnit.CM) < 7.0;
 
     }
     public boolean isLeftFull(){

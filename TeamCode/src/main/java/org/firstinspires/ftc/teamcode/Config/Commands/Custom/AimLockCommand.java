@@ -15,9 +15,9 @@ public class AimLockCommand extends CommandBase {
     private final DoubleSupplier forwardInput, strafeInput, manualTurnInput;
 
     // --- PIDF Values ---
-    public static double kP = 0.035;
+    public static double kP = 0.025;
     public static double kI = 0.0;
-    public static double kD = 0.001;
+    public static double kD = 0.002;
     public static double kF = 0.05;
 
     private final PIDFController controller;
