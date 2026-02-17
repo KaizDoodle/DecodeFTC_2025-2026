@@ -17,13 +17,13 @@ public class AutoClosePathMMA {
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
     public Pose linePickUp1 = new Pose(39, 85, Math .toRadians(0)); // 50?? for x???
-    public Pose pickUp1 = new Pose(22, 85, Math.toRadians(0));
+    public Pose pickUp1 = new Pose(21, 85, Math.toRadians(0));
 
     public Pose linePickUp2 = new Pose(39, 60.5, Math.toRadians(0));
     public Pose pickUp2 = new Pose(18, 60.5, Math.toRadians(0));
 
     public Pose linePickUp3 = new Pose(39, 38, Math.toRadians(0));
-    public Pose pickUp3 = new Pose(21, 38, Math.toRadians(0));
+    public Pose pickUp3 = new Pose(19, 38, Math.toRadians(0));
 
     public Pose transition = new Pose (40,90, Math.toRadians(120));
 
@@ -32,10 +32,9 @@ public class AutoClosePathMMA {
     public Pose driveOutOfBox = new Pose(39, 83, Math.toRadians(175));
 
     public Pose shortScore = new Pose(47, 98, Math.toRadians(138));
-    public Pose shortScore2 = new Pose(47, 98, Math.toRadians(123));
+    public Pose shortScore2 = new Pose(47, 98, Math.toRadians(125));
     public Pose shortScore3 = new Pose(47, 98, Math.toRadians(123));
-    public Pose shortScore4 = new Pose(47, 98, Math.toRadians(135));
-
+    public Pose shortScore4 = new Pose(47, 98, Math.toRadians(130));
 
     public Pose ctrlPickUp1 = new Pose(60, 72);
     public Pose ctrlScore1  = new Pose(54, 63); // used for a lot of paths

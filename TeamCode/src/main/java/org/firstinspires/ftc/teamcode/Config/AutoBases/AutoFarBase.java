@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Config.AutoBases;
 
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.ResetAllCommand;
 import org.firstinspires.ftc.teamcode.Config.Commands.CommandGroups.WaitUntilLaunchCommand;
@@ -22,7 +24,7 @@ public abstract class AutoFarBase extends OpModeCommand {
     AutoFarPath auto;
     public abstract Alliance getAlliance();
 
-    double shotVelocity = 0.85;
+    double shotVelocity = 0.80;
 
     @Override
     public void initialize() {
@@ -42,17 +44,93 @@ public abstract class AutoFarBase extends OpModeCommand {
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
 
                         // Drive to pick preloads + shoot
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
                         new IntakeControlCommand(robotContainer.intakeSubsystem,  1),
                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+
                         new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
-                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
-                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
-                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+
                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 0),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
+
+                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ParallelCommandGroup(
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(750),
+                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                                        new WaitCommand(250),
+                                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
+                                )
+                        ),
+
+                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
+
+                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ParallelCommandGroup(
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(750),
+                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                                        new WaitCommand(250),
+                                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
+                                )
+                        ),
+                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
+
+                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ParallelCommandGroup(
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(750),
+                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                                        new WaitCommand(250),
+                                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
+                                )
+                        ),
+                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
+
+
+                        new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ParallelCommandGroup(
+                                new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(750),
+                                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                                        new WaitCommand(250),
+                                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
+                                )
+                        ),
+                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
+                        new WaitUntilLaunchCommand(robotContainer, robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
                         // 0 Everything + Drive out box
                         new ResetAllCommand(robotContainer.shooterSubsystem, robotContainer.intakeSubsystem),

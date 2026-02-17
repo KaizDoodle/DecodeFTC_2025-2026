@@ -26,6 +26,7 @@ public abstract class AutoCloseBase18 extends OpModeCommand {
     AutoClosePath18 auto;
     public abstract Alliance getAlliance();
     double shotVelocity = 0.6;
+    double preloadShotVelocity = 1;
     @Override
     public void initialize() {
         reset();
@@ -41,11 +42,11 @@ public abstract class AutoCloseBase18 extends OpModeCommand {
                 new RunCommand(robotContainer :: aPeriodic),
                 new SequentialCommandGroup(
                         // --- SHOOT PRELOAD ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
+                        new ShooterControllerCommand(robotContainer.shooterSubsystem, preloadShotVelocity),
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(1000),
+                                        new WaitCommand(750),
                                         new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
                                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
                                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),

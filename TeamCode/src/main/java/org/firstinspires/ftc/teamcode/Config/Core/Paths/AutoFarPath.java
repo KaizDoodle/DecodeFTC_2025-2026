@@ -11,22 +11,27 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 public class AutoFarPath {
     private final Follower follower;
 
-    // robot lined up to the edge of the mat
+    // robot lined up to the edge of the mat left side (for blue) including mat corners
     public Pose start = new Pose(57, 9, Math.toRadians(90));
 
-    public Pose lineUpPickUpPreload = new Pose(13, 20, Math.toRadians(15));
-    public Pose pickUpPreloadAngled = new Pose(12.5, 12.5, Math.toRadians(15));
-    public Pose lineUpToRam = new Pose(9.5, 20, Math.toRadians(90));
-    public Pose ram = new Pose(9.5, 12, Math.toRadians(90));
+    public Pose lineUpPickUpPreload = new Pose(14, 20, Math.toRadians(20));
+    public Pose pickUpPreloadAngled = new Pose(14, 12, Math.toRadians(20));
+    public Pose lineUpToRam = new Pose(11, 20, Math.toRadians(90));
+    public Pose ram = new Pose(11, 16, Math.toRadians(90));
+    public Pose pivot = new Pose(15, 16, Math.toRadians(90)); // too lazy to change variable name
+    public Pose ramAgain = new Pose(11, 13, Math.toRadians(90));
 
-    public Pose transitionScoreFromPickUpPreload = new Pose(50,20,Math.toRadians(100));
+    public Pose lineUpPickUp = new Pose(39, 9, Math.toRadians(0));
+    public Pose pickUp = new Pose(15.5, 9, Math.toRadians(0));
 
-    public Pose driveOutOfBox = new Pose(48,32 , Math.toRadians(180));
+    public Pose lineUpPickUp2 = new Pose(39, 20, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(15.5, 20, Math.toRadians(0));
 
-    public Pose farScore = new Pose(58, 20, Math.toRadians(111));
+    public Pose driveOutOfBox = new Pose(45,15 , Math.toRadians(165));
+
+    public Pose farScore = new Pose(57, 19, Math.toRadians(104));
+
     private int index = 0;
-
-
 
 
     public AutoFarPath(Follower follower, Alliance alliance) {
@@ -41,9 +46,24 @@ public class AutoFarPath {
             pickUpPreloadAngled = pickUpPreloadAngled.mirror();
             lineUpToRam = lineUpToRam.mirror();
             ram = ram.mirror();
-            transitionScoreFromPickUpPreload = transitionScoreFromPickUpPreload.mirror();
+            pivot = pivot.mirror();
+            ramAgain = ramAgain.mirror();
+
+            lineUpPickUp = lineUpPickUp.mirror();
+            pickUp = pickUp.mirror();
+
+            lineUpPickUp2 = lineUpPickUp2.mirror();
+            pickUp2 = pickUp2.mirror();
         }
     }
+
+    public PathChain shootPreload() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(start, farScore))
+                .setLinearHeadingInterpolation(start.getHeading(), farScore.getHeading())
+                .build();
+    }
+
 
     public PathChain lineUpPickUpPreload() {
         return follower.pathBuilder()
@@ -59,78 +79,82 @@ public class AutoFarPath {
                 .build();
     }
 
-    public PathChain lineUpToRam() {
-        return follower.pathBuilder()
-                .addPath(new BezierLine(pickUpPreloadAngled, lineUpToRam))
-                .setLinearHeadingInterpolation(pickUpPreloadAngled.getHeading(), lineUpToRam.getHeading())
-                .build();
-    }
+//    public PathChain ramAgain() {
+//        return follower.pathBuilder()
+//                .addPath(new BezierLine(pivot, ram))
+//                .setLinearHeadingInterpolation(pivot.getHeading(), ram.getHeading())
+//
+//                .addPath(new BezierLine(ram, ramAgain))
+//                .setLinearHeadingInterpolation(ram.getHeading(), ramAgain.getHeading())
+//                .build();
+//    }
 
-    public PathChain ram() {
-        return follower.pathBuilder()
-                .addPath(new BezierLine(lineUpToRam, ram))
-                .setLinearHeadingInterpolation(lineUpToRam.getHeading(), ram.getHeading())
-                .build();
-    }
-
-    public PathChain goToTransPoses() {
-        return follower.pathBuilder()
-                .addPath(new BezierLine(ram, transitionScoreFromPickUpPreload))
-                .setLinearHeadingInterpolation(ram.getHeading(), transitionScoreFromPickUpPreload.getHeading())
-                .build();
-    }
 
     public PathChain scorePickedUpPreload() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(transitionScoreFromPickUpPreload, farScore))
-                .setLinearHeadingInterpolation(transitionScoreFromPickUpPreload.getHeading(), farScore.getHeading())
+                .addPath(new BezierLine(pickUpPreloadAngled, farScore))
+                .setLinearHeadingInterpolation(pickUpPreloadAngled.getHeading(), farScore.getHeading())
                 .build();
     }
 
-    public PathChain shootPreload() {
+    public PathChain pickUp1() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(start, farScore))
-                .setLinearHeadingInterpolation(start.getHeading(), farScore.getHeading())
+                .addPath(new BezierLine(farScore, lineUpPickUp))
+                .setLinearHeadingInterpolation(farScore.getHeading(), lineUpPickUp.getHeading())
+
+                .addPath(new BezierLine(lineUpPickUp, pickUp))
+                .setLinearHeadingInterpolation(lineUpPickUp.getHeading(), pickUp.getHeading())
                 .build();
     }
 
+
+    public PathChain scorePickUp1() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(pickUp, farScore))
+                .setLinearHeadingInterpolation(pickUp.getHeading(), farScore.getHeading())
+                .build();
+    }
+
+
+    public PathChain pickUp2() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(farScore, lineUpPickUp2))
+                .setLinearHeadingInterpolation(farScore.getHeading(), lineUpPickUp2.getHeading())
+
+                .addPath(new BezierLine(lineUpPickUp2, pickUp2))
+                .setLinearHeadingInterpolation(lineUpPickUp2.getHeading(), pickUp2.getHeading())
+                .build();
+    }
+
+    public PathChain scorePickUp2() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(pickUp2, farScore))
+                .setLinearHeadingInterpolation(pickUp2.getHeading(), farScore.getHeading())
+                .build();
+    }
 
     public PathChain outOfBox() {
         return follower.pathBuilder()
-                .addPath(
-                        new BezierLine(
-                                farScore,
-                                driveOutOfBox
-                        )
-                )
+                .addPath(new BezierLine(farScore, driveOutOfBox))
                 .setLinearHeadingInterpolation(farScore.getHeading(), driveOutOfBox.getHeading())
                 .build();
     }
-
-//    public PathChain next() {
-//        switch (index++) {
-//            case 0: return shootPreload();
-//            case 1: return pickUp1();
-//            case 2: return score1();
-//            case 3: return pickUp2();
-//            case 4: return score2();
-//            case 5: return pickUp3();
-//            case 6: return score3();
-//            case 7: return outOfBox();
-//            default: return null;
-//        }
-//    }
 
     public PathChain next() {
         switch (index++) {
             case 0: return shootPreload();
             case 1: return lineUpPickUpPreload();
             case 2: return pickUpPreload();
-            case 3: return lineUpToRam();
-            case 4: return ram();
-            case 5: return goToTransPoses();
-            case 6: return scorePickedUpPreload();
-            case 7: return outOfBox();
+            case 3: return scorePickedUpPreload();
+            case 4: return pickUp2();
+            case 5: return scorePickUp2();
+            case 6: return pickUp1();
+            case 7: return scorePickUp1();
+            case 8: return pickUp2();
+            case 9: return scorePickUp2();
+            case 10: return pickUp1();
+            case 11: return scorePickUp1();
+            case 12: return outOfBox();
             default: return null;
         }
     }

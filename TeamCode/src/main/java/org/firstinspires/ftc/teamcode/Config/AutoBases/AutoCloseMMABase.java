@@ -56,7 +56,7 @@ public abstract class AutoCloseMMABase extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(600),
+                                        new WaitCommand(1000),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                                         new WaitCommand(300),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
@@ -100,7 +100,7 @@ public abstract class AutoCloseMMABase extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(600),
+                                        new WaitCommand(1000),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                                         new WaitCommand(300),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
