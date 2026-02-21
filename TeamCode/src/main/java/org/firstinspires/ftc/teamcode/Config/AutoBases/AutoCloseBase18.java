@@ -44,10 +44,12 @@ public abstract class AutoCloseBase18 extends OpModeCommand {
                         // --- SHOOT PRELOAD ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, preloadShotVelocity),
                         new ParallelCommandGroup(
+                                new WaitCommand(500),
+
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
                                         new WaitCommand(750),
-                                        new MasterLaunchCommand(robotContainer.shooterSubsystem, ShooterPosition.ALL),
+                                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, 1),
                                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
                                         new ManualCageControlCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1)

@@ -26,7 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // 11 .72
 
     private final double MIN_POWER = 0.625;
-    private final double MAX_POWER = 0.82;
+    private final double MAX_POWER = 0.79;
     private final double MAX_VELOCITY = 2200;
 
     private final double LAUNCH_POSE = 0.2;

@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -29,6 +30,7 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 import org.firstinspires.ftc.teamcode.Config.Subsystems.*; // Collapsed imports
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class RobotContainer {
@@ -86,6 +88,10 @@ public class RobotContainer {
         this.driverPad = new GamepadEx(driver);
         this.operatorPad = new GamepadEx(operator);
 
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub: allHubs){
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
         initSubsystems(hardwareMap);
 
         // TeleOp specific init
@@ -194,7 +200,7 @@ public class RobotContainer {
             case NONE:
             default:
                 shooterSubsystem.setShooterVelocity(0);
-                intakeSubsystem.intakeSpeed(0); // Idle outtake speed
+                intakeSubsystem.intakeSpeed(-0.7); // re enabled auto outtake
                 break;
         }
     }

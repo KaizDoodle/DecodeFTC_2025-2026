@@ -21,11 +21,11 @@ public class AutoFarPath {
     public Pose pivot = new Pose(15, 16, Math.toRadians(90)); // too lazy to change variable name
     public Pose ramAgain = new Pose(11, 13, Math.toRadians(90));
 
-    public Pose lineUpPickUp = new Pose(39, 9, Math.toRadians(0));
-    public Pose pickUp = new Pose(15.5, 9, Math.toRadians(0));
+    public Pose lineUpPickUp = new Pose(39, 15, Math.toRadians(0));
+    public Pose pickUp = new Pose(16, 15, Math.toRadians(0));
 
-    public Pose lineUpPickUp2 = new Pose(39, 20, Math.toRadians(0));
-    public Pose pickUp2 = new Pose(15.5, 20, Math.toRadians(0));
+    public Pose lineUpPickUp2 = new Pose(39, 22, Math.toRadians(0));
+    public Pose pickUp2 = new Pose(16, 22, Math.toRadians(0));
 
     public Pose driveOutOfBox = new Pose(45,15 , Math.toRadians(165));
 

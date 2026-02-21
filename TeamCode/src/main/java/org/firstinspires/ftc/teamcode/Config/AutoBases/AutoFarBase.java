@@ -66,7 +66,7 @@ public abstract class AutoFarBase extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(750),
+                                        new WaitCommand(1000),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                                         new WaitCommand(250),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
@@ -85,7 +85,7 @@ public abstract class AutoFarBase extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(750),
+                                        new WaitCommand(1000),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                                         new WaitCommand(250),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
@@ -103,7 +103,7 @@ public abstract class AutoFarBase extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(750),
+                                        new WaitCommand(1000),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                                         new WaitCommand(250),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)
@@ -122,7 +122,7 @@ public abstract class AutoFarBase extends OpModeCommand {
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(750),
+                                        new WaitCommand(1000),
                                         new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
                                         new WaitCommand(250),
                                         new IntakeControlCommand(robotContainer.intakeSubsystem, -1)

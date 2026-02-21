@@ -52,7 +52,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         double degrees = 5;
 
         if (getDistance(tag) > 100)
-            degrees = 3;
+            degrees = 4;
 
         if (tag != null) {
             return tag.getTargetXDegrees() -degrees;
