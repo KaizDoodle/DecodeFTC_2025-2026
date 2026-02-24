@@ -25,7 +25,7 @@ public abstract class AutoCloseMMABase extends OpModeCommand {
     RobotContainer robotContainer;
     AutoClosePathMMA auto;
     public abstract Alliance getAlliance();
-    double shotVelocity = 0.6;
+    double shotVelocity = 0.55;
     @Override
     public void initialize() {
         reset();
@@ -68,7 +68,7 @@ public abstract class AutoCloseMMABase extends OpModeCommand {
                         // ---  PICKUP GATE
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
-                        new WaitCommand(1250),
+                        new WaitCommand(1000),
 
                         // --- SCORE AGAIN X2 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
@@ -78,21 +78,9 @@ public abstract class AutoCloseMMABase extends OpModeCommand {
                         new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
 
-                        // ---  SECOND PICKUP GATE
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
-                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
-                        new WaitCommand(1250),
-
-                        // --- SCORE AGAIN X3 ---
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),
-                        new IntakeControlCommand(robotContainer.intakeSubsystem, -1),
-                        new ManualResetCommand(robotContainer.shooterSubsystem, ShooterPosition.INTAKE),
-                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
-                        new WaitUntilLaunchCommand(robotContainer.shooterSubsystem, shotVelocity),
-                        new ShooterControllerCommand(robotContainer.shooterSubsystem, 0),
-
                         // --- FOURTH PICKUP
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
+                        new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
                         new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
 
                         // --- SCORE AGAIN X4 ---

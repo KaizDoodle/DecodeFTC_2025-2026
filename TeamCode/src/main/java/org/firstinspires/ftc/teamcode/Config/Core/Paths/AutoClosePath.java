@@ -16,7 +16,7 @@ public class AutoClosePath {
     // robot lined up facing the goal, side to the crevice of the goal and the ramp
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
-    public Pose linePickUp1 = new Pose(39, 85, Math .toRadians(0)); // 50?? for x???
+    public Pose linePickUp1 = new Pose(47, 85, Math .toRadians(0)); // 50?? for x???
     public Pose pickUp1 = new Pose(21, 85, Math.toRadians(0));
 
     public Pose linePickUp2 = new Pose(39, 60.5, Math.toRadians(0));

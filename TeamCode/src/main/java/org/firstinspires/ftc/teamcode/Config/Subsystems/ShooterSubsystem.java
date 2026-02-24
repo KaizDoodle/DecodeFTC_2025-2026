@@ -25,7 +25,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // 10 .7
     // 11 .72
 
-    private final double MIN_POWER = 0.625;
+    private final double MIN_POWER = 0.55;
     private final double MAX_POWER = 0.79;
     private final double MAX_VELOCITY = 2200;
 
@@ -49,9 +49,9 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterThree = hardwareMap.get(DcMotorEx.class, "shooterThree");
 
 
-        shooterOne.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(80,0,12,13.5));
-        shooterTwo.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(80,0,12,13.5));
-        shooterThree.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(80,0,12,13.5));
+        shooterOne.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(70,0,12,13.5));
+        shooterTwo.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(70,0,12,13.5));
+        shooterThree.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(70,0,12,13.5));
 
         resetManual(ShooterPosition.ALL);
 
@@ -59,9 +59,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean atVelocity(double percent) {
         double target = percent * MAX_VELOCITY;
-        return shooterOne.getVelocity() > target * 0.97 ||
-                shooterTwo.getVelocity() > target * 0.97 ||
-                shooterThree.getVelocity() > target * 0.97;
+        return shooterOne.getVelocity() > target * 0.95 ||
+                shooterTwo.getVelocity() > target * 0.95 ||
+                shooterThree.getVelocity() > target * 0.95;
     }
 
     public boolean isLauncherBusy(ShooterPosition pos) {
@@ -147,7 +147,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double calculatePowerPercentage(double distancePercent) {
-        double i = 0.003 * distancePercent +0.475;
+        double i = 0.003 * distancePercent + 0.44;
         return Range.clip(i, MIN_POWER, MAX_POWER);
     }
 }

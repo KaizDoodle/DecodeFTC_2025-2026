@@ -23,7 +23,7 @@ public abstract class AutoCloseSorted12Base extends OpModeCommand {
     AutoClosePathSorted auto;
     public abstract Alliance getAlliance();
 
-    double shotVelocity = 0.59;
+    double shotVelocity = 0.57;
     @Override
     public void initialize() {
         reset();

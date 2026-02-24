@@ -16,7 +16,7 @@ public class AutoClosePathMMA {
     // robot lined up facing the goal, side to the crevice of the goal and the ramp
     public Pose start = new Pose(19.5, 122, Math.toRadians(144));
 
-    public Pose linePickUp1 = new Pose(39, 85, Math .toRadians(0)); // 50?? for x???
+    public Pose linePickUp1 = new Pose(47, 85, Math .toRadians(0)); // 50?? for x???
     public Pose pickUp1 = new Pose(21, 85, Math.toRadians(0));
 
     public Pose linePickUp2 = new Pose(39, 60.5, Math.toRadians(0));
@@ -41,6 +41,10 @@ public class AutoClosePathMMA {
     public Pose ctrlPickUp2 = new Pose(51, 92);
     public Pose ctrlScore2  = new Pose(45, 85);
     public Pose ctrlPickUp3 = new Pose(67, 58);
+
+    public Pose lineUpGateDump = new Pose(25, 85, Math.toRadians(0));
+    public Pose slideOver = new Pose(25, 79, Math.toRadians(0));
+    public Pose dumpGate = new Pose(20.5, 77, Math.toRadians(0));
 
     private int index = 0;
 
@@ -68,6 +72,9 @@ public class AutoClosePathMMA {
             ctrlPickUp2 = ctrlPickUp2.mirror();
             ctrlScore2  = ctrlScore2.mirror();
             ctrlPickUp3 = ctrlPickUp3.mirror();
+            slideOver = slideOver.mirror();
+            dumpGate = dumpGate.mirror();
+            lineUpGateDump = lineUpGateDump.mirror();
 
         }
     }
@@ -114,6 +121,21 @@ public class AutoClosePathMMA {
                 .setLinearHeadingInterpolation(pickUpGate.getHeading(), shortScore2.getHeading())
                 .build();
     }
+
+    public PathChain dumpGate() {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(pickUp1, lineUpGateDump))
+                .setLinearHeadingInterpolation(pickUp1.getHeading(), lineUpGateDump.getHeading())
+
+                .addPath(new BezierLine(lineUpGateDump, slideOver))
+                .setLinearHeadingInterpolation(lineUpGateDump.getHeading(), slideOver.getHeading())
+
+                .addPath(new BezierLine(slideOver, dumpGate))
+                .setLinearHeadingInterpolation(slideOver.getHeading(), dumpGate.getHeading())
+                .build();
+    }
+
+
     public PathChain pickUpGate2() {
         return follower.pathBuilder()
                 .addPath(new BezierCurve(shortScore2, ctrlScore1, pickUpGate))
@@ -140,11 +162,10 @@ public class AutoClosePathMMA {
 
     public PathChain score2() {
         return follower.pathBuilder()
-                .addPath(new BezierCurve(pickUp1, ctrlScore2, shortScore3))
-                .setLinearHeadingInterpolation(pickUp1.getHeading(), shortScore3.getHeading())
+                .addPath(new BezierLine(dumpGate, shortScore3))
+                .setLinearHeadingInterpolation(dumpGate.getHeading(), shortScore3.getHeading())
                 .build();
     }
-
 
 
     public PathChain outOfBox() {
@@ -160,11 +181,10 @@ public class AutoClosePathMMA {
             case 2: return score1();
             case 3: return pickUpGate();
             case 4: return scoreGate();
-            case 5: return pickUpGate2();
-            case 6: return scoreGate2();
-            case 7: return pickUp2();
-            case 8: return score2();
-            case 9: return outOfBox();
+            case 5: return pickUp2();
+            case 6: return dumpGate();
+            case 7: return score2();
+            case 8: return outOfBox();
             default: return null;
         }
     }

@@ -49,7 +49,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     }
     public double getYawOffset(){
         LLResultTypes.FiducialResult tag = getAllianceAprilTag();
-        double degrees = 5;
+        double degrees = 4.75;
 
         if (getDistance(tag) > 100)
             degrees = 4;

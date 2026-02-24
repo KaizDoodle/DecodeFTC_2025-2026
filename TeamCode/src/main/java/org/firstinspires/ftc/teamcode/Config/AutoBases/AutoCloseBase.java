@@ -24,7 +24,7 @@ public abstract class AutoCloseBase extends OpModeCommand {
     RobotContainer robotContainer;
     AutoClosePath auto;
     public abstract Alliance getAlliance();
-    double shotVelocity = 0.6;
+    double shotVelocity = 0.55;
     @Override
     public void initialize() {
         reset();
@@ -67,7 +67,7 @@ public abstract class AutoCloseBase extends OpModeCommand {
                         // --- SECOND PICKUP GATE
                         new IntakeControlCommand(robotContainer.intakeSubsystem, 1),
                         new FollowPathCommand(robotContainer.driveSubsystem.getFollower(), auto.next()),
-                        new WaitCommand(1250),
+                        new WaitCommand(1000),
 
                         // --- SCORE AGAIN X2 ---
                         new ShooterControllerCommand(robotContainer.shooterSubsystem, shotVelocity),

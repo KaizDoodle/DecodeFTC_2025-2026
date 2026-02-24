@@ -11,7 +11,8 @@ import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 public class AutoFarPath {
     private final Follower follower;
 
-    // robot lined up to the edge of the mat left side (for blue) including mat corners
+    // robot lined up to the edge of the mat left side (for blue) including ma
+    // t corners
     public Pose start = new Pose(57, 9, Math.toRadians(90));
 
     public Pose lineUpPickUpPreload = new Pose(14, 20, Math.toRadians(20));
@@ -30,6 +31,8 @@ public class AutoFarPath {
     public Pose driveOutOfBox = new Pose(45,15 , Math.toRadians(165));
 
     public Pose farScore = new Pose(57, 19, Math.toRadians(104));
+    public Pose farScore2 = new Pose(57, 19, Math.toRadians(99));
+
 
     private int index = 0;
 
@@ -40,6 +43,7 @@ public class AutoFarPath {
         if (alliance == Alliance.RED) {
             start = start.mirror();
             farScore = farScore.mirror();
+            farScore2 = farScore2.mirror();
             driveOutOfBox = driveOutOfBox.mirror();
 
             lineUpPickUpPreload = lineUpPickUpPreload.mirror();
@@ -110,16 +114,16 @@ public class AutoFarPath {
 
     public PathChain scorePickUp1() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(pickUp, farScore))
-                .setLinearHeadingInterpolation(pickUp.getHeading(), farScore.getHeading())
+                .addPath(new BezierLine(pickUp, farScore2))
+                .setLinearHeadingInterpolation(pickUp.getHeading(), farScore2.getHeading())
                 .build();
     }
 
 
     public PathChain pickUp2() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(farScore, lineUpPickUp2))
-                .setLinearHeadingInterpolation(farScore.getHeading(), lineUpPickUp2.getHeading())
+                .addPath(new BezierLine(farScore2, lineUpPickUp2))
+                .setLinearHeadingInterpolation(farScore2.getHeading(), lineUpPickUp2.getHeading())
 
                 .addPath(new BezierLine(lineUpPickUp2, pickUp2))
                 .setLinearHeadingInterpolation(lineUpPickUp2.getHeading(), pickUp2.getHeading())
@@ -128,15 +132,15 @@ public class AutoFarPath {
 
     public PathChain scorePickUp2() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(pickUp2, farScore))
-                .setLinearHeadingInterpolation(pickUp2.getHeading(), farScore.getHeading())
+                .addPath(new BezierLine(pickUp2, farScore2))
+                .setLinearHeadingInterpolation(pickUp2.getHeading(), farScore2.getHeading())
                 .build();
     }
 
     public PathChain outOfBox() {
         return follower.pathBuilder()
-                .addPath(new BezierLine(farScore, driveOutOfBox))
-                .setLinearHeadingInterpolation(farScore.getHeading(), driveOutOfBox.getHeading())
+                .addPath(new BezierLine(farScore2, driveOutOfBox))
+                .setLinearHeadingInterpolation(farScore2.getHeading(), driveOutOfBox.getHeading())
                 .build();
     }
 

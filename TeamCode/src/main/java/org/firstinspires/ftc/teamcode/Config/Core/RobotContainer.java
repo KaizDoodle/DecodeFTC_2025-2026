@@ -163,7 +163,7 @@ public class RobotContainer {
         // Calculate stagger delay based on distance & mode
         double distClipped = Range.clip(distanceFromTag, 50, 150);
         if (sortingMode) {
-            shootingStaggerDelay = 2.5 * Math.pow(distClipped, 1.2);
+            shootingStaggerDelay = 3.5 * Math.pow(distClipped, 1.2);
         } else {
             shootingStaggerDelay = 0.7 * Math.pow(distClipped, 1.3);
         }
@@ -280,16 +280,16 @@ public class RobotContainer {
         // LMEC LOCK (Left Trigger) TODO commented out cause borken
         new Trigger(() -> driverPad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whenActive(
-//                        new ParallelCommandGroup(
-//                            new InstantCommand(() -> lmecSubsystem.lockMechanum()),
+                        new ParallelCommandGroup(
+                            new InstantCommand(() -> lmecSubsystem.lockMechanum()),
                             new InstantCommand(() -> driveSubsystem.holdPosition())
-//                        )
+                        )
                 )
                 .whenInactive(
-//                        new ParallelCommandGroup(
-//                            new InstantCommand(() -> lmecSubsystem.unlockMechanum()),
+                        new ParallelCommandGroup(
+                            new InstantCommand(() -> lmecSubsystem.unlockMechanum()),
                             new InstantCommand(() -> driveSubsystem.startTeleopDrive())
-//                        )
+                        )
                 );
 
     }
