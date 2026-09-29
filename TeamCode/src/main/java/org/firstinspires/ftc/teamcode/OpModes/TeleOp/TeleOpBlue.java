@@ -1,16 +1,18 @@
-package org.firstinspires.ftc.teamcode.OpModes.Testing;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
-import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
-import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
-
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Config.Core.RobotContainer;
+import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
+import org.firstinspires.ftc.teamcode.Config.Core.Util.OpModeCommand;
 
-@TeleOp
-public class FieldCentricTest extends OpModeCommand {
+/**
+ * Driver-controlled period, Blue alliance. Field-centric driving with vision-assisted aiming.
+ * All behaviour lives in {@link RobotContainer}; button bindings are set in
+ * {@link RobotContainer#teleOpControl()}.
+ */
+@TeleOp(name = "TeleOp Blue", group = "Match")
+public class TeleOpBlue extends OpModeCommand {
 
     public static double testF = 13;
     public static double testP = 20 ;
@@ -34,8 +36,4 @@ public class FieldCentricTest extends OpModeCommand {
     public void loop() {
         robot.periodic();
     }
-
-
-
-
 }

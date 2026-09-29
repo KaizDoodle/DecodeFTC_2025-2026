@@ -5,6 +5,11 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ * Servo-actuated mecanum lock. Holding the left trigger in TeleOp moves the servo to the locked
+ * position; releasing it unlocks. Currently only the lock/unlock state is exposed; the drive
+ * logic that uses it is commented out in {@link Core.RobotContainer}.
+ */
 public class LMECSubsystem extends SubsystemBase {
 
     public enum LockState {

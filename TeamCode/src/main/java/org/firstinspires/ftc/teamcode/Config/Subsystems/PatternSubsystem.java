@@ -3,6 +3,11 @@ package org.firstinspires.ftc.teamcode.Config.Subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
+/**
+ * Turns the required colour pattern (green/purple per slot) and the colours currently held in the
+ * three cages into a firing order. If the desired colour is not available for a slot, it falls
+ * back to any unused cage so the robot still fires all three balls.
+ */
 public class PatternSubsystem extends SubsystemBase {
 
     private Object[] pattern = new Object[3];  // 'g', 'p', or 'n'

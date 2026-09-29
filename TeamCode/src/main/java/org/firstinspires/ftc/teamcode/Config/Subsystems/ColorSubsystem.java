@@ -8,6 +8,11 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
+/**
+ * Three REV Color Sensor V3 units (left, middle, right) that report whether a ball is present
+ * (by distance threshold, in cm) and its colour (green vs purple, from the normalised RGB ratio).
+ * Colours are returned as {@code 'g'}, {@code 'p'} or {@code 'n'} (none), left to right.
+ */
 public class ColorSubsystem extends SubsystemBase {
     RevColorSensorV3 sensorLeft;
     RevColorSensorV3 sensorMiddle;

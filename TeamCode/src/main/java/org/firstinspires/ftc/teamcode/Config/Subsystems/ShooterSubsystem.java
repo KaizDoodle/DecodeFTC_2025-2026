@@ -14,6 +14,14 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.RobotStates;
 import org.firstinspires.ftc.teamcode.Config.Core.Util.ShooterPosition;
 
+/**
+ * Three flywheel motors under velocity PIDF control plus three servo "cages" that release balls
+ * one at a time (left, middle, right).
+ *
+ * <p>Flywheel speed is a fraction of {@code MAX_VELOCITY} (ticks/s). {@link #calculatePowerPercentage}
+ * maps distance to the goal onto that fraction with a linear fit clipped to the safe range
+ * 0.625 to 0.845. A per-cage busy flag stops a cage from being re-fired while it is still moving.
+ */
 public class ShooterSubsystem extends SubsystemBase {
 
     // 36 .5

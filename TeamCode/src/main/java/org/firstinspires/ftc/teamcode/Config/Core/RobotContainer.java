@@ -31,6 +31,16 @@ import org.firstinspires.ftc.teamcode.Config.Subsystems.*; // Collapsed imports
 
 import java.util.function.Supplier;
 
+/**
+ * Central wiring point for the robot. Owns every subsystem, the Pedro Pathing {@code Follower},
+ * and the driver gamepads, and exposes the lifecycle hooks the OpModes call
+ * ({@code startTeleOp/periodic} for TeleOp, {@code startAuto/aPeriodic} for Autonomous).
+ *
+ * <p>In TeleOp it runs a small state machine ({@link RobotStates}) that decides what the
+ * intake, shooter and drivetrain do each loop. Button bindings live in {@link #teleOpControl()}.
+ * Each loop it also reads the Limelight AprilTag, converts tag area to distance, and derives the
+ * flywheel speed and the delay between shots from that distance.
+ */
 public class RobotContainer {
 
     // --- Tuning Constants ---

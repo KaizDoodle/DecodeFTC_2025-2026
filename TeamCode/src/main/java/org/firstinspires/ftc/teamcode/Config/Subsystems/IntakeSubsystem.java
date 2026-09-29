@@ -2,15 +2,15 @@
 package org.firstinspires.ftc.teamcode.Config.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.List;
-
+/**
+ * Intake motor wrapper.
+ *
+ * <p><b>Status:</b> motor output is currently disabled (see the TODO below) because the intake
+ * hardware was broken at the time of writing. Re-enable by uncommenting the {@code setPower} calls.
+ */
 public class IntakeSubsystem extends SubsystemBase {
     public DcMotor intakeMotor;
     public IntakeSubsystem(HardwareMap hardwareMap){

@@ -7,6 +7,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Config.Core.Util.Alliance;
 
+/**
+ * Limelight 3A vision wrapper for DECODE AprilTags.
+ *
+ * <ul>
+ *   <li>Goal tags: ID 20 (Blue) and ID 24 (Red), used for distance and aiming.</li>
+ *   <li>Pattern tags: IDs 21, 22, 23, which encode the required ball colour order. The last valid
+ *       pattern tag seen is remembered so the pattern survives the tag leaving the camera view.</li>
+ *   <li>Distance is estimated as {@code SCALE / sqrt(targetArea)}, calibrated by measurement.</li>
+ * </ul>
+ */
 public class LimeLightSubsystem extends SubsystemBase {
     public Limelight3A limelight;
     int allianceTagID = 0;
